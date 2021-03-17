@@ -1,7 +1,11 @@
 package View;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -10,15 +14,18 @@ public class RecipePanel extends JPanel {
     private JPanel leftPanel;
     private JPanel centerPanel;
 
+    private SpinnerModel spinnerModel;
+    private JSpinner spinner;
     private JComboBox<String> recipes;
-    private JTextArea abc;
-    private JTextArea recipeInstructions;
+    private JTextArea abc; // Byt namn. Ska det vara textarea?
+    private JTextArea recipeInstructions; //Ska det vara textarea?
 
+    private JButton done;
     private JButton addRecipe;
     private JButton removeRecipe;
     private JButton modifyRecipe;
 
-    private String[] menu = {"Recept1", "Recept2", "Recept3", "Recept4"};
+    private String[] menu = {"Recept1", "Recept2", "Recept3", "Recept4"}; //Bara test för meny
 
     public RecipePanel(){
         setLayout(new BorderLayout());
@@ -31,20 +38,31 @@ public class RecipePanel extends JPanel {
         centerPanel = new JPanel();
 
         //North panel
+        northPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
+        done = new JButton("Klar");
+        done.addActionListener(this::actionPerformed);
+        northPanel.add(done);
+
+        spinnerModel = new SpinnerNumberModel(1, 1, 20, 1);
+        spinner = new JSpinner(spinnerModel);
+        spinner.addChangeListener(this::stateChanged);
+        northPanel.add(spinner);
+
         recipes = new JComboBox<>(menu);
         recipes.setPreferredSize(new Dimension(200, 25));
         recipes.addActionListener(this::actionPerformed);
         northPanel.add(recipes);
 
-        addRecipe = new JButton("Lägg till recept");
+        addRecipe = new JButton("Lägg till nytt recept");
         addRecipe.addActionListener(this::actionPerformed);
         northPanel.add(addRecipe);
 
-        removeRecipe = new JButton("Ta bort recept");
+        removeRecipe = new JButton("Ta bort valt recept");
         removeRecipe.addActionListener(this::actionPerformed);
         northPanel.add(removeRecipe);
 
-        modifyRecipe = new JButton("Ändra recept");
+        modifyRecipe = new JButton("Ändra i recept");
         modifyRecipe.addActionListener(this::actionPerformed);
         northPanel.add(modifyRecipe);
 
@@ -79,6 +97,13 @@ public class RecipePanel extends JPanel {
     }
 
     public void actionPerformed(ActionEvent e){
+        if (e.getSource() == done){
+            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du tillaggat receptet? Lagersaldo kommer att dras av", "asd", JOptionPane.YES_NO_OPTION) == 0){
+                // Recept tillagat och saldo ska dras av
+            } else {
+                JOptionPane.showMessageDialog(null, "Inga varor dras av", "Meddelande", JOptionPane.PLAIN_MESSAGE);
+            }
+        }
         if (e.getSource() == recipes){
             //Byt recept som visas
             System.out.println(menu[recipes.getSelectedIndex()]);
@@ -95,6 +120,13 @@ public class RecipePanel extends JPanel {
         if (e.getSource() == modifyRecipe){
             //Funktion för att ändra i valt recept?
             System.out.println("Ändra i recept");
+        }
+    }
+
+    public void stateChanged(ChangeEvent e){
+        if (e.getSource() == spinner){
+            //Metod för att multiplicera recept
+            System.out.println(spinner.getValue());
         }
     }
 }
