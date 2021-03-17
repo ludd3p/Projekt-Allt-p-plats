@@ -2,36 +2,46 @@ package View;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * Panel for managing recipes
+ * @Author Ludvig Wedin Pettersson
+ * @Version 1.0
+ */
+
 public class RecipePanel extends JPanel {
-    private JPanel northPanel;
-    private JPanel leftPanel;
-    private JPanel centerPanel;
+    private JPanel northPanel; //Topp panelen
+    private JPanel leftPanel; // Vänstra panelen
+    private JPanel centerPanel; // Center panelen
 
-    private SpinnerModel spinnerModel;
-    private JSpinner spinner;
-    private JComboBox<String> recipes;
-    private JTextArea abc; // Byt namn. Ska det vara textarea?
-    private JTextArea recipeInstructions; //Ska det vara textarea?
+    private SpinnerModel spinnerModel; // Bestämmer hur spinner fungerar
+    private JSpinner spinner; // För att välja antal
+    private JComboBox<String> recipes; // För att välja recept
+    private JTextArea abc; // Visar ingredienser för recept. Byt namn. Ska det vara textarea?
+    private JTextArea recipeInstructions; // Visar instruktioner för recept. Ska det vara textarea?
 
-    private JButton done;
-    private JButton addRecipe;
-    private JButton removeRecipe;
-    private JButton modifyRecipe;
+    private JButton done; // Knapp för när man tillagat recept.
+    private JButton addRecipe; // Lägga till recept
+    private JButton removeRecipe; // Ta bort ett recept
+    private JButton modifyRecipe; // Ändra i ett recept
 
     private String[] menu = {"Recept1", "Recept2", "Recept3", "Recept4"}; //Bara test för meny
 
+    /**
+     * Constructor for the panel
+     */
     public RecipePanel(){
         setLayout(new BorderLayout());
         setupPanels();
     }
 
+    /**
+     * Method that sets everything up inside the panel
+     */
     public void setupPanels(){
         northPanel = new JPanel();
         leftPanel = new JPanel();
@@ -96,6 +106,10 @@ public class RecipePanel extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Listener for the buttons
+     * @param e Source of method call
+     */
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == done){
             if (JOptionPane.showConfirmDialog(null, "Är du säker på att du tillaggat receptet? Lagersaldo kommer att dras av", "asd", JOptionPane.YES_NO_OPTION) == 0){
@@ -123,6 +137,10 @@ public class RecipePanel extends JPanel {
         }
     }
 
+    /**
+     * Listens to changed states of registered components
+     * @param e Source of call
+     */
     public void stateChanged(ChangeEvent e){
         if (e.getSource() == spinner){
             //Metod för att multiplicera recept
