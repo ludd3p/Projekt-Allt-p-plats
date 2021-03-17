@@ -16,6 +16,7 @@ public class RecipePanel extends JPanel {
 
     private JButton addRecipe;
     private JButton removeRecipe;
+    private JButton modifyRecipe;
 
     private String[] menu = {"Recept1", "Recept2", "Recept3", "Recept4"};
 
@@ -32,6 +33,7 @@ public class RecipePanel extends JPanel {
         //North panel
         recipes = new JComboBox<>(menu);
         recipes.setPreferredSize(new Dimension(200, 25));
+        recipes.addActionListener(this::actionPerformed);
         northPanel.add(recipes);
 
         addRecipe = new JButton("Lägg till recept");
@@ -41,6 +43,10 @@ public class RecipePanel extends JPanel {
         removeRecipe = new JButton("Ta bort recept");
         removeRecipe.addActionListener(this::actionPerformed);
         northPanel.add(removeRecipe);
+
+        modifyRecipe = new JButton("Ändra recept");
+        modifyRecipe.addActionListener(this::actionPerformed);
+        northPanel.add(modifyRecipe);
 
         add(northPanel, BorderLayout.NORTH);
 
@@ -73,6 +79,22 @@ public class RecipePanel extends JPanel {
     }
 
     public void actionPerformed(ActionEvent e){
-
+        if (e.getSource() == recipes){
+            //Byt recept som visas
+            System.out.println(menu[recipes.getSelectedIndex()]);
+        }
+        if (e.getSource() == addRecipe){
+            //Metod för att lägga till recept
+            System.out.println("Lägg till recept");
+        }
+        if (e.getSource() == removeRecipe){
+            //Antingen ta bort valt recept, eller ny ruta där man väljer vilket recept som ska tas bort
+            //Varningsruta  typ JOptionpane eller liknande som man måste acceptera för att ta bort receptet
+            System.out.println("Ta bort recept");
+        }
+        if (e.getSource() == modifyRecipe){
+            //Funktion för att ändra i valt recept?
+            System.out.println("Ändra i recept");
+        }
     }
 }
