@@ -7,9 +7,9 @@ public class StoragePanel extends JPanel {
     private JTable table;
     private JScrollPane scrollPane;
 
-    public StoragePanel(){
+    public StoragePanel() {
         setLayout(new BorderLayout());
-        table = new JTable(1000,2);
+        table = new JTable(1000, 2);
         table.getColumnModel().getColumn(0).setHeaderValue("tas");
         table.getColumnModel().getColumn(1).setHeaderValue("Mängd");
         scrollPane = new JScrollPane(table);
