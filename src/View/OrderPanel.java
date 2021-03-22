@@ -4,7 +4,6 @@ import Model.Order;
 import Model.OrderItem;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class OrderPanel extends JPanel {
         leftPanel = new JPanel();
         rightPanel = new JPanel();
 
-        leftPanel.setBorder(new TitledBorder("Order historyt"));
+        leftPanel.setBorder(new TitledBorder("Order history"));
         orderJList = new JList<>();
         orderJList.setPreferredSize(new Dimension(500, 600));
         leftPanel.add(orderJList);
@@ -64,9 +63,9 @@ public class OrderPanel extends JPanel {
 
     }
 
-    public void addOrderToList(OrderItem order) {
+    public void addOrderToList(Order order) {
         this.orderList.add(order);
-        OrderItem[] val = new OrderItem[orderList.size()];
+        Order[] val = new Order[orderList.size()];
         orderList.toArray(val);
         this.orderJList.setListData(val);
     }
