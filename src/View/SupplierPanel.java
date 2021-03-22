@@ -24,7 +24,7 @@ public class SupplierPanel extends JPanel {
         northPanel = new JPanel();
         centerPanel = new JPanel();
 
-        addSupplier = new JButton("Add supplierefwefe");
+        addSupplier = new JButton("Add supplier");
         removeSupplier = new JButton("Remove supplier");
         updateSupplier = new JButton("Update supplier");
         addSupplier.setSize(new Dimension(100,30));
