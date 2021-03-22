@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
  */
 
 public class RecipePanel extends JPanel {
+    private newRecipeWindow newRecipeWindow;
+
     private JPanel northPanel; //Topp panelen
     private JPanel leftPanel; // Vänstra panelen
     private JPanel centerPanel; // Center panelen
@@ -21,8 +23,10 @@ public class RecipePanel extends JPanel {
     private SpinnerModel spinnerModel; // Bestämmer hur spinner fungerar
     private JSpinner spinner; // För att välja antal
     private JComboBox<String> recipes; // För att välja recept
-    private JTextArea abc; // Visar ingredienser för recept. Byt namn. Ska det vara textarea?
-    private JTextArea recipeInstructions; // Visar instruktioner för recept. Ska det vara textarea?
+    private DefaultListModel<String> ingredientsModel;
+    private DefaultListModel<String> instructionsModel;
+    private JList<String> ingredientsList; // Visar ingredienser för recept. Byt namn.
+    private JList<String> recipeInstructions; // Visar instruktioner för recept.
 
     private JButton done; // Knapp för när man tillagat recept.
     private JButton addRecipe; // Lägga till recept
@@ -80,27 +84,26 @@ public class RecipePanel extends JPanel {
 
         //Left panel
         leftPanel.setLayout(new BorderLayout());
-        abc = new JTextArea();
-        abc.setEditable(false);
-        abc.setPreferredSize(new Dimension(200, 800));
-        abc.setBorder(new TitledBorder("Innehåll"));
-        abc.append("2 ägg \n");
-        abc.append("2 banan \n");
-        abc.append("2 vatten \n");
-        abc.append("2 salt \n");
-        leftPanel.add(abc);
+        ingredientsModel = new DefaultListModel<>();
+        ingredientsList = new JList<>();
+        ingredientsList.setPreferredSize(new Dimension(200, 800));
+        ingredientsList.setBorder(new TitledBorder("Innehåll"));
+        ingredientsList.setModel(ingredientsModel);
+        ingredientsModel.addElement("ÄGGGGGGGGGGGGG");
+        leftPanel.add(ingredientsList);
         leftPanel.setPreferredSize(new Dimension(200, 800));
 
         add(leftPanel, BorderLayout.WEST);
 
         //Center panel
         centerPanel.setLayout(new BorderLayout());
-        recipeInstructions = new JTextArea();
-        recipeInstructions.setEditable(false);
+        instructionsModel = new DefaultListModel<>();
+        recipeInstructions = new JList<>();
+        recipeInstructions.setModel(instructionsModel);
         recipeInstructions.setBorder(new TitledBorder("Instruktioner"));
-        recipeInstructions.append("Vispa ägg med jord \n");
-        recipeInstructions.append("rör ner hackad banan \n");
-        recipeInstructions.append("Häll i form, salta på toppen och backa på 0 grader i 80 minuter \n");
+        instructionsModel.addElement("Vispa ägg med jord \n");
+        instructionsModel.addElement("rör ner hackad banan \n");
+        instructionsModel.addElement("Häll i form, salta på toppen och backa på 0 grader i 80 minuter \n");
         centerPanel.add(recipeInstructions, BorderLayout.CENTER);
 
         add(centerPanel, BorderLayout.CENTER);
@@ -118,23 +121,32 @@ public class RecipePanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Inga varor dras av", "Meddelande", JOptionPane.PLAIN_MESSAGE);
             }
         }
+
         if (e.getSource() == recipes){
             //Byt recept som visas
             System.out.println(menu[recipes.getSelectedIndex()]);
         }
+
         if (e.getSource() == addRecipe){
-            //Metod för att lägga till recept
-            System.out.println("Lägg till recept");
+            if (newRecipeWindow != null) {
+                newRecipeWindow.dispose();
+            }
+            newRecipeWindow = new newRecipeWindow();
         }
+
         if (e.getSource() == removeRecipe){
-            //Antingen ta bort valt recept, eller ny ruta där man väljer vilket recept som ska tas bort
-            //Varningsruta  typ JOptionpane eller liknande som man måste acceptera för att ta bort receptet
-            System.out.println("Ta bort recept");
+            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ta bort recept", JOptionPane.YES_NO_OPTION) == 0){
+                //Ta bort valt recept
+            } else {
+                JOptionPane.showMessageDialog(null, "Receptet tas inte bort", "Meddelande", JOptionPane.PLAIN_MESSAGE);
+            }
         }
+
         if (e.getSource() == modifyRecipe){
             //Funktion för att ändra i valt recept?
             System.out.println("Ändra i recept");
         }
+
     }
 
     /**
@@ -146,5 +158,86 @@ public class RecipePanel extends JPanel {
             //Metod för att multiplicera recept
             System.out.println(spinner.getValue());
         }
+    }
+
+    private class newRecipeWindow extends JFrame{
+        //West
+        private JPanel westPanel;
+        private JPanel westNorth;
+        private JPanel westCenter;
+        private JComboBox ingredientsMenu;
+        private JButton addIngredient;
+        private JSpinner amount;
+        private SpinnerModel amountModel;
+        private DefaultListModel<String> ingredientsListModel;
+        private JList<String> ingredientsList;
+
+        //East
+        private JPanel eastPanel;
+        private JPanel eastNorth;
+        private JTextField instructionInput;
+        private JButton addInstruction;
+        private DefaultListModel<String> instructionListModel;
+        private JList<String> instructionList;
+
+        public newRecipeWindow(){
+            //Frame settings
+            setTitle("Nytt recept");
+            setPreferredSize(new Dimension(800, 400));
+
+            //West panel
+            westPanel = new JPanel();
+            westPanel.setLayout(new BorderLayout());
+            westPanel.setPreferredSize(new Dimension(300, 400));
+
+            westNorth = new JPanel();
+            westNorth.setBackground(Color.CYAN);
+
+            String[] ingredients = {"Ägg", "Vatten", "Salt"};
+            ingredientsMenu = new JComboBox(ingredients);
+            westNorth.add(ingredientsMenu);
+
+            amountModel = new SpinnerNumberModel(0, 0, 10000, 0.1);
+            amount = new JSpinner(amountModel);
+            westNorth.add(amount);
+
+            addIngredient = new JButton("Lägg till");
+            westNorth.add(addIngredient);
+
+            ingredientsListModel = new DefaultListModel<>();
+            ingredientsList = new JList<>(ingredientsListModel);
+            ingredientsList.setBorder(new TitledBorder("Ingredienser"));
+            westPanel.add(ingredientsList, BorderLayout.CENTER);
+
+            westPanel.add(westNorth, BorderLayout.NORTH);
+
+            //East panel
+            eastPanel = new JPanel();
+            eastPanel.setLayout(new BorderLayout());
+            eastPanel.setPreferredSize(new Dimension(400, 400));
+
+            eastNorth = new JPanel();
+            eastNorth.setBackground(Color.GREEN);
+
+            instructionInput = new JTextField("Lägg till beskrivning");
+            instructionInput.setPreferredSize(new Dimension(300, 25));
+            eastNorth.add(instructionInput);
+
+            addInstruction = new JButton("Lägg till");
+            eastNorth.add(addInstruction);
+
+            instructionListModel = new DefaultListModel<>();
+            instructionList = new JList<>(instructionListModel);
+            instructionList.setBorder(new TitledBorder("Instruktioner"));
+            eastPanel.add(instructionList, BorderLayout.CENTER);
+
+            eastPanel.add(eastNorth, BorderLayout.NORTH);
+
+            add(westPanel, BorderLayout.WEST);
+            add(eastPanel, BorderLayout.CENTER);
+            pack();
+            setVisible(true);
+        }
+
     }
 }
