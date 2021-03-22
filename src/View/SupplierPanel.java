@@ -13,7 +13,7 @@ public class SupplierPanel extends JPanel {
     private JPanel northPanel;
     private JPanel centerPanel;
     private JList<Supplier> supplierJList;
-    private JButton addSupplier, removeSupplier, alterSupplier;
+    private JButton addSupplier, removeSupplier, updateSupplier;
 
     public SupplierPanel(){
         setLayout(new BorderLayout());
@@ -26,13 +26,13 @@ public class SupplierPanel extends JPanel {
 
         addSupplier = new JButton("Add supplier");
         removeSupplier = new JButton("Remove supplier");
-        alterSupplier = new JButton("Alter supplier");
+        updateSupplier = new JButton("Update supplier");
         addSupplier.setSize(new Dimension(100,30));
         removeSupplier.setSize(new Dimension(100,30));
-        alterSupplier.setSize(new Dimension(100,30));
+        updateSupplier.setSize(new Dimension(100,30));
         northPanel.add(addSupplier);
         northPanel.add(removeSupplier);
-        northPanel.add(alterSupplier);
+        northPanel.add(updateSupplier);
 
         centerPanel.setBorder(new TitledBorder("Suppliers"));
         supplierJList = new JList<>();
@@ -59,7 +59,7 @@ public class SupplierPanel extends JPanel {
         if (e.getSource() == removeSupplier){
 
         }
-        if (e.getSource() == alterSupplier){
+        if (e.getSource() == updateSupplier){
 
         }
     }
