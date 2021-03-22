@@ -241,4 +241,6 @@ public class RecipePanel extends JPanel {
         }
 
     }
+
+    // Kommentar
 }
