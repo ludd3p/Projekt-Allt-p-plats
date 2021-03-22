@@ -9,6 +9,7 @@ public class MainView extends JFrame {
     private RecipePanel recipePanel;
     private OrderPanel orderPanel;
     private SupplierPanel supplierPanel;
+    private HomePanel homePanel;
 
     public MainView() {
         setTitle("Allt på plats");
@@ -19,10 +20,11 @@ public class MainView extends JFrame {
         storagePanel = new StoragePanel();
         orderPanel = new OrderPanel();
         supplierPanel = new SupplierPanel();
+        homePanel = new HomePanel();
 
 
         tp = new JTabbedPane();
-        tp.add("Statsida", new JButton("Hej"));
+        tp.add("Statsida",homePanel);
         tp.add("Recept", recipePanel);
         tp.add("Lager", storagePanel);
         tp.add("Order history", orderPanel);

@@ -109,6 +109,7 @@ public class RecipePanel extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
     }
 
+
     /**
      * Listener for the buttons
      * @param e Source of method call
