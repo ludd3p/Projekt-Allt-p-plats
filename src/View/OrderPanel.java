@@ -34,7 +34,7 @@ public class OrderPanel extends JPanel {
         leftPanel = new JPanel();
         rightPanel = new JPanel();
 
-        leftPanel.setBorder(new TitledBorder("Order history"));
+        leftPanel.setBorder(new TitledBorder("Order historyt"));
         orderJList = new JList<>();
         orderJList.setPreferredSize(new Dimension(500, 600));
         leftPanel.add(orderJList);
