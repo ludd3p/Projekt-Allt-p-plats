@@ -171,3 +171,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,intellij,java,maven
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/Projekt-Allt-p-plats.iml
+/Projekt-Allt-p-plats.iml
+/.idea/vcs.xml
