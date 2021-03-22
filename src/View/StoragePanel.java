@@ -102,6 +102,10 @@ public class StoragePanel extends JPanel {
                     "Product: " + "Potatis",
                     "Min amount: " + "10",
                     "Max amount: " + "100"));
+            model.addElement(String.format("%s %s %s",
+                    "Product: " + "Mjölk",
+                    "Min amount: " + "10",
+                    "Max amount: " + "100"));
         }
     }
 
