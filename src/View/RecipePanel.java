@@ -232,6 +232,7 @@ public class RecipePanel extends JPanel {
             westNorth.add(amount);
 
             unit = new JLabel("G");
+            westNorth.add(unit);
 
 
 
