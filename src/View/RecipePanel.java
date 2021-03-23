@@ -1,5 +1,7 @@
 package View;
 
+import Model.Recipe;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -144,8 +146,12 @@ public class RecipePanel extends JPanel {
         }
 
         if (e.getSource() == modifyRecipe){
-            //Funktion för att ändra i valt recept?
-            System.out.println("Ändra i recept");
+            if (JOptionPane.showConfirmDialog(null, "Vill du ändra i " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ändra recept", JOptionPane.YES_NO_OPTION) == 0){
+                if (newRecipeWindow != null) {
+                    newRecipeWindow.dispose();
+                }
+                newRecipeWindow = new newRecipeWindow();
+            }
         }
 
     }
@@ -165,9 +171,10 @@ public class RecipePanel extends JPanel {
         //West
         private JPanel westPanel;
         private JPanel westNorth;
-        private JPanel westCenter;
+        private JPanel westSouth;
         private JComboBox ingredientsMenu;
         private JButton addIngredient;
+        private JButton removeIngredient;
         private JSpinner amount;
         private SpinnerModel amountModel;
         private DefaultListModel<String> ingredientsListModel;
@@ -176,23 +183,44 @@ public class RecipePanel extends JPanel {
         //East
         private JPanel eastPanel;
         private JPanel eastNorth;
+        private JPanel eastSouth;
         private JTextField instructionInput;
         private JButton addInstruction;
+        private JButton removeInstruction;
+        private JButton saveRecipe;
         private DefaultListModel<String> instructionListModel;
         private JList<String> instructionList;
 
+        /**
+         * Constructor used when creating new recipe
+         */
         public newRecipeWindow(){
             //Frame settings
             setTitle("Nytt recept");
-            setPreferredSize(new Dimension(800, 400));
+            setPreferredSize(new Dimension(1000, 600));
+            setupNewRecipeFrame();
 
+        }
+
+        /**
+         * Construcotr used when editing a recipe, receives a recicpe
+         * @param recipe Received recipe
+         */
+        public newRecipeWindow(Recipe recipe){
+            //Frame settings
+            setTitle("Ändra recept");
+            setPreferredSize(new Dimension(1000, 600));
+            setupNewRecipeFrame();
+        }
+
+        public void setupNewRecipeFrame(){
             //West panel
             westPanel = new JPanel();
             westPanel.setLayout(new BorderLayout());
-            westPanel.setPreferredSize(new Dimension(300, 400));
+            westPanel.setPreferredSize(new Dimension(200, 400));
 
             westNorth = new JPanel();
-            westNorth.setBackground(Color.CYAN);
+            westNorth.setBorder(new TitledBorder(""));
 
             String[] ingredients = {"Ägg", "Vatten", "Salt"};
             ingredientsMenu = new JComboBox(ingredients);
@@ -202,8 +230,7 @@ public class RecipePanel extends JPanel {
             amount = new JSpinner(amountModel);
             westNorth.add(amount);
 
-            addIngredient = new JButton("Lägg till");
-            westNorth.add(addIngredient);
+
 
             ingredientsListModel = new DefaultListModel<>();
             ingredientsList = new JList<>(ingredientsListModel);
@@ -212,13 +239,23 @@ public class RecipePanel extends JPanel {
 
             westPanel.add(westNorth, BorderLayout.NORTH);
 
+            westSouth = new JPanel();
+
+            addIngredient = new JButton("Lägg till");
+            westSouth.add(addIngredient);
+
+            removeIngredient = new JButton("Ta bort");
+            westSouth.add(removeIngredient);
+
+            westPanel.add(westSouth, BorderLayout.SOUTH);
+
             //East panel
             eastPanel = new JPanel();
             eastPanel.setLayout(new BorderLayout());
             eastPanel.setPreferredSize(new Dimension(400, 400));
 
             eastNorth = new JPanel();
-            eastNorth.setBackground(Color.GREEN);
+            eastNorth.setBorder(new TitledBorder(""));
 
             instructionInput = new JTextField("Lägg till beskrivning");
             instructionInput.setPreferredSize(new Dimension(300, 25));
@@ -227,12 +264,20 @@ public class RecipePanel extends JPanel {
             addInstruction = new JButton("Lägg till");
             eastNorth.add(addInstruction);
 
+            removeInstruction = new JButton("Ta bort");
+            eastNorth.add(removeInstruction);
+
             instructionListModel = new DefaultListModel<>();
             instructionList = new JList<>(instructionListModel);
             instructionList.setBorder(new TitledBorder("Instruktioner"));
             eastPanel.add(instructionList, BorderLayout.CENTER);
 
             eastPanel.add(eastNorth, BorderLayout.NORTH);
+
+            eastSouth = new JPanel();
+            saveRecipe = new JButton("Spara recept");
+            eastSouth.add(saveRecipe);
+            eastPanel.add(eastSouth, BorderLayout.SOUTH);
 
             add(westPanel, BorderLayout.WEST);
             add(eastPanel, BorderLayout.CENTER);
