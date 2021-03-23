@@ -177,6 +177,7 @@ public class RecipePanel extends JPanel {
         private JButton removeIngredient;
         private JSpinner amount;
         private SpinnerModel amountModel;
+        private JLabel unit;
         private DefaultListModel<String> ingredientsListModel;
         private JList<String> ingredientsList;
 
@@ -229,6 +230,8 @@ public class RecipePanel extends JPanel {
             amountModel = new SpinnerNumberModel(0, 0, 10000, 0.1);
             amount = new JSpinner(amountModel);
             westNorth.add(amount);
+
+            unit = new JLabel("G");
 
 
 
