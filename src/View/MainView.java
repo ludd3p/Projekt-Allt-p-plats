@@ -24,7 +24,7 @@ public class MainView extends JFrame {
 
 
         tp = new JTabbedPane();
-        tp.add("Statsida",homePanel);
+        tp.add("Statsida", homePanel);
         tp.add("Recept", recipePanel);
         tp.add("Lager", storagePanel);
         tp.add("Order history", orderPanel);
