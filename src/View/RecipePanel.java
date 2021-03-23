@@ -8,6 +8,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 /**
  * Panel for managing recipes
@@ -168,6 +169,8 @@ public class RecipePanel extends JPanel {
     }
 
     private class newRecipeWindow extends JFrame{
+        private ArrayList<String> instructionsArray = new ArrayList<>();
+
         //West
         private JPanel westPanel;
         private JPanel westNorth;
@@ -266,9 +269,11 @@ public class RecipePanel extends JPanel {
             eastNorth.add(instructionInput);
 
             addInstruction = new JButton("Lägg till");
+            addInstruction.addActionListener(this::actionPerformed);
             eastNorth.add(addInstruction);
 
             removeInstruction = new JButton("Ta bort");
+            removeInstruction.addActionListener(this::actionPerformed);
             eastNorth.add(removeInstruction);
 
             instructionListModel = new DefaultListModel<>();
@@ -288,8 +293,24 @@ public class RecipePanel extends JPanel {
             pack();
             setVisible(true);
         }
+        public void actionPerformed(ActionEvent e){
+            if (e.getSource() == addInstruction){
+                instructionsArray.add(instructionInput.getText());
+                updateWindow();
+            }
+            if (e.getSource() == removeInstruction){
+                if (instructionList.getSelectedIndex() != -1){
+                    instructionsArray.remove(instructionList.getSelectedIndex());
+                    updateWindow();
+                }
+            }
+        }
 
+        public void updateWindow(){
+            instructionListModel.clear();
+            for (String s : instructionsArray){
+                instructionListModel.addElement(s);
+            }
+        }
     }
-
-    // Kommentar
 }

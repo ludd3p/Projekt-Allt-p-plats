@@ -2,6 +2,10 @@ package Model;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a full recipe with lists of ingredients and instructions.
+ * @Author Ludvig Wedin Pettersson
+ */
 public class Recipe {
     private String name;
     private ArrayList<RecipeIngredient> ingredients;

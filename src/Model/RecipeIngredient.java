@@ -1,5 +1,9 @@
 package Model;
 
+/**
+ * Class used in Recipe to hold the ingredient and amount to be used.
+ * @Author Ludvig Wedin Pettersson
+ */
 public class RecipeIngredient {
     private Ingredient ingredient;
     private double amount;
