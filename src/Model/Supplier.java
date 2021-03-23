@@ -4,6 +4,8 @@ public class Supplier {
 
     private String name;
     private String address;
+    private String city;
+    private String countrty;
     private String email;
     private int phonenumber;
 
@@ -41,5 +43,21 @@ public class Supplier {
 
     public void setPhonenumber(int phonenumber) {
         this.phonenumber = phonenumber;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountrty() {
+        return countrty;
+    }
+
+    public void setCountrty(String countrty) {
+        this.countrty = countrty;
     }
 }

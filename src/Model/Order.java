@@ -32,4 +32,9 @@ public class Order {
     public void setId(UUID id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Order: " + id + " items: " + orderItems.size();
+    }
 }
