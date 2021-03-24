@@ -19,30 +19,37 @@ public class StoragePanel extends JPanel {
     private JButton btnChangeProduct;
     private JButton btnRemoveProduct;
 
+    /**
+     * Constructor.
+     */
     public StoragePanel() {
-        setupPanel();
+        setupMainPanel();
     }
 
-    private void setupPanel(){
+    /**
+     * Setup for the main panel.
+     */
+    private void setupMainPanel(){
         setBorder(new EtchedBorder());
         setLayout(new BorderLayout());
         setupNorthPanel();
         setupCenterPanel();
-
-        //productList.getColumnModel().getColumn(0).setHeaderValue("tas");
-        //productList.getColumnModel().getColumn(1).setHeaderValue("Mängd");
-
-        //addButtons();
     }
 
+    /**
+     * Adds components to and configure pnlNorth and adds it to the main panel.
+     */
     private void setupNorthPanel(){
         pnlNorth = new JPanel();
         //pnlNorth.setLayout(new BorderLayout());
         pnlNorth.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        addButtons();
+        addButtonsNorthPanel();
         add(pnlNorth, BorderLayout.NORTH);
     }
 
+    /**
+     * Adds components to and configure pnlCenter and adds it to the main panel.
+     */
     private void setupCenterPanel(){
         pnlCenter = new JPanel();
         pnlCenter.setLayout(new BorderLayout());
@@ -55,7 +62,10 @@ public class StoragePanel extends JPanel {
         test();
     }
 
-    private void addButtons(){
+    /**
+     * Configures and adds buttons to pnlNorth.
+     */
+    private void addButtonsNorthPanel(){
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,6 +106,9 @@ public class StoragePanel extends JPanel {
         pnlNorth.add(btnUpdateList);
     }
 
+    /**
+     * Inserts test-values to productList.
+     */
     private void test(){
         for(int i = 0; i < 10;  i++) {
             model.addElement(String.format("%s %s %s",
@@ -109,8 +122,11 @@ public class StoragePanel extends JPanel {
         }
     }
 
+    /**
+     * Inner-class used to create a window for inserting and changing products.
+     */
     private class ProductWindow extends JFrame{
-        private JPanel pnlProductWindowContainer;
+        private JPanel pnlProductWindowMainPanel;
         private JPanel pnlProductWindowCenter;
         private JPanel pnlProductWindowSouth;
 
@@ -119,9 +135,11 @@ public class StoragePanel extends JPanel {
 
         private JLabel lblMinAmount;
         private JTextField txfMinAmount;
+        private JComboBox cbxMinAmountUnit;
 
         private JLabel lblMaxAmount;
         private JTextField txfMaxAmount;
+        private JComboBox cbxMaxAmountUnit;
 
         private JButton btnOk;
         private JButton btnCancel;
@@ -135,7 +153,7 @@ public class StoragePanel extends JPanel {
         public ProductWindow(){
             addOrChange = true;
 
-            setupPanel();
+            setupProductWindow();
         }
 
         /**
@@ -147,78 +165,97 @@ public class StoragePanel extends JPanel {
         public ProductWindow(String productName, String minAmount, String maxAmount){
             addOrChange = false;
 
-            setupPanel();
+            setupProductWindow();
 
             txfProductName.setText(productName);
             txfMinAmount.setText(minAmount);
             txfMaxAmount.setText(maxAmount);
         }
 
-        private void setupPanel(){
-            pnlProductWindowContainer = new JPanel();
-            pnlProductWindowContainer.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowContainer.setLayout(new BorderLayout());
+        /**
+         * Configures the frame and adds the main panel to it. Also calls methods to add components to the main panel.
+         */
+        private void setupProductWindow(){
+            pnlProductWindowMainPanel = new JPanel();
+            pnlProductWindowMainPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+            pnlProductWindowMainPanel.setLayout(new BorderLayout());
 
-            setupCenterPanel();
-            setupSouthPanel();
+            setupProductWindowCenterPanel();
+            setupProductWindowSouthPanel();
 
             setLocation(400, 300);
-            setContentPane(pnlProductWindowContainer);
+            setContentPane(pnlProductWindowMainPanel);
             setResizable(false);
             pack();
             setVisible(true);
         }
 
-        private void setupCenterPanel(){
+        /**
+         * Configures and adds components to pnlProductWindowCenter and adds it to the main panel.
+         */
+        private void setupProductWindowCenterPanel(){
             pnlProductWindowCenter = new JPanel();
             pnlProductWindowCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowCenter.setLayout(new GridLayout(3,2));
+            pnlProductWindowCenter.setLayout(new GridLayout(3,3));
 
             lblProductName = new JLabel("Product: ");
             pnlProductWindowCenter.add(lblProductName);
             txfProductName = new JTextField();
             txfProductName.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(txfProductName);
+            JPanel pnlPadding = new JPanel();
+            pnlProductWindowCenter.add(pnlPadding);
 
             lblMinAmount = new JLabel("Min");
             pnlProductWindowCenter.add(lblMinAmount);
             txfMinAmount = new JTextField();
             pnlProductWindowCenter.add(txfMinAmount);
+            cbxMinAmountUnit = new JComboBox();
+            pnlProductWindowCenter.add(cbxMinAmountUnit);
 
             lblMaxAmount = new JLabel("Max");
             pnlProductWindowCenter.add(lblMaxAmount);
             txfMaxAmount = new JTextField();
             pnlProductWindowCenter.add(txfMaxAmount);
+            cbxMaxAmountUnit = new JComboBox();
+            pnlProductWindowCenter.add(cbxMaxAmountUnit);
 
-            pnlProductWindowContainer.add(pnlProductWindowCenter, BorderLayout.CENTER);
+            pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);
         }
 
-        private void setupSouthPanel(){
+        /**
+         * Configures and adds components to pnlProductWindowSouth and adds it to the main panel.
+         */
+        private void setupProductWindowSouthPanel(){
             pnlProductWindowSouth = new JPanel();
             pnlProductWindowSouth.setLayout(new GridLayout(1,2));
 
             ActionListener listener = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(e.getSource() == btnOk){
-                        if(addOrChange) {
-                            model.addElement(String.format("%s %s %s",
-                                    "Product: " + txfProductName.getText(),
-                                    "Min amount: " + txfMinAmount.getText(),
-                                    "Max amount: " + txfMaxAmount.getText()));
-                            dispose();
-                        }
-                        else if(!addOrChange){
-                            model.setElementAt(String.format("%s %s %s",
-                                    "Product: " + txfProductName.getText(),
-                                    "Min amount: " + txfMinAmount.getText(),
-                                    "Max amount: " + txfMaxAmount.getText()),
-                                    productList.getSelectedIndex());
-                            dispose();
+                    if(e.getSource() == btnOk) {
+                        try {
+                            if (addOrChange) {
+                                model.addElement(String.format("%s %s %s",
+                                        "Product: " + txfProductName.getText(),
+                                        "Min amount: " + Double.parseDouble(txfMinAmount.getText()),
+                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText())));
+                                dispose();
+
+                            } else if (!addOrChange) {
+                                model.setElementAt(String.format("%s %s %s",
+                                        "Product: " + txfProductName.getText(),
+                                        "Min amount: " + Double.parseDouble(txfMinAmount.getText()),
+                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText())),
+                                        productList.getSelectedIndex());
+                                dispose();
+                            }
+                        } catch (NumberFormatException nfe) {
+                            JOptionPane.showMessageDialog(null, "Error: Invalid input.");
                         }
                     }
-                    else if(e.getSource() == btnCancel){
-                        dispose();
+                    else if (e.getSource() == btnCancel) {
+                            dispose();
                     }
                 }
             };
@@ -231,7 +268,7 @@ public class StoragePanel extends JPanel {
             btnCancel.addActionListener(listener);
             pnlProductWindowSouth.add(btnCancel);
 
-            pnlProductWindowContainer.add(pnlProductWindowSouth, BorderLayout.SOUTH);
+            pnlProductWindowMainPanel.add(pnlProductWindowSouth, BorderLayout.SOUTH);
         }
 
     }
