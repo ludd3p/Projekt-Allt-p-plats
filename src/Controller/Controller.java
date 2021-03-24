@@ -1,6 +1,7 @@
 package Controller;
 
 
+import Model.Note;
 import View.MainView;
 
 public class Controller {
