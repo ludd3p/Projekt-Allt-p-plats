@@ -1,5 +1,6 @@
 package View;
 
+import Controller.Controller;
 import Model.Supplier;
 
 import javax.swing.*;
@@ -7,22 +8,37 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
+
+/**
+ * Class for the supplier panel
+ * @Author Alex Bergenholtz
+ * @Version 1.2
+ */
 
 
 public class SupplierPanel extends JPanel {
+
+    private Controller controller;
 
     private JPanel northPanel;
     private JPanel centerPanel;
     private JList<Supplier> supplierJList;
     private JButton addSupplier, removeSupplier, updateSupplier;
+    private JComboBox cmbWeekDays;
 
+    /**
+     * Constructor to create supplier panel GUI
+     */
     public SupplierPanel(){
+        controller = new Controller();
+
         setLayout(new BorderLayout());
         setupPanels();
     }
 
+    /**
+     * Supplier panel GUI
+     */
     private void setupPanels() {
         northPanel = new JPanel();
         centerPanel = new JPanel();
@@ -57,6 +73,9 @@ public class SupplierPanel extends JPanel {
         }
     }
 
+    /**
+     * A panel which is opened in a JOptionPane for new supplier input
+     */
     public void addSupplier(){
         JTextField supName = new JTextField(5);
         JTextField supPhone = new JTextField(5);
@@ -64,10 +83,11 @@ public class SupplierPanel extends JPanel {
         JTextField supAddress = new JTextField(5);
         JTextField supCity = new JTextField(5);
         JTextField supCountry = new JTextField(5);
+        cmbWeekDays = new JComboBox(controller.getWeekDays());
 
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(320,133));
-        panel.setLayout(new GridLayout(6,2,2,2));
+        panel.setLayout(new GridLayout(7,2,2,2));
         panel.add(new JLabel("Supplier name:"));
         panel.add(supName);
         panel.add(new JLabel("Supplier phone:"));
@@ -80,6 +100,8 @@ public class SupplierPanel extends JPanel {
         panel.add(supCity);
         panel.add(new JLabel("Supplier country:"));
         panel.add(supCountry);
+        panel.add(new JLabel("Day of delivery"));
+        panel.add(cmbWeekDays);
 
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Add supplier", JOptionPane.OK_CANCEL_OPTION);
@@ -102,6 +124,9 @@ public class SupplierPanel extends JPanel {
         }
     }
 
+    /**
+     * A panel which is opened in a JOptionPane to update current supplier
+     */
     public void updateSupplier(){
         JTextField supName = new JTextField(supplierJList.getSelectedValue().getName(), 5);
         JTextField supPhone = new JTextField(Integer.toString(supplierJList.getSelectedValue().getPhonenumber()), 5);
@@ -109,10 +134,11 @@ public class SupplierPanel extends JPanel {
         JTextField supAddress = new JTextField(supplierJList.getSelectedValue().getAddress(), 5);
         JTextField supCity = new JTextField(supplierJList.getSelectedValue().getCity(), 5);
         JTextField supCountry = new JTextField(supplierJList.getSelectedValue().getCountrty(), 5);
+        cmbWeekDays = new JComboBox(controller.getWeekDays());
 
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(320,133));
-        panel.setLayout(new GridLayout(6,2,2,2));
+        panel.setLayout(new GridLayout(7,2,2,2));
         panel.add(new JLabel("Supplier name:"));
         panel.add(supName);
         panel.add(new JLabel("Supplier phone:"));
@@ -125,6 +151,8 @@ public class SupplierPanel extends JPanel {
         panel.add(supCity);
         panel.add(new JLabel("Supplier country:"));
         panel.add(supCountry);
+        panel.add(new JLabel("Day of delivery"));
+        panel.add(cmbWeekDays);
 
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Update supplier", JOptionPane.OK_CANCEL_OPTION);
@@ -147,6 +175,9 @@ public class SupplierPanel extends JPanel {
         }
     }
 
+    /**
+     * Add listeners to Swing componenets which needs it
+     */
     private void addListeners()
     {
         ActionListener listener = new ButtonActionListeners();
@@ -155,6 +186,9 @@ public class SupplierPanel extends JPanel {
         updateSupplier.addActionListener(listener);
     }
 
+    /**
+     * Actionlistener for buttons.
+     */
     class ButtonActionListeners implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -162,7 +196,11 @@ public class SupplierPanel extends JPanel {
                 addSupplier();
             }
             if (e.getSource() == removeSupplier) {
+                if (supplierJList.getSelectedValue() != null){
 
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please select a supplier");
+                }
             }
             if (e.getSource() == updateSupplier) {
                 if (supplierJList.getSelectedValue() != null) {
