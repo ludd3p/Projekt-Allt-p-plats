@@ -2,6 +2,7 @@ package View;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,10 +57,38 @@ public class StoragePanel extends JPanel {
         pnlCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
         model = new DefaultListModel();
         productList = new JList(model);
+        productList.setCellRenderer(new CellRenderer());
         scrollPane = new JScrollPane(productList);
         pnlCenter.add(scrollPane);
         add(pnlCenter, BorderLayout.CENTER);
         test();
+    }
+
+    /**
+     * Inner-class used to change the look of the JList
+     */
+    private class CellRenderer extends DefaultListCellRenderer{
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus){
+            setText(value.toString());
+
+            if(index % 2 == 0){
+                setBackground(Color.WHITE);
+            }
+            else{
+                setBackground(Color.LIGHT_GRAY);
+            }
+
+            if(isSelected){
+                setBackground(productList.getSelectionBackground());
+                setForeground(productList.getForeground());
+                setBorder(new LineBorder(Color.BLUE));
+            }
+            else{
+                setBorder(null);
+            }
+
+            return this;
+        }
     }
 
     /**
@@ -75,9 +104,9 @@ public class StoragePanel extends JPanel {
                 else if(e.getSource() == btnChangeProduct){
                     String selected = (String)productList.getSelectedValue();
                     JFrame productWindow = new ProductWindow(
-                            selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("Min") - 1),
-                            selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.indexOf("Max") - 1),
-                            selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length()));
+                            selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("<br>Min") - 1),
+                            selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Max") - 2)),
+                            selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)));
                 }
                 else if(e.getSource() == btnRemoveProduct){
                     model.remove(productList.getSelectedIndex());
@@ -111,14 +140,18 @@ public class StoragePanel extends JPanel {
      */
     private void test(){
         for(int i = 0; i < 10;  i++) {
-            model.addElement(String.format("%s %s %s",
+            model.addElement(String.format("%s %s %s %s %s",
+                    "<html>",
                     "Product: " + "Potatis",
-                    "Min amount: " + "10",
-                    "Max amount: " + "100"));
-            model.addElement(String.format("%s %s %s",
+                    "<br>Min amount: " + "10" + " " + "kg",
+                    "Max amount: " + "100" + " " + "kg",
+                    "</html>"));
+            model.addElement(String.format("%s %s %s %s %s",
+                    "<html>",
                     "Product: " + "Mjölk",
-                    "Min amount: " + "10",
-                    "Max amount: " + "100"));
+                    "<br>Min amount: " + "10" + " " + "liter",
+                    "Max amount: " + "100" + " " + "liter",
+                    "</html>"));
         }
     }
 
@@ -135,11 +168,12 @@ public class StoragePanel extends JPanel {
 
         private JLabel lblMinAmount;
         private JTextField txfMinAmount;
-        private JComboBox cbxMinAmountUnit;
 
         private JLabel lblMaxAmount;
         private JTextField txfMaxAmount;
-        private JComboBox cbxMaxAmountUnit;
+
+        private JLabel lblUnit;
+        private JComboBox cbxUnit;
 
         private JButton btnOk;
         private JButton btnCancel;
@@ -164,7 +198,6 @@ public class StoragePanel extends JPanel {
          */
         public ProductWindow(String productName, String minAmount, String maxAmount){
             addOrChange = false;
-
             setupProductWindow();
 
             txfProductName.setText(productName);
@@ -196,29 +229,30 @@ public class StoragePanel extends JPanel {
         private void setupProductWindowCenterPanel(){
             pnlProductWindowCenter = new JPanel();
             pnlProductWindowCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowCenter.setLayout(new GridLayout(3,3));
+            pnlProductWindowCenter.setLayout(new GridLayout(4,2));
 
             lblProductName = new JLabel("Product: ");
             pnlProductWindowCenter.add(lblProductName);
             txfProductName = new JTextField();
             txfProductName.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(txfProductName);
-            JPanel pnlPadding = new JPanel();
-            pnlProductWindowCenter.add(pnlPadding);
 
-            lblMinAmount = new JLabel("Min");
+            lblMinAmount = new JLabel("Min:");
             pnlProductWindowCenter.add(lblMinAmount);
             txfMinAmount = new JTextField();
             pnlProductWindowCenter.add(txfMinAmount);
-            cbxMinAmountUnit = new JComboBox();
-            pnlProductWindowCenter.add(cbxMinAmountUnit);
 
-            lblMaxAmount = new JLabel("Max");
+            lblMaxAmount = new JLabel("Max:");
             pnlProductWindowCenter.add(lblMaxAmount);
             txfMaxAmount = new JTextField();
             pnlProductWindowCenter.add(txfMaxAmount);
-            cbxMaxAmountUnit = new JComboBox();
-            pnlProductWindowCenter.add(cbxMaxAmountUnit);
+
+            lblUnit = new JLabel("Unit:");
+            pnlProductWindowCenter.add(lblUnit);
+            cbxUnit = new JComboBox();
+            cbxUnit.addItem("kg");
+            cbxUnit.addItem("liter");
+            pnlProductWindowCenter.add(cbxUnit);
 
             pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);
         }
@@ -236,17 +270,21 @@ public class StoragePanel extends JPanel {
                     if(e.getSource() == btnOk) {
                         try {
                             if (addOrChange) {
-                                model.addElement(String.format("%s %s %s",
+                                model.addElement(String.format("%s %s %s %s %s",
+                                        "<html>",
                                         "Product: " + txfProductName.getText(),
-                                        "Min amount: " + Double.parseDouble(txfMinAmount.getText()),
-                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText())));
+                                        "<br>Min amount: " + Double.parseDouble(txfMinAmount.getText()) + " " + cbxUnit.getSelectedItem(),
+                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText()) + " " + cbxUnit.getSelectedItem(),
+                                        "</html>"));
                                 dispose();
 
                             } else if (!addOrChange) {
-                                model.setElementAt(String.format("%s %s %s",
+                                model.setElementAt(String.format("%s %s %s %s %s",
+                                        "<html>",
                                         "Product: " + txfProductName.getText(),
-                                        "Min amount: " + Double.parseDouble(txfMinAmount.getText()),
-                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText())),
+                                        "<br>Min amount: " + Double.parseDouble(txfMinAmount.getText()) + " " + cbxUnit.getSelectedItem(),
+                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText()) + " " + cbxUnit.getSelectedItem(),
+                                        "</html>"),
                                         productList.getSelectedIndex());
                                 dispose();
                             }
