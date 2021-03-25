@@ -6,8 +6,18 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+
+/**
+ * Panel used to keep track of products.
+ * @Author Jonathan Engström
+ * @Version 1.0
+ */
 
 public class StoragePanel extends JPanel {
+
     private JPanel pnlNorth;
     private JPanel pnlCenter;
 
@@ -15,6 +25,8 @@ public class StoragePanel extends JPanel {
     private DefaultListModel model;
     private JScrollPane scrollPane;
 
+    private ArrayList<String> values = new ArrayList<>();
+    private JTextField txfFilter;
     private JButton btnUpdateList;
     private JButton btnAddProduct;
     private JButton btnChangeProduct;
@@ -44,7 +56,8 @@ public class StoragePanel extends JPanel {
         pnlNorth = new JPanel();
         //pnlNorth.setLayout(new BorderLayout());
         pnlNorth.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        addButtonsNorthPanel();
+
+        addComponentsNorthPanel();
         add(pnlNorth, BorderLayout.NORTH);
     }
 
@@ -87,15 +100,34 @@ public class StoragePanel extends JPanel {
                 setBorder(null);
             }
 
+
             return this;
         }
     }
 
     /**
-     * Configures and adds buttons to pnlNorth.
+     * Method to filter productList based on user input in txfFilter.
+     * @param model
+     * @param filter text in txfFilter
      */
-    private void addButtonsNorthPanel(){
-        ActionListener listener = new ActionListener() {
+    private void filterModel(DefaultListModel<String> model, String filter){
+        for(String s : values){
+            if(!s.substring(s.indexOf("Product: ") + "Product: ".length(), s.indexOf("<br>Min") - 1).startsWith(filter)){
+                if(model.contains(s)){
+                    model.removeElement(s);
+                }
+            }
+            else if(!model.contains(s)){
+                model.addElement(s);
+            }
+        }
+    }
+
+    /**
+     * Configures and adds components to pnlNorth.
+     */
+    private void addComponentsNorthPanel(){
+        ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource() == btnAddProduct){
@@ -109,6 +141,7 @@ public class StoragePanel extends JPanel {
                             selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)));
                 }
                 else if(e.getSource() == btnRemoveProduct){
+                    values.removeIf(s -> s.equals(model.get(productList.getSelectedIndex())));
                     model.remove(productList.getSelectedIndex());
                 }
                 else if(e.getSource() == btnUpdateList){
@@ -117,17 +150,38 @@ public class StoragePanel extends JPanel {
             }
         };
 
+        KeyListener keyListener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filterModel(model, txfFilter.getText());
+            }
+        };
+
+        txfFilter = new JTextField();
+        txfFilter.setPreferredSize(new Dimension(100, 27));
+        txfFilter.addKeyListener(keyListener);
+        pnlNorth.add(txfFilter);
+
         btnAddProduct = new JButton("Add");
-        btnAddProduct.addActionListener(listener);
+        btnAddProduct.addActionListener(actionListener);
 
         btnChangeProduct = new JButton("Change");
-        btnChangeProduct.addActionListener(listener);
+        btnChangeProduct.addActionListener(actionListener);
 
         btnRemoveProduct = new JButton("Remove");
-        btnRemoveProduct.addActionListener(listener);
+        btnRemoveProduct.addActionListener(actionListener);
 
         btnUpdateList = new JButton("Update");
-        btnUpdateList.addActionListener(listener);
+        btnUpdateList.addActionListener(actionListener);
 
         pnlNorth.add(btnAddProduct);
         pnlNorth.add(btnChangeProduct);
@@ -139,20 +193,32 @@ public class StoragePanel extends JPanel {
      * Inserts test-values to productList.
      */
     private void test(){
-        for(int i = 0; i < 10;  i++) {
-            model.addElement(String.format("%s %s %s %s %s",
-                    "<html>",
-                    "Product: " + "Potatis",
-                    "<br>Min amount: " + "10" + " " + "kg",
-                    "Max amount: " + "100" + " " + "kg",
-                    "</html>"));
-            model.addElement(String.format("%s %s %s %s %s",
-                    "<html>",
-                    "Product: " + "Mjölk",
-                    "<br>Min amount: " + "10" + " " + "liter",
-                    "Max amount: " + "100" + " " + "liter",
-                    "</html>"));
-        }
+        values.add(String.format("%s %s %s %s %s",
+                "<html>",
+                "Product: " + "Potatis",
+                "<br>Min amount: " + "10" + " " + "kg",
+                "Max amount: " + "100" + " " + "kg",
+                "</html>"));
+        values.add(String.format("%s %s %s %s %s",
+                "<html>",
+                "Product: " + "Mjölk",
+                "<br>Min amount: " + "10" + " " + "liter",
+                "Max amount: " + "100" + " " + "liter",
+                "</html>"));
+        values.add(String.format("%s %s %s %s %s",
+                "<html>",
+                "Product: " + "Mjöl",
+                "<br>Min amount: " + "10" + " " + "kg",
+                "Max amount: " + "100" + " " + "kg",
+                "</html>"));
+        values.add(String.format("%s %s %s %s %s",
+                "<html>",
+                "Product: " + "Äpple",
+                "<br>Min amount: " + "10" + " " + "st",
+                "Max amount: " + "100" + " " + "st",
+                "</html>"));
+
+        model.addAll(values);
     }
 
     /**
@@ -165,6 +231,9 @@ public class StoragePanel extends JPanel {
 
         private JLabel lblProductName;
         private JTextField txfProductName;
+
+        private JLabel lblCost;
+        private JTextField txfCost;
 
         private JLabel lblMinAmount;
         private JTextField txfMinAmount;
@@ -229,13 +298,18 @@ public class StoragePanel extends JPanel {
         private void setupProductWindowCenterPanel(){
             pnlProductWindowCenter = new JPanel();
             pnlProductWindowCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowCenter.setLayout(new GridLayout(4,2));
+            pnlProductWindowCenter.setLayout(new GridLayout(5,2));
 
             lblProductName = new JLabel("Product: ");
             pnlProductWindowCenter.add(lblProductName);
             txfProductName = new JTextField();
             txfProductName.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(txfProductName);
+
+            lblCost = new JLabel("Cost: ");
+            pnlProductWindowCenter.add(lblCost);
+            txfCost = new JTextField();
+            pnlProductWindowCenter.add(txfCost);
 
             lblMinAmount = new JLabel("Min:");
             pnlProductWindowCenter.add(lblMinAmount);
@@ -252,6 +326,7 @@ public class StoragePanel extends JPanel {
             cbxUnit = new JComboBox();
             cbxUnit.addItem("kg");
             cbxUnit.addItem("liter");
+            cbxUnit.addItem("st");
             pnlProductWindowCenter.add(cbxUnit);
 
             pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);
@@ -270,22 +345,25 @@ public class StoragePanel extends JPanel {
                     if(e.getSource() == btnOk) {
                         try {
                             if (addOrChange) {
-                                model.addElement(String.format("%s %s %s %s %s",
+                                String newProduct = String.format("%s %s %s %s %s",
                                         "<html>",
                                         "Product: " + txfProductName.getText(),
                                         "<br>Min amount: " + Double.parseDouble(txfMinAmount.getText()) + " " + cbxUnit.getSelectedItem(),
                                         "Max amount: " + Double.parseDouble(txfMaxAmount.getText()) + " " + cbxUnit.getSelectedItem(),
-                                        "</html>"));
+                                        "</html>");
+                                model.addElement(newProduct);
+                                values.add(newProduct);
                                 dispose();
 
                             } else if (!addOrChange) {
-                                model.setElementAt(String.format("%s %s %s %s %s",
+                                String changedProduct = String.format("%s %s %s %s %s",
                                         "<html>",
                                         "Product: " + txfProductName.getText(),
                                         "<br>Min amount: " + Double.parseDouble(txfMinAmount.getText()) + " " + cbxUnit.getSelectedItem(),
                                         "Max amount: " + Double.parseDouble(txfMaxAmount.getText()) + " " + cbxUnit.getSelectedItem(),
-                                        "</html>"),
-                                        productList.getSelectedIndex());
+                                        "</html>");
+                                model.setElementAt(changedProduct, productList.getSelectedIndex());
+                                values.set(productList.getSelectedIndex(), changedProduct);
                                 dispose();
                             }
                         } catch (NumberFormatException nfe) {
