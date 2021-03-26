@@ -111,13 +111,9 @@ public class StoragePanel extends JPanel {
      * @param filter text in txfFilter
      */
     private void filterModel(DefaultListModel<String> model, String filter){
+        model.clear();
         for(String s : values){
-            if(!s.substring(s.indexOf("Product: ") + "Product: ".length(), s.indexOf("<br>Min") - 1).startsWith(filter)){
-                if(model.contains(s)){
-                    model.removeElement(s);
-                }
-            }
-            else if(!model.contains(s)){
+            if(s.substring(s.indexOf("Product: ") + "Product: ".length(), s.indexOf("<br>Min") - 1).toLowerCase().startsWith(filter.toLowerCase())){
                 model.addElement(s);
             }
         }
@@ -153,6 +149,7 @@ public class StoragePanel extends JPanel {
         KeyListener keyListener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
+
             }
 
             @Override
