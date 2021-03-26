@@ -1,5 +1,7 @@
 package View;
 
+import Controller.Controller;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
  */
 
 public class StoragePanel extends JPanel {
+    private Controller controller;
 
     private JPanel pnlNorth;
     private JPanel pnlCenter;
@@ -35,7 +38,8 @@ public class StoragePanel extends JPanel {
     /**
      * Constructor.
      */
-    public StoragePanel() {
+    public StoragePanel(Controller controller) {
+        this.controller = controller;
         setupMainPanel();
     }
 
@@ -320,10 +324,7 @@ public class StoragePanel extends JPanel {
 
             lblUnit = new JLabel("Unit:");
             pnlProductWindowCenter.add(lblUnit);
-            cbxUnit = new JComboBox();
-            cbxUnit.addItem("kg");
-            cbxUnit.addItem("liter");
-            cbxUnit.addItem("st");
+            cbxUnit = new JComboBox(controller.getUnitsPrefixArray());
             pnlProductWindowCenter.add(cbxUnit);
 
             pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);

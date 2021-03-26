@@ -2,12 +2,12 @@ package Controller;
 
 
 import Model.Note;
-import Model.WeekDays;
+import Model.*;
 import View.MainView;
 
 public class Controller {
     public static void main(String[] args) {
-        new MainView();
+        new MainView(new Controller());
     }
 
     public void connectToFirebase() {
@@ -16,5 +16,9 @@ public class Controller {
 
     public WeekDays[] getWeekDays(){
         return WeekDays.values();
+    }
+
+    public String[] getUnitsPrefixArray(){
+        return Unit.getPrefixArray();
     }
 }
