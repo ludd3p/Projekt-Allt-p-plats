@@ -85,6 +85,7 @@
     <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.59.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.59.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.59.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.github.kindak1:Kindaklib:-389424631f-1" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.30" level="project" />
   </component>

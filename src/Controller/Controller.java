@@ -49,6 +49,7 @@ public class Controller {
         return Unit.getPrefixArray();
     }
 
+    // läser data från databasen
     public static Note[] getNotesFromDatabase() {
         databaseReference.child("Notes").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

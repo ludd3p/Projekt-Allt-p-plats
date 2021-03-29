@@ -111,7 +111,7 @@ public class HomePanel extends JPanel implements ActionListener {
         Note[] newVal = new Note[noteList.size()];
         noteList.toArray(newVal);
         notesJList.setListData(newVal);
-        Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note);
+        Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // Sätter in värder i databasen
     }
 
     class NewNoteJFrame {
