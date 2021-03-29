@@ -6,11 +6,11 @@ package View;
  * with help from Hazem
  */
 
+import Controller.Controller;
 import Model.Note;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -111,6 +111,7 @@ public class HomePanel extends JPanel implements ActionListener {
         Note[] newVal = new Note[noteList.size()];
         noteList.toArray(newVal);
         notesJList.setListData(newVal);
+        Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note);
     }
 
     class NewNoteJFrame {
@@ -151,7 +152,7 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Du måste skriva en title!!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                Note noteO = new Note(title.getText(), note.getText(), 0);
+                Note noteO = new Note(title.getText(), note.getText(), noteList.size() + 1);
                 addNote(noteO);
                 noteFrame.setVisible(false);
             });
@@ -203,7 +204,7 @@ public class HomePanel extends JPanel implements ActionListener {
                     return;
                 }
                 noteList.remove(noteToShow);
-                Note noteO = new Note(title.getText(), note.getText(), 0);
+                Note noteO = new Note(title.getText(), note.getText(), noteList.size() + 1);
                 addNote(noteO);
                 noteFrame.setVisible(false);
             });

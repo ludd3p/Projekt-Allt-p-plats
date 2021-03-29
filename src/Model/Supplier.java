@@ -7,10 +7,17 @@ public class Supplier {
     private String city;
     private String countrty;
     private String email;
-    private int phonenumber;
+    private String phonenumber;
 
-    public Supplier(){
 
+
+    public Supplier(String name, String address, String city, String countrty, String email, String phonenumber) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.countrty = countrty;
+        this.email = email;
+        this.phonenumber = phonenumber;
     }
 
     public String getName() {
@@ -37,11 +44,11 @@ public class Supplier {
         this.email = email;
     }
 
-    public int getPhonenumber() {
+    public String getPhonenumber() {
         return phonenumber;
     }
 
-    public void setPhonenumber(int phonenumber) {
+    public void setPhonenumber(String phonenumber) {
         this.phonenumber = phonenumber;
     }
 

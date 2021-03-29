@@ -37,4 +37,51 @@ public class MainView extends JFrame {
         setVisible(true);
     }
 
+    public JTabbedPane getTp() {
+        return tp;
+    }
+
+    public void setTp(JTabbedPane tp) {
+        this.tp = tp;
+    }
+
+    public StoragePanel getStoragePanel() {
+        return storagePanel;
+    }
+
+    public void setStoragePanel(StoragePanel storagePanel) {
+        this.storagePanel = storagePanel;
+    }
+
+    public RecipePanel getRecipePanel() {
+        return recipePanel;
+    }
+
+    public void setRecipePanel(RecipePanel recipePanel) {
+        this.recipePanel = recipePanel;
+    }
+
+    public OrderPanel getOrderPanel() {
+        return orderPanel;
+    }
+
+    public void setOrderPanel(OrderPanel orderPanel) {
+        this.orderPanel = orderPanel;
+    }
+
+    public SupplierPanel getSupplierPanel() {
+        return supplierPanel;
+    }
+
+    public void setSupplierPanel(SupplierPanel supplierPanel) {
+        this.supplierPanel = supplierPanel;
+    }
+
+    public HomePanel getHomePanel() {
+        return homePanel;
+    }
+
+    public void setHomePanel(HomePanel homePanel) {
+        this.homePanel = homePanel;
+    }
 }
