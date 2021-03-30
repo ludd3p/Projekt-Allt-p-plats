@@ -168,6 +168,9 @@ public class RecipePanel extends JPanel {
         }
     }
 
+    /**
+     * ´NewRecipeWindow is a new frame used to create new or edit existing recipes
+     */
     private class newRecipeWindow extends JFrame{
         private ArrayList<String> instructionsArray = new ArrayList<>();
 
@@ -217,6 +220,9 @@ public class RecipePanel extends JPanel {
             setupNewRecipeFrame();
         }
 
+        /**
+         * Sets up the frame
+         */
         public void setupNewRecipeFrame(){
             //West panel
             westPanel = new JPanel();
@@ -293,6 +299,11 @@ public class RecipePanel extends JPanel {
             pack();
             setVisible(true);
         }
+
+        /**
+         * Listener for buttons
+         * @param e
+         */
         public void actionPerformed(ActionEvent e){
             if (e.getSource() == addInstruction){
                 instructionsArray.add(instructionInput.getText());
@@ -306,6 +317,9 @@ public class RecipePanel extends JPanel {
             }
         }
 
+        /**
+         * Method for updating the GUI
+         */
         public void updateWindow(){
             instructionListModel.clear();
             for (String s : instructionsArray){
