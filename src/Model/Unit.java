@@ -27,6 +27,15 @@ public enum Unit {
         this.prefix = prefix;
     }
 
+    public static Unit getUnitBasedOnPrefix(String prefix){
+        for(Unit unit : Unit.values()){
+            if(unit.prefix.equals(prefix)){
+                return unit;
+            }
+        }
+        return null;
+    }
+
     public static String[] getPrefixArray(){
         String[] prefixArray = new String[values().length];
 

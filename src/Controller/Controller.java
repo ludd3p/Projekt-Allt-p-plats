@@ -1,9 +1,8 @@
 package Controller;
 
 
-import Model.Note;
-import Model.Unit;
-import Model.WeekDays;
+
+import Model.*;
 import View.MainView;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -12,8 +11,7 @@ import com.google.firebase.database.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Controller {
     private static FirebaseDatabase database;
@@ -27,7 +25,6 @@ public class Controller {
         Controller controller = new Controller();
         getNotesFromDatabase();
         mainView = new MainView(controller);
-
     }
 
     public static void connectToFirebase() throws IOException {
@@ -73,5 +70,45 @@ public class Controller {
             }
         });
         return null;
+    }
+
+    public void addIngredientToDatabase(String name, double cost, double criticalAmount, double recommendedAmount, String unitPrefix){
+        Ingredient ingredientToAddToDatabase = new Ingredient(name, cost, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
+        databaseReference.child("Ingredient").push().setValueAsync(ingredientToAddToDatabase);
+    }
+
+    public void changeProductInDatabase(String key, String newName, double cost, double criticalAmount, double recommendedAmount, String unitPrefix){
+        Ingredient changedIngredient = new Ingredient(newName, cost, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
+        databaseReference.child("Ingredient").child(key).setValueAsync(changedIngredient);
+    }
+
+    public void removeIngredientFromDatabase(String name){
+        databaseReference.child("Ingredient").child(name).removeValueAsync();
+    }
+
+    public void getIngredientsFromDatabase(){
+        ArrayList<String> ingredientValueList = new ArrayList<>();
+
+        databaseReference.child("Ingredient").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, HashMap<String, Object>> ingredientMap = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
+
+                for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
+                    Map.Entry mapElement = (Map.Entry) stringHashMapEntry;
+                    ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString()
+                            + "<!--" + mapElement.getKey() + "-->" +"</html>");
+                }
+                for(String value : ingredientValueList){
+                    System.out.println(value);
+                }
+                mainView.getStoragePanel().updateList(ingredientValueList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println(databaseError.toString());
+            }
+        });
     }
 }

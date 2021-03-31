@@ -6,10 +6,7 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
@@ -41,6 +38,17 @@ public class StoragePanel extends JPanel {
     public StoragePanel(Controller controller) {
         this.controller = controller;
         setupMainPanel();
+        controller.getIngredientsFromDatabase();
+    }
+
+    /**
+     * Updates/Adds products on/to the list.
+     * @param values
+     */
+    public void updateList(ArrayList<String> values){
+        this.values = values;
+        model.clear();
+        model.addAll(this.values);
     }
 
     /**
@@ -78,7 +86,6 @@ public class StoragePanel extends JPanel {
         scrollPane = new JScrollPane(productList);
         pnlCenter.add(scrollPane);
         add(pnlCenter, BorderLayout.CENTER);
-        test();
     }
 
     /**
@@ -103,7 +110,6 @@ public class StoragePanel extends JPanel {
             else{
                 setBorder(null);
             }
-
 
             return this;
         }
@@ -134,18 +140,36 @@ public class StoragePanel extends JPanel {
                     JFrame productWindow = new ProductWindow();
                 }
                 else if(e.getSource() == btnChangeProduct){
-                    String selected = (String)productList.getSelectedValue();
-                    JFrame productWindow = new ProductWindow(
-                            selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("<br>Min") - 1),
-                            selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Max") - 2)),
-                            selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)));
+                    if(productList.getSelectedValue() != null) {
+                        String selected = (String) productList.getSelectedValue();
+                        JFrame productWindow = new ProductWindow(
+                                selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("<br>Cost") - 1),
+                                selected.substring(selected.indexOf("Cost: ") + "Cost: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Min") - 2)),
+                                selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Max") - 2)),
+                                selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)));
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Select a product to change.");
+                    }
                 }
                 else if(e.getSource() == btnRemoveProduct){
-                    values.removeIf(s -> s.equals(model.get(productList.getSelectedIndex())));
-                    model.remove(productList.getSelectedIndex());
+                    int answer = -1;
+
+                    if(productList.getSelectedValue() != null){
+                       answer = JOptionPane.showConfirmDialog(null, "Are you sure?", "Remove product",  JOptionPane.YES_NO_OPTION);
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Select a product to remove first.");
+                    }
+
+                    if(answer == 0) {
+                        String selected = (String) productList.getSelectedValue();
+                        controller.removeIngredientFromDatabase(selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("<br>Cost") - 1));
+                        controller.getIngredientsFromDatabase();
+                    }
                 }
                 else if(e.getSource() == btnUpdateList){
-
+                    controller.getIngredientsFromDatabase();
                 }
             }
         };
@@ -167,8 +191,23 @@ public class StoragePanel extends JPanel {
             }
         };
 
-        txfFilter = new JTextField();
+        FocusListener focusListener = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                txfFilter.selectAll();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(txfFilter.getText().equals("")){
+                    txfFilter.setText("Search");
+                }
+            }
+        };
+
+        txfFilter = new JTextField("Search");
         txfFilter.setPreferredSize(new Dimension(100, 27));
+        txfFilter.addFocusListener(focusListener);
         txfFilter.addKeyListener(keyListener);
         pnlNorth.add(txfFilter);
 
@@ -188,38 +227,6 @@ public class StoragePanel extends JPanel {
         pnlNorth.add(btnChangeProduct);
         pnlNorth.add(btnRemoveProduct);
         pnlNorth.add(btnUpdateList);
-    }
-
-    /**
-     * Inserts test-values to productList.
-     */
-    private void test(){
-        values.add(String.format("%s %s %s %s %s",
-                "<html>",
-                "Product: " + "Potatis",
-                "<br>Min amount: " + "10" + " " + "kg",
-                "Max amount: " + "100" + " " + "kg",
-                "</html>"));
-        values.add(String.format("%s %s %s %s %s",
-                "<html>",
-                "Product: " + "Mjölk",
-                "<br>Min amount: " + "10" + " " + "liter",
-                "Max amount: " + "100" + " " + "liter",
-                "</html>"));
-        values.add(String.format("%s %s %s %s %s",
-                "<html>",
-                "Product: " + "Mjöl",
-                "<br>Min amount: " + "10" + " " + "kg",
-                "Max amount: " + "100" + " " + "kg",
-                "</html>"));
-        values.add(String.format("%s %s %s %s %s",
-                "<html>",
-                "Product: " + "Äpple",
-                "<br>Min amount: " + "10" + " " + "st",
-                "Max amount: " + "100" + " " + "st",
-                "</html>"));
-
-        model.addAll(values);
     }
 
     /**
@@ -266,11 +273,12 @@ public class StoragePanel extends JPanel {
          * @param minAmount
          * @param maxAmount
          */
-        public ProductWindow(String productName, String minAmount, String maxAmount){
+        public ProductWindow(String productName, String cost ,String minAmount, String maxAmount){
             addOrChange = false;
             setupProductWindow();
 
             txfProductName.setText(productName);
+            txfCost.setText(cost);
             txfMinAmount.setText(minAmount);
             txfMaxAmount.setText(maxAmount);
         }
@@ -299,7 +307,7 @@ public class StoragePanel extends JPanel {
         private void setupProductWindowCenterPanel(){
             pnlProductWindowCenter = new JPanel();
             pnlProductWindowCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowCenter.setLayout(new GridLayout(5,2));
+            pnlProductWindowCenter.setLayout(new GridLayout(5,2,1 ,1));
 
             lblProductName = new JLabel("Product: ");
             pnlProductWindowCenter.add(lblProductName);
@@ -335,33 +343,45 @@ public class StoragePanel extends JPanel {
          */
         private void setupProductWindowSouthPanel(){
             pnlProductWindowSouth = new JPanel();
-            pnlProductWindowSouth.setLayout(new GridLayout(1,2));
+            pnlProductWindowSouth.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+            pnlProductWindowSouth.setLayout(new GridLayout(1,2, 1, 1));
 
             ActionListener listener = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(e.getSource() == btnOk) {
                         try {
-                            if (addOrChange) {
-                                String newProduct = String.format("%s %s %s %s %s",
-                                        "<html>",
-                                        "Product: " + txfProductName.getText(),
-                                        "<br>Min amount: " + Double.parseDouble(txfMinAmount.getText()) + " " + cbxUnit.getSelectedItem(),
-                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText()) + " " + cbxUnit.getSelectedItem(),
-                                        "</html>");
-                                model.addElement(newProduct);
-                                values.add(newProduct);
-                                dispose();
-
-                            } else if (!addOrChange) {
-                                String changedProduct = String.format("%s %s %s %s %s",
-                                        "<html>",
-                                        "Product: " + txfProductName.getText(),
-                                        "<br>Min amount: " + Double.parseDouble(txfMinAmount.getText()) + " " + cbxUnit.getSelectedItem(),
-                                        "Max amount: " + Double.parseDouble(txfMaxAmount.getText()) + " " + cbxUnit.getSelectedItem(),
-                                        "</html>");
-                                model.setElementAt(changedProduct, productList.getSelectedIndex());
-                                values.set(productList.getSelectedIndex(), changedProduct);
+                            if(addOrChange) {
+                                boolean proceed = true;
+                                for(String value : values){
+                                    if(value.substring(value.indexOf("Product: ") + "Product: ".length(), value.indexOf("<br>Cost") - 1).toLowerCase().equals(txfProductName.getText().toLowerCase())){
+                                        JOptionPane.showMessageDialog(null, "That product already exists.", "Product already exists", JOptionPane.PLAIN_MESSAGE);
+                                        proceed = false;
+                                        System.out.println(value + " : " + txfProductName.getText());
+                                    }
+                                }
+                                if(proceed) {
+                                    controller.addIngredientToDatabase(
+                                            txfProductName.getText(),
+                                            Double.parseDouble(txfCost.getText()),
+                                            Double.parseDouble(txfMinAmount.getText()),
+                                            Double.parseDouble(txfMaxAmount.getText()),
+                                            (String) cbxUnit.getSelectedItem());
+                                    controller.getIngredientsFromDatabase();
+                                    dispose();
+                                }
+                            }
+                            else {
+                                String selected = (String)productList.getSelectedValue();
+                                String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
+                                controller.changeProductInDatabase(
+                                        key,
+                                        txfProductName.getText(),
+                                        Double.parseDouble(txfCost.getText()),
+                                        Double.parseDouble(txfMinAmount.getText()),
+                                        Double.parseDouble(txfMaxAmount.getText()),
+                                        (String) cbxUnit.getSelectedItem());
+                                controller.getIngredientsFromDatabase();
                                 dispose();
                             }
                         } catch (NumberFormatException nfe) {
