@@ -1,5 +1,6 @@
 package View;
 
+import Controller.Controller;
 import Model.Recipe;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
  */
 
 public class RecipePanel extends JPanel {
+    private Controller controller;
     private newRecipeWindow newRecipeWindow;
 
     private JPanel northPanel; //Topp panelen
@@ -41,7 +43,8 @@ public class RecipePanel extends JPanel {
     /**
      * Constructor for the panel
      */
-    public RecipePanel(){
+    public RecipePanel(Controller controller){
+        this.controller = controller;
         setLayout(new BorderLayout());
         setupPanels();
     }

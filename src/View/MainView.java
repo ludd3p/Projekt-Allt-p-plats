@@ -18,7 +18,7 @@ public class MainView extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1000, 600));
         setBounds(400, 300, 500, 300);
-        recipePanel = new RecipePanel();
+        recipePanel = new RecipePanel(controller);
         storagePanel = new StoragePanel(controller);
         orderPanel = new OrderPanel();
         supplierPanel = new SupplierPanel();

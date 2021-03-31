@@ -108,4 +108,12 @@ public class Controller {
             }
         });
     }
+
+    public RecipeIngredient createRecipeIngredient(Ingredient ingredient, double amount){
+        return new RecipeIngredient(ingredient, amount);
+    }
+
+    public void createRecipe(String name, ArrayList<RecipeIngredient> ingredients, ArrayList<String> instructions){
+        Recipe recipe = new Recipe(name, ingredients, instructions);
+    }
 }
