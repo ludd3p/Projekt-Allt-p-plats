@@ -18,6 +18,9 @@ public class Controller {
     public static DatabaseReference databaseReference;
     static MainView mainView;
 
+    private ArrayList<Ingredient> allIngredients = new ArrayList<>();
+    private ArrayList<RecipeIngredient> recipeIngredient = new ArrayList<>();
+
     public static void main(String[] args) throws IOException, InterruptedException {
         connectToFirebase();
         database = FirebaseDatabase.getInstance();
@@ -109,8 +112,8 @@ public class Controller {
         });
     }
 
-    public RecipeIngredient createRecipeIngredient(Ingredient ingredient, double amount){
-        return new RecipeIngredient(ingredient, amount);
+    public void createRecipeIngredient(Ingredient ingredient, double amount){
+                recipeIngredient.add(new RecipeIngredient(ingredient, amount));
     }
 
     public void createRecipe(String name, ArrayList<RecipeIngredient> ingredients, ArrayList<String> instructions){

@@ -1,7 +1,9 @@
 package View;
 
 import Controller.Controller;
+import Model.Ingredient;
 import Model.Recipe;
+import Model.RecipeIngredient;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -176,6 +178,7 @@ public class RecipePanel extends JPanel {
      */
     private class newRecipeWindow extends JFrame{
         private ArrayList<String> instructionsArray = new ArrayList<>();
+        private ArrayList<RecipeIngredient> ingredientsArray = new ArrayList<>();
 
         //West
         private JPanel westPanel;
@@ -194,6 +197,7 @@ public class RecipePanel extends JPanel {
         private JPanel eastPanel;
         private JPanel eastNorth;
         private JPanel eastSouth;
+        private JTextField recipeName;
         private JTextField instructionInput;
         private JButton addInstruction;
         private JButton removeInstruction;
@@ -293,6 +297,9 @@ public class RecipePanel extends JPanel {
             eastPanel.add(eastNorth, BorderLayout.NORTH);
 
             eastSouth = new JPanel();
+            recipeName = new JTextField("Receptnamn...");
+            recipeName.setPreferredSize(new Dimension(200,25));
+            eastSouth.add(recipeName);
             saveRecipe = new JButton("Spara recept");
             eastSouth.add(saveRecipe);
             eastPanel.add(eastSouth, BorderLayout.SOUTH);
@@ -317,6 +324,12 @@ public class RecipePanel extends JPanel {
                     instructionsArray.remove(instructionList.getSelectedIndex());
                     updateWindow();
                 }
+            }
+            if (e.getSource() == addIngredient){
+                controller.createRecipeIngredient((Ingredient)ingredientsMenu.getSelectedItem(), (double)amountModel.getValue());
+            }
+            if (e.getSource() == saveRecipe){
+               // controller.createRecipe();
             }
         }
 
