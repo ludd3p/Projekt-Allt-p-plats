@@ -82,8 +82,8 @@ public class Controller {
         databaseReference.child("Ingredient").child(key).setValueAsync(changedIngredient);
     }
 
-    public void removeIngredientFromDatabase(String name){
-        databaseReference.child("Ingredient").child(name).removeValueAsync();
+    public void removeIngredientFromDatabase(String key){
+        databaseReference.child("Ingredient").child(key).removeValueAsync();
     }
 
     public void getIngredientsFromDatabase(){

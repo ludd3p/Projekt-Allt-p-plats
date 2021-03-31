@@ -164,7 +164,8 @@ public class StoragePanel extends JPanel {
 
                     if(answer == 0) {
                         String selected = (String) productList.getSelectedValue();
-                        controller.removeIngredientFromDatabase(selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("<br>Cost") - 1));
+                        String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
+                        controller.removeIngredientFromDatabase(key);
                         controller.getIngredientsFromDatabase();
                     }
                 }
