@@ -358,7 +358,6 @@ public class StoragePanel extends JPanel {
                                     if(value.substring(value.indexOf("Product: ") + "Product: ".length(), value.indexOf("<br>Cost") - 1).toLowerCase().equals(txfProductName.getText().toLowerCase())){
                                         JOptionPane.showMessageDialog(null, "That product already exists.", "Product already exists", JOptionPane.PLAIN_MESSAGE);
                                         proceed = false;
-                                        System.out.println(value + " : " + txfProductName.getText());
                                     }
                                 }
                                 if(proceed) {

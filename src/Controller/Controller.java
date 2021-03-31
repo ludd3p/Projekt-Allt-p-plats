@@ -99,9 +99,6 @@ public class Controller {
                     ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString()
                             + "<!--" + mapElement.getKey() + "-->" +"</html>");
                 }
-                for(String value : ingredientValueList){
-                    System.out.println(value);
-                }
                 mainView.getStoragePanel().updateList(ingredientValueList);
             }
 
