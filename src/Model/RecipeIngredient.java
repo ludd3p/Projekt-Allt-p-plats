@@ -30,6 +30,7 @@ public class RecipeIngredient {
     }
 
     public String toString(){
-        return ingredient.getName() + " " + amount + ingredient.getUnit();
+        String s = String.format("%s %.2f %s", ingredient.getName(), amount, ingredient.getUnit());
+        return s;
     }
 }

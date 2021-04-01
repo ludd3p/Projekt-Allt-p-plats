@@ -1,9 +1,7 @@
 package View;
 
 import Controller.Controller;
-import Model.Ingredient;
 import Model.Recipe;
-import Model.RecipeIngredient;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -21,7 +19,7 @@ import java.util.ArrayList;
 
 public class RecipePanel extends JPanel {
     private Controller controller;
-    private newRecipeWindow newRecipeWindow;
+    private NewRecipeWindow newRecipeWindow;
 
     private JPanel northPanel; //Topp panelen
     private JPanel leftPanel; // Vänstra panelen
@@ -142,7 +140,7 @@ public class RecipePanel extends JPanel {
             if (newRecipeWindow != null) {
                 newRecipeWindow.dispose();
             }
-            newRecipeWindow = new newRecipeWindow();
+            newRecipeWindow = new NewRecipeWindow();
         }
 
         if (e.getSource() == removeRecipe){
@@ -158,7 +156,7 @@ public class RecipePanel extends JPanel {
                 if (newRecipeWindow != null) {
                     newRecipeWindow.dispose();
                 }
-                newRecipeWindow = new newRecipeWindow();
+                newRecipeWindow = new NewRecipeWindow();
             }
         }
 
@@ -175,10 +173,14 @@ public class RecipePanel extends JPanel {
         }
     }
 
+    public NewRecipeWindow getNewRecipeWindow(){
+        return newRecipeWindow;
+    }
+
     /**
      * ´NewRecipeWindow is a new frame used to create new, or edit existing recipes
      */
-    private class newRecipeWindow extends JFrame{
+    public class NewRecipeWindow extends JFrame{
         private ArrayList<String> instructionsArray;
         private ArrayList<String> ingredientsArray;
 
@@ -211,7 +213,7 @@ public class RecipePanel extends JPanel {
         /**
          * Constructor used when creating new recipe
          */
-        public newRecipeWindow(){
+        public NewRecipeWindow(){
             //Frame settings
             instructionsArray = new ArrayList<>();
             ingredientsArray = new ArrayList<>();
@@ -225,7 +227,7 @@ public class RecipePanel extends JPanel {
          * Constructor used when editing a recipe, receives a recicpe
          * @param recipe Received recipe
          */
-        public newRecipeWindow(Recipe recipe){
+        public NewRecipeWindow(Recipe recipe){
             //Frame settings
             instructionsArray = new ArrayList<>();
             ingredientsArray = new ArrayList<>();
@@ -330,19 +332,28 @@ public class RecipePanel extends JPanel {
         public void actionPerformed(ActionEvent e){
             if (e.getSource() == addInstruction){
                 instructionsArray.add(instructionInput.getText());
-                updateWindow();
+                updateInstructions();
             }
             if (e.getSource() == removeInstruction){
                 if (instructionList.getSelectedIndex() != -1){
                     instructionsArray.remove(instructionList.getSelectedIndex());
-                    updateWindow();
+                    updateInstructions();
                 }
             }
             if (e.getSource() == addIngredient){
                 if ((double)amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
-
                     controller.createRecipeIngredient((String)ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
+                    updateIngredients();
                 }
+            }
+            if (e.getSource() == removeIngredient){
+                if (!ingredientsList.isSelectionEmpty()){
+                    controller.removeRecipeIngredient(ingredientsList.getSelectedIndex());
+                    updateIngredients();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Inget markerat", "Fel", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
             if (e.getSource() == saveRecipe){
                 if (ingredientsArray.size() >= 1){ // Kan lägga till en JOptionpane för att bekräfta
@@ -360,7 +371,7 @@ public class RecipePanel extends JPanel {
         /**
          * Method for updating the GUI
          */
-        public void updateWindow(){
+        public void updateInstructions(){
             int i = 1;
             instructionListModel.clear();
             ingredientsModel.clear();
@@ -369,7 +380,15 @@ public class RecipePanel extends JPanel {
                 instructionListModel.addElement(formatted);
                 i++;
             }
-            
+
+        }
+
+        public void updateIngredients(){
+            ingredientsListModel.clear();
+            ArrayList<String> ingredientStrings = controller.populateNewRecipeIngredients(this);
+            for (String s : ingredientStrings){
+                ingredientsListModel.addElement(s);
+            }
         }
     }
 }

@@ -12,8 +12,10 @@ public class MainView extends JFrame {
     private OrderPanel orderPanel;
     private SupplierPanel supplierPanel;
     private HomePanel homePanel;
+    private Controller controller;
 
     public MainView(Controller controller) {
+        this.controller = controller;
         setTitle("Allt på plats");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1000, 600));

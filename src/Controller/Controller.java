@@ -4,6 +4,7 @@ package Controller;
 
 import Model.*;
 import View.MainView;
+import View.RecipePanel;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -145,6 +146,10 @@ public class Controller {
         }
     }
 
+    public void removeRecipeIngredient(int i){
+        recipeIngredient.remove(i);
+    }
+
     public ArrayList<String> getIngredientNames(){
         return ingredientNames;
     }
@@ -166,9 +171,13 @@ public class Controller {
         databaseReference.child("Recipes").child(name).push().setValueAsync(recipeToAddToDatabase);
     }
 
-    public void populateNewRecipeIngredients(){
+    public ArrayList<String> populateNewRecipeIngredients(RecipePanel.NewRecipeWindow newRecipeWindow){
+        ArrayList<String> strings = new ArrayList<>();
         for (RecipeIngredient r : recipeIngredient){
-            //mainView.re
+            strings.add(r.toString());
         }
+        return strings;
     }
+
+
 }
