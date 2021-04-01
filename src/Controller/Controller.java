@@ -18,8 +18,11 @@ public class Controller {
     public static DatabaseReference databaseReference;
     static MainView mainView;
 
+    private ArrayList<Recipe> allRecipes = new ArrayList<>();
     private ArrayList<Ingredient> allIngredients = new ArrayList<>();
     private ArrayList<RecipeIngredient> recipeIngredient = new ArrayList<>();
+    private ArrayList<String> ingredientNames = new ArrayList<>();
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
         connectToFirebase();
@@ -90,18 +93,31 @@ public class Controller {
     }
 
     public void getIngredientsFromDatabase(){
+        ingredientNames.clear();
+        allIngredients.clear();
         ArrayList<String> ingredientValueList = new ArrayList<>();
+
 
         databaseReference.child("Ingredient").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, HashMap<String, Object>> ingredientMap = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
-
                 for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
                     Map.Entry mapElement = stringHashMapEntry;
+
+
+                    // Testkod
+                    String s = dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).getName();
+                    ingredientNames.add(s);
+                    Ingredient ingredient = dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class);
+                    allIngredients.add(ingredient);
+
+
+
                     ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString()
                             + "<!--" + mapElement.getKey() + "-->" +"</html>");
                 }
+
                 mainView.getStoragePanel().updateList(ingredientValueList);
             }
 
@@ -112,11 +128,37 @@ public class Controller {
         });
     }
 
-    public void createRecipeIngredient(Ingredient ingredient, double amount){
-                recipeIngredient.add(new RecipeIngredient(ingredient, amount));
+    public void resetRecipeIngredients(){
+        recipeIngredient.clear();
     }
 
-    public void createRecipe(String name, ArrayList<RecipeIngredient> ingredients, ArrayList<String> instructions){
-        Recipe recipe = new Recipe(name, ingredients, instructions);
+    public void createRecipeIngredient(String ingredient, double amount){
+        for (Ingredient i :allIngredients){
+            if (i.getName().equals(ingredient)){
+                recipeIngredient.add(new RecipeIngredient(i, amount));
+                break;
+            }
+        }
+    }
+
+    public ArrayList<String> getIngredientNames(){
+        return ingredientNames;
+    }
+
+    public String getIngredientPrefix(String name){
+        String prefix = new String("");
+        for (Ingredient i : allIngredients){
+            if (i.getName().equals(name)){
+                prefix = i.getUnit().getPrefix();
+                break;
+            }
+        }
+
+        return prefix;
+    }
+
+    public void addRecipeToDatabase(String name, ArrayList<String> instructions){
+        Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
+        databaseReference.child("Recipes").child(name).push().setValueAsync(recipeToAddToDatabase);
     }
 }

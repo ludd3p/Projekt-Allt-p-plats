@@ -115,6 +115,8 @@ public class RecipePanel extends JPanel {
         centerPanel.add(recipeInstructions, BorderLayout.CENTER);
 
         add(centerPanel, BorderLayout.CENTER);
+
+
     }
 
 
@@ -178,7 +180,7 @@ public class RecipePanel extends JPanel {
      */
     private class newRecipeWindow extends JFrame{
         private ArrayList<String> instructionsArray;
-        private ArrayList<RecipeIngredient> ingredientsArray;
+        private ArrayList<String> ingredientsArray;
 
         //West
         private JPanel westPanel;
@@ -204,6 +206,7 @@ public class RecipePanel extends JPanel {
         private JButton saveRecipe;
         private DefaultListModel<String> instructionListModel;
         private JList<String> instructionList;
+        private ArrayList<String> ingredients;
 
         /**
          * Constructor used when creating new recipe
@@ -235,6 +238,8 @@ public class RecipePanel extends JPanel {
          * Sets up the frame
          */
         public void setupNewRecipeFrame(){
+            ingredients = controller.getIngredientNames();
+            controller.resetRecipeIngredients();
             //West panel
             westPanel = new JPanel();
             westPanel.setLayout(new BorderLayout());
@@ -243,8 +248,8 @@ public class RecipePanel extends JPanel {
             westNorth = new JPanel();
             westNorth.setBorder(new TitledBorder(""));
 
-            String[] ingredients = {"Ägg", "Vatten", "Salt"};
-            ingredientsMenu = new JComboBox(ingredients);
+            ingredientsMenu = new JComboBox(ingredients.toArray());
+            ingredientsMenu.addActionListener(this::actionPerformed);
             westNorth.add(ingredientsMenu);
 
             amountModel = new SpinnerNumberModel(0, 0, 10000, 0.1);
@@ -314,6 +319,8 @@ public class RecipePanel extends JPanel {
             add(eastPanel, BorderLayout.CENTER);
             pack();
             setVisible(true);
+
+            unit.setText(controller.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
         }
 
         /**
@@ -333,15 +340,19 @@ public class RecipePanel extends JPanel {
             }
             if (e.getSource() == addIngredient){
                 if ((double)amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
-                    controller.createRecipeIngredient((Ingredient) ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
+                    controller.createRecipeIngredient((String)ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
                 }
             }
             if (e.getSource() == saveRecipe){
                 if (ingredientsArray.size() >= 1){ // Kan lägga till en JOptionpane för att bekräfta
-                    controller.createRecipe(recipeName.getText(), ingredientsArray, instructionsArray);
+                    controller.addRecipeToDatabase(recipeName.getText(), instructionsArray);
                 } else  {
                     JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+            if (e.getSource() == ingredientsMenu){
+
+                unit.setText(controller.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
             }
         }
 
@@ -349,9 +360,12 @@ public class RecipePanel extends JPanel {
          * Method for updating the GUI
          */
         public void updateWindow(){
+            int i = 1;
             instructionListModel.clear();
             for (String s : instructionsArray){
-                instructionListModel.addElement(s);
+                String formatted = (i) + ". " + s;
+                instructionListModel.addElement(formatted);
+                i++;
             }
         }
     }
