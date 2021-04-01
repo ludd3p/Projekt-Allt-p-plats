@@ -172,10 +172,7 @@ public class RecipePanel extends JPanel {
             System.out.println(spinner.getValue());
         }
     }
-
-    public NewRecipeWindow getNewRecipeWindow(){
-        return newRecipeWindow;
-    }
+    
 
     /**
      * ´NewRecipeWindow is a new frame used to create new, or edit existing recipes
@@ -277,6 +274,7 @@ public class RecipePanel extends JPanel {
             westSouth.add(addIngredient);
 
             removeIngredient = new JButton("Ta bort");
+            removeIngredient.addActionListener(this::actionPerformed);
             westSouth.add(removeIngredient);
 
             westPanel.add(westSouth, BorderLayout.SOUTH);
@@ -347,7 +345,9 @@ public class RecipePanel extends JPanel {
                 }
             }
             if (e.getSource() == removeIngredient){
+                System.out.println(ingredientsList.isSelectionEmpty());
                 if (!ingredientsList.isSelectionEmpty()){
+
                     controller.removeRecipeIngredient(ingredientsList.getSelectedIndex());
                     updateIngredients();
                 } else {
@@ -356,7 +356,7 @@ public class RecipePanel extends JPanel {
 
             }
             if (e.getSource() == saveRecipe){
-                if (ingredientsArray.size() >= 1){ // Kan lägga till en JOptionpane för att bekräfta
+                if (!ingredientsListModel.isEmpty()){ // Kan lägga till en JOptionpane för att bekräfta
                     controller.addRecipeToDatabase(recipeName.getText(), instructionsArray);
                 } else  {
                     JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);

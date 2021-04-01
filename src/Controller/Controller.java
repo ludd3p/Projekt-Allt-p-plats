@@ -147,6 +147,7 @@ public class Controller {
     }
 
     public void removeRecipeIngredient(int i){
+        System.out.println(recipeIngredient.get(i).toString());
         recipeIngredient.remove(i);
     }
 
@@ -168,7 +169,7 @@ public class Controller {
 
     public void addRecipeToDatabase(String name, ArrayList<String> instructions){
         Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
-        databaseReference.child("Recipes").child(name).push().setValueAsync(recipeToAddToDatabase);
+        databaseReference.child("Recipes").push().setValueAsync(recipeToAddToDatabase);
     }
 
     public ArrayList<String> populateNewRecipeIngredients(RecipePanel.NewRecipeWindow newRecipeWindow){
