@@ -3,6 +3,7 @@ package View;
 import Controller.Controller;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -95,11 +96,14 @@ public class StoragePanel extends JPanel {
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus){
             setText(value.toString());
 
+
             if(index % 2 == 0){
                 setBackground(Color.WHITE);
+                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
             }
             else{
-                setBackground(Color.LIGHT_GRAY);
+                setBackground(new Color(220, 220, 220));
+                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
             }
 
             if(isSelected){
@@ -108,7 +112,7 @@ public class StoragePanel extends JPanel {
                 setBorder(new LineBorder(Color.BLUE));
             }
             else{
-                setBorder(null);
+                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
             }
 
             return this;
@@ -123,7 +127,7 @@ public class StoragePanel extends JPanel {
     private void filterModel(DefaultListModel<String> model, String filter){
         model.clear();
         for(String s : values){
-            if(s.substring(s.indexOf("Product: ") + "Product: ".length(), s.indexOf("<br>Min") - 1).toLowerCase().startsWith(filter.toLowerCase())){
+            if(s.substring(s.indexOf("Product: ") + "Product: ".length(), s.indexOf("<br>Current amount:") - 1).toLowerCase().startsWith(filter.toLowerCase())){
                 model.addElement(s);
             }
         }
@@ -144,8 +148,9 @@ public class StoragePanel extends JPanel {
                         String selected = (String) productList.getSelectedValue();
                         JFrame productWindow = new ProductWindow(
                                 selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("<br>Cost") - 1),
-                                selected.substring(selected.indexOf("Cost: ") + "Cost: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Min") - 2)),
-                                selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Max") - 2)),
+                                selected.substring(selected.indexOf("Cost: ") + "Cost: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Current") - 2)),
+                                selected.substring(selected.indexOf("<br>Current amount: ") + "<br>Current amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Min amount:") - 2)),
+                                selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Max amount:") - 2)),
                                 selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)));
                     }
                     else{
@@ -244,6 +249,9 @@ public class StoragePanel extends JPanel {
         private JLabel lblCost;
         private JTextField txfCost;
 
+        private JLabel lblCurrentAmount;
+        private JTextField txfCurrentAmount;
+
         private JLabel lblMinAmount;
         private JTextField txfMinAmount;
 
@@ -274,12 +282,13 @@ public class StoragePanel extends JPanel {
          * @param minAmount
          * @param maxAmount
          */
-        public ProductWindow(String productName, String cost ,String minAmount, String maxAmount){
+        public ProductWindow(String productName, String cost, String currentAmount,String minAmount, String maxAmount){
             addOrChange = false;
             setupProductWindow();
 
             txfProductName.setText(productName);
             txfCost.setText(cost);
+            txfCurrentAmount.setText(currentAmount);
             txfMinAmount.setText(minAmount);
             txfMaxAmount.setText(maxAmount);
         }
@@ -307,31 +316,36 @@ public class StoragePanel extends JPanel {
          */
         private void setupProductWindowCenterPanel(){
             pnlProductWindowCenter = new JPanel();
-            pnlProductWindowCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowCenter.setLayout(new GridLayout(5,2,1 ,1));
+            pnlProductWindowCenter.setBorder(BorderFactory.createEtchedBorder(0));
+            pnlProductWindowCenter.setLayout(new GridLayout(6,2,10 ,1));
 
-            lblProductName = new JLabel("Product: ");
+            lblProductName = new JLabel(" Product: ");
             pnlProductWindowCenter.add(lblProductName);
             txfProductName = new JTextField();
             txfProductName.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(txfProductName);
 
-            lblCost = new JLabel("Cost: ");
+            lblCost = new JLabel(" Cost: ");
             pnlProductWindowCenter.add(lblCost);
             txfCost = new JTextField();
             pnlProductWindowCenter.add(txfCost);
 
-            lblMinAmount = new JLabel("Min:");
+            lblCurrentAmount = new JLabel(" Current amount:");
+            pnlProductWindowCenter.add(lblCurrentAmount);
+            txfCurrentAmount = new JTextField();
+            pnlProductWindowCenter.add(txfCurrentAmount);
+
+            lblMinAmount = new JLabel(" Minimum amount:");
             pnlProductWindowCenter.add(lblMinAmount);
             txfMinAmount = new JTextField();
             pnlProductWindowCenter.add(txfMinAmount);
 
-            lblMaxAmount = new JLabel("Max:");
+            lblMaxAmount = new JLabel(" Recommended amount:");
             pnlProductWindowCenter.add(lblMaxAmount);
             txfMaxAmount = new JTextField();
             pnlProductWindowCenter.add(txfMaxAmount);
 
-            lblUnit = new JLabel("Unit:");
+            lblUnit = new JLabel(" Unit:");
             pnlProductWindowCenter.add(lblUnit);
             cbxUnit = new JComboBox(controller.getUnitsPrefixArray());
             pnlProductWindowCenter.add(cbxUnit);
@@ -364,6 +378,7 @@ public class StoragePanel extends JPanel {
                                     controller.addIngredientToDatabase(
                                             txfProductName.getText(),
                                             Double.parseDouble(txfCost.getText()),
+                                            Double.parseDouble(txfCurrentAmount.getText()),
                                             Double.parseDouble(txfMinAmount.getText()),
                                             Double.parseDouble(txfMaxAmount.getText()),
                                             (String) cbxUnit.getSelectedItem());
@@ -378,6 +393,7 @@ public class StoragePanel extends JPanel {
                                         key,
                                         txfProductName.getText(),
                                         Double.parseDouble(txfCost.getText()),
+                                        Double.parseDouble(txfCurrentAmount.getText()),
                                         Double.parseDouble(txfMinAmount.getText()),
                                         Double.parseDouble(txfMaxAmount.getText()),
                                         (String) cbxUnit.getSelectedItem());
