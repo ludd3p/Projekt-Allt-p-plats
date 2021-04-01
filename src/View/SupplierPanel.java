@@ -30,8 +30,8 @@ public class SupplierPanel extends JPanel {
     /**
      * Constructor to create supplier panel GUI
      */
-    public SupplierPanel() {
-        controller = new Controller();
+    public SupplierPanel(Controller controller) {
+        this.controller = controller;
 
         setLayout(new BorderLayout());
         setupPanels();

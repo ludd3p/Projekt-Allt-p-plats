@@ -340,6 +340,7 @@ public class RecipePanel extends JPanel {
             }
             if (e.getSource() == addIngredient){
                 if ((double)amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
+
                     controller.createRecipeIngredient((String)ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
                 }
             }
@@ -362,11 +363,13 @@ public class RecipePanel extends JPanel {
         public void updateWindow(){
             int i = 1;
             instructionListModel.clear();
+            ingredientsModel.clear();
             for (String s : instructionsArray){
                 String formatted = (i) + ". " + s;
                 instructionListModel.addElement(formatted);
                 i++;
             }
+            
         }
     }
 }

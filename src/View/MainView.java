@@ -21,7 +21,7 @@ public class MainView extends JFrame {
         recipePanel = new RecipePanel(controller);
         storagePanel = new StoragePanel(controller);
         orderPanel = new OrderPanel();
-        supplierPanel = new SupplierPanel();
+        supplierPanel = new SupplierPanel(controller);
         homePanel = new HomePanel();
 
 

@@ -16,7 +16,7 @@ import java.util.*;
 public class Controller {
     private static FirebaseDatabase database;
     public static DatabaseReference databaseReference;
-    static MainView mainView;
+    private static MainView mainView;
 
     private ArrayList<Recipe> allRecipes = new ArrayList<>();
     private ArrayList<Ingredient> allIngredients = new ArrayList<>();
@@ -25,12 +25,16 @@ public class Controller {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        Controller controller = new Controller();
+    }
+
+    public Controller() throws IOException {
         connectToFirebase();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
-        Controller controller = new Controller();
+
         getNotesFromDatabase();
-        mainView = new MainView(controller);
+        mainView = new MainView(this);
     }
 
     public static void connectToFirebase() throws IOException {
@@ -146,7 +150,7 @@ public class Controller {
     }
 
     public String getIngredientPrefix(String name){
-        String prefix = new String("");
+        String prefix = "";
         for (Ingredient i : allIngredients){
             if (i.getName().equals(name)){
                 prefix = i.getUnit().getPrefix();
@@ -160,5 +164,11 @@ public class Controller {
     public void addRecipeToDatabase(String name, ArrayList<String> instructions){
         Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
         databaseReference.child("Recipes").child(name).push().setValueAsync(recipeToAddToDatabase);
+    }
+
+    public void populateNewRecipeIngredients(){
+        for (RecipeIngredient r : recipeIngredient){
+            //mainView.re
+        }
     }
 }
