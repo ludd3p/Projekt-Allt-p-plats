@@ -5,15 +5,17 @@ package Model;
 public class Ingredient {
     private String name;
     private double cost;
+    private double currentAmount;
     private double criticalAmount;
     private double recommendedAmount;
     private Unit unit;
 
     public Ingredient(){}
 
-    public Ingredient(String name, double cost, double criticalAmount, double recommendedAmount, Unit unit){
+    public Ingredient(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, Unit unit){
         this.name = name;
         this.cost = cost;
+        this.currentAmount = currentAmount;
         this.criticalAmount = criticalAmount;
         this.recommendedAmount = recommendedAmount;
         this.unit = unit;
@@ -38,6 +40,14 @@ public class Ingredient {
 
     public void setCost(double cost) {
         this.cost = cost;
+    }
+
+    public double getCurrentAmount() {
+        return currentAmount;
+    }
+
+    public void setCurrentAmount(double currentAmount) {
+        this.currentAmount = currentAmount;
     }
 
     public double getCriticalAmount() {
@@ -66,11 +76,12 @@ public class Ingredient {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s %s %s",
+        return String.format("%s %s %s %s %s %s",
                 "<html>",
                 "Product: " + name,
                 "<br>Cost: " + cost + " " + "sek/" + unit.getPrefix(),
-                "<br>Min amount: " + criticalAmount + " " + unit.getPrefix(),
+                "<br>Current amount: " + currentAmount + " " + unit.getPrefix(),
+                "Min amount: " + criticalAmount + " " + unit.getPrefix(),
                 "Max amount: " + recommendedAmount + " " + unit.getPrefix()
               );
 

@@ -75,13 +75,13 @@ public class Controller {
         return null;
     }
 
-    public void addIngredientToDatabase(String name, double cost, double criticalAmount, double recommendedAmount, String unitPrefix){
-        Ingredient ingredientToAddToDatabase = new Ingredient(name, cost, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
+    public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix){
+        Ingredient ingredientToAddToDatabase = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
         databaseReference.child("Ingredient").push().setValueAsync(ingredientToAddToDatabase);
     }
 
-    public void changeProductInDatabase(String key, String newName, double cost, double criticalAmount, double recommendedAmount, String unitPrefix){
-        Ingredient changedIngredient = new Ingredient(newName, cost, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
+    public void changeProductInDatabase(String key, String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix){
+        Ingredient changedIngredient = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
         databaseReference.child("Ingredient").child(key).setValueAsync(changedIngredient);
     }
 
@@ -98,7 +98,7 @@ public class Controller {
                 HashMap<String, HashMap<String, Object>> ingredientMap = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
 
                 for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
-                    Map.Entry mapElement = (Map.Entry) stringHashMapEntry;
+                    Map.Entry mapElement = stringHashMapEntry;
                     ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString()
                             + "<!--" + mapElement.getKey() + "-->" +"</html>");
                 }
