@@ -28,4 +28,8 @@ public class RecipeIngredient {
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
+    public String toString(){
+        return ingredient.getName() + " " + amount + ingredient.getUnit();
+    }
 }

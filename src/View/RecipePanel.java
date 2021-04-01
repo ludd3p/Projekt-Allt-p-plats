@@ -174,11 +174,11 @@ public class RecipePanel extends JPanel {
     }
 
     /**
-     * ´NewRecipeWindow is a new frame used to create new or edit existing recipes
+     * ´NewRecipeWindow is a new frame used to create new, or edit existing recipes
      */
     private class newRecipeWindow extends JFrame{
-        private ArrayList<String> instructionsArray = new ArrayList<>();
-        private ArrayList<RecipeIngredient> ingredientsArray = new ArrayList<>();
+        private ArrayList<String> instructionsArray;
+        private ArrayList<RecipeIngredient> ingredientsArray;
 
         //West
         private JPanel westPanel;
@@ -210,6 +210,8 @@ public class RecipePanel extends JPanel {
          */
         public newRecipeWindow(){
             //Frame settings
+            instructionsArray = new ArrayList<>();
+            ingredientsArray = new ArrayList<>();
             setTitle("Nytt recept");
             setPreferredSize(new Dimension(1000, 600));
             setupNewRecipeFrame();
@@ -217,11 +219,13 @@ public class RecipePanel extends JPanel {
         }
 
         /**
-         * Construcotr used when editing a recipe, receives a recicpe
+         * Constructor used when editing a recipe, receives a recicpe
          * @param recipe Received recipe
          */
         public newRecipeWindow(Recipe recipe){
             //Frame settings
+            instructionsArray = new ArrayList<>();
+            ingredientsArray = new ArrayList<>();
             setTitle("Ändra recept");
             setPreferredSize(new Dimension(1000, 600));
             setupNewRecipeFrame();
@@ -262,6 +266,7 @@ public class RecipePanel extends JPanel {
             westSouth = new JPanel();
 
             addIngredient = new JButton("Lägg till");
+            addIngredient.addActionListener(this::actionPerformed);
             westSouth.add(addIngredient);
 
             removeIngredient = new JButton("Ta bort");
@@ -301,6 +306,7 @@ public class RecipePanel extends JPanel {
             recipeName.setPreferredSize(new Dimension(200,25));
             eastSouth.add(recipeName);
             saveRecipe = new JButton("Spara recept");
+            saveRecipe.addActionListener(this::actionPerformed);
             eastSouth.add(saveRecipe);
             eastPanel.add(eastSouth, BorderLayout.SOUTH);
 
@@ -326,10 +332,16 @@ public class RecipePanel extends JPanel {
                 }
             }
             if (e.getSource() == addIngredient){
-                controller.createRecipeIngredient((Ingredient)ingredientsMenu.getSelectedItem(), (double)amountModel.getValue());
+                if ((double)amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
+                    controller.createRecipeIngredient((Ingredient) ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
+                }
             }
             if (e.getSource() == saveRecipe){
-               // controller.createRecipe();
+                if (ingredientsArray.size() >= 1){ // Kan lägga till en JOptionpane för att bekräfta
+                    controller.createRecipe(recipeName.getText(), ingredientsArray, instructionsArray);
+                } else  {
+                    JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
 
