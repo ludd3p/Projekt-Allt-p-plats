@@ -366,15 +366,26 @@ public class StoragePanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     if(e.getSource() == btnOk) {
                         try {
-                            if(addOrChange) {
-                                boolean proceed = true;
-                                for(String value : values){
-                                    if(value.substring(value.indexOf("Product: ") + "Product: ".length(), value.indexOf("<br>Cost") - 1).toLowerCase().equals(txfProductName.getText().toLowerCase())){
+                            boolean proceed = true;
+                            if (txfProductName.getText().toLowerCase().contains("Product:".toLowerCase()) ||
+                                txfProductName.getText().toLowerCase().contains("Cost:".toLowerCase()) ||
+                                txfProductName.getText().toLowerCase().contains("Current amount:".toLowerCase()) ||
+                                txfProductName.getText().toLowerCase().contains("Min amount:".toLowerCase()) ||
+                                txfProductName.getText().toLowerCase().contains("Max amount:".toLowerCase()) ||
+                                txfProductName.getText().toLowerCase().contains("</html>")){
+                                    JOptionPane.showMessageDialog(null, "Error: Invalid input.", "Invalid input", JOptionPane.PLAIN_MESSAGE);
+                                    proceed = false;
+                            }
+                            if(proceed) {
+                                for (String value : values) {
+                                    if (value.substring(value.indexOf("Product: ") + "Product: ".length(), value.indexOf("<br>Cost") - 1).toLowerCase().equals(txfProductName.getText().toLowerCase())) {
                                         JOptionPane.showMessageDialog(null, "That product already exists.", "Product already exists", JOptionPane.PLAIN_MESSAGE);
                                         proceed = false;
                                     }
                                 }
-                                if(proceed) {
+                            }
+                            if(proceed) {
+                                if (addOrChange) {
                                     controller.addIngredientToDatabase(
                                             txfProductName.getText(),
                                             Double.parseDouble(txfCost.getText()),
@@ -382,21 +393,18 @@ public class StoragePanel extends JPanel {
                                             Double.parseDouble(txfMinAmount.getText()),
                                             Double.parseDouble(txfMaxAmount.getText()),
                                             (String) cbxUnit.getSelectedItem());
-                                    controller.getIngredientsFromDatabase();
-                                    dispose();
+                                } else {
+                                    String selected = (String) productList.getSelectedValue();
+                                    String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
+                                    controller.changeProductInDatabase(
+                                            key,
+                                            txfProductName.getText(),
+                                            Double.parseDouble(txfCost.getText()),
+                                            Double.parseDouble(txfCurrentAmount.getText()),
+                                            Double.parseDouble(txfMinAmount.getText()),
+                                            Double.parseDouble(txfMaxAmount.getText()),
+                                            (String) cbxUnit.getSelectedItem());
                                 }
-                            }
-                            else {
-                                String selected = (String)productList.getSelectedValue();
-                                String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
-                                controller.changeProductInDatabase(
-                                        key,
-                                        txfProductName.getText(),
-                                        Double.parseDouble(txfCost.getText()),
-                                        Double.parseDouble(txfCurrentAmount.getText()),
-                                        Double.parseDouble(txfMinAmount.getText()),
-                                        Double.parseDouble(txfMaxAmount.getText()),
-                                        (String) cbxUnit.getSelectedItem());
                                 controller.getIngredientsFromDatabase();
                                 dispose();
                             }
