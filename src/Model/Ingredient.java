@@ -74,18 +74,15 @@ public class Ingredient {
         this.unit = unit;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s %s %s %s",
+    public String toString(String key) {
+        return String.format("%s %s %s %s %s %s %s",
                 "<html>",
                 "Product: " + name,
                 "<br>Cost: " + cost + " " + "sek/" + unit.getPrefix(),
                 "<br>Current amount: " + currentAmount + " " + unit.getPrefix(),
                 "Min amount: " + criticalAmount + " " + unit.getPrefix(),
-                "Max amount: " + recommendedAmount + " " + unit.getPrefix()
-              );
-
-        //return name + ":" + unit.getPrefix();
+                "Max amount: " + recommendedAmount + " " + unit.getPrefix(),
+                "<!--" + key + "--></html>");
     }
 
 }
