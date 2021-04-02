@@ -146,12 +146,13 @@ public class StoragePanel extends JPanel {
                 else if(e.getSource() == btnChangeProduct){
                     if(productList.getSelectedValue() != null) {
                         String selected = (String) productList.getSelectedValue();
+                        System.out.println(selected);
                         JFrame productWindow = new ProductWindow(
                                 selected.substring(selected.indexOf("Product: ") + "Product: ".length(), selected.indexOf("<br>Cost") - 1),
                                 selected.substring(selected.indexOf("Cost: ") + "Cost: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Current") - 2)),
                                 selected.substring(selected.indexOf("<br>Current amount: ") + "<br>Current amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Min amount:") - 2)),
                                 selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Max amount:") - 2)),
-                                selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)));
+                                selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("<!---") - 2)));
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Select a product to change.");
@@ -372,7 +373,7 @@ public class StoragePanel extends JPanel {
                                 txfProductName.getText().toLowerCase().contains("Current amount:".toLowerCase()) ||
                                 txfProductName.getText().toLowerCase().contains("Min amount:".toLowerCase()) ||
                                 txfProductName.getText().toLowerCase().contains("Max amount:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("</html>")){
+                                txfProductName.getText().toLowerCase().contains("<!---")){
                                     JOptionPane.showMessageDialog(null, "Error: Invalid input.", "Invalid input", JOptionPane.PLAIN_MESSAGE);
                                     proceed = false;
                             }
