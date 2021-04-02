@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * @Version 1.0
  */
 
-public class RecipePanel extends JPanel{
+public class RecipePanel extends JPanel implements PropertyChangeListener{
     private Controller controller;
     private NewRecipeWindow newRecipeWindow;
 
@@ -47,6 +47,7 @@ public class RecipePanel extends JPanel{
      */
     public RecipePanel(Controller controller){
         this.controller = controller;
+        controller.addPropertyChangeListener(this);
         setLayout(new BorderLayout());
         setupPanels();
     }
@@ -175,7 +176,12 @@ public class RecipePanel extends JPanel{
         }
     }
 
-
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("updRecipes")) {
+            // Bla bla behöver kod
+        }
+    }
 
 
     /**

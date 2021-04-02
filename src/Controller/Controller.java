@@ -10,8 +10,11 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Controller {
@@ -23,6 +26,7 @@ public class Controller {
     private ArrayList<Ingredient> allIngredients = new ArrayList<>();
     private ArrayList<RecipeIngredient> recipeIngredient = new ArrayList<>();
     private ArrayList<String> ingredientNames = new ArrayList<>();
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -37,6 +41,10 @@ public class Controller {
         getNotesFromDatabase();
         mainView = new MainView(this);
         getRecipesFromDatabase();
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener){
+        pcs.addPropertyChangeListener(listener);
     }
 
 
@@ -145,7 +153,8 @@ public class Controller {
                     Recipe rec = recept.getValue(Recipe.class);
                     allRecipes.add(rec);
                 }
-
+                ArrayList<String> recNames = getRecipeNames();
+                pcs.firePropertyChange("updRecipes", null, recNames);
             }
 
             @Override
@@ -153,6 +162,14 @@ public class Controller {
                 System.out.println("Fel i hämtning av recept");
             }
         });
+    }
+
+    public ArrayList<String> getRecipeNames(){
+        ArrayList<String> recipeNames = new ArrayList<>();
+        for (Recipe r : allRecipes){
+            recipeNames.add(r.getName());
+        }
+        return recipeNames;
     }
 
 
