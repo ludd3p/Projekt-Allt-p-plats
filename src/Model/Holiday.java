@@ -3,17 +3,16 @@ package Model;
  * @author Qassem Aburas
  * @version 1.0
  */
-import java.util.Date;
 
 public class Holiday {
     private String name;
-    private Date date;
     private String description;
+    private int id;
 
-    public Holiday(String name, Date date, String description) {
+    public Holiday(String name, String description, int id) {
         this.name = name;
-        this.date = date;
         this.description = description;
+        this.id = id;
     }
 
     public String getName() {
@@ -24,20 +23,20 @@ public class Holiday {
         this.name = name;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

@@ -39,6 +39,7 @@ public class Controller {
         databaseReference = database.getReference();
 
         getNotesFromDatabase();
+        getHolidaysFromDatabase();
         mainView = new MainView(this);
         getRecipesFromDatabase();
     }
@@ -74,14 +75,39 @@ public class Controller {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Object> allNotesList = (List<Object>) dataSnapshot.getValue();
                 for (Object objectMap : allNotesList) {
-                    if (objectMap == null)
-                        continue;
-                    HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
-                    String title = map.get("title").toString();
-                    String desc = map.get("description").toString();
-                    int id = Integer.parseInt(map.get("id").toString());
-                    Note note = new Note(title, desc, id);
-                    mainView.getHomePanel().addNote(note);
+                    if (objectMap != null) {
+                        HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
+                        String title = map.get("title").toString();
+                        String desc = map.get("description").toString();
+                        int id = Integer.parseInt(map.get("id").toString());
+                        Note note = new Note(title, desc, id);
+                        mainView.getHomePanel().addNote(note);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println(databaseError.toString());
+            }
+        });
+        return null;
+    }
+
+    public static Holiday[] getHolidaysFromDatabase() {
+        databaseReference.child("Holiday").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Object> allHolidaysList = (List<Object>) dataSnapshot.getValue();
+                for (Object objectMap : allHolidaysList) {
+                    if (objectMap != null) {
+                        HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
+                        String title = map.get("title").toString();
+                        String desc = map.get("description").toString();
+                        int id = Integer.parseInt(map.get("id").toString());
+                        Holiday holiday = new Holiday(title, desc, id);
+                        mainView.getHomePanel().addHoliday(holiday);
+                    }
                 }
             }
 
