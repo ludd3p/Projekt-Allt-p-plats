@@ -11,6 +11,8 @@ public class Recipe {
     private ArrayList<RecipeIngredient> ingredients;
     private ArrayList<String> instructions;
 
+    public Recipe(){}
+
     public Recipe(String name, ArrayList<RecipeIngredient> ingredients, ArrayList<String> instructions){
         this.name = name;
         this.ingredients = ingredients;
@@ -41,5 +43,7 @@ public class Recipe {
         this.instructions = instructions;
     }
 
-
+    public String toString(){
+        return name;
+    }
 }

@@ -36,6 +36,7 @@ public class Controller {
 
         getNotesFromDatabase();
         mainView = new MainView(this);
+        getRecipesFromDatabase();
     }
 
     public static void connectToFirebase() throws IOException {
@@ -133,6 +134,27 @@ public class Controller {
         });
     }
 
+    //<editor-fold desc="Functionality for recipes">
+    public void getRecipesFromDatabase(){
+        allRecipes.clear();
+        databaseReference.child("Recipes").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot recept : dataSnapshot.getChildren()) {
+                    Recipe rec = recept.getValue(Recipe.class);
+                    allRecipes.add(rec);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("Fel i hämtning av recept");
+            }
+        });
+    }
+
+
     public void resetRecipeIngredients(){
         recipeIngredient.clear();
     }
@@ -179,6 +201,7 @@ public class Controller {
         }
         return strings;
     }
+    //</editor-fold>
 
 
 }

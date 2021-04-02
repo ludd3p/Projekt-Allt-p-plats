@@ -172,7 +172,7 @@ public class RecipePanel extends JPanel {
             System.out.println(spinner.getValue());
         }
     }
-    
+
 
     /**
      * ´NewRecipeWindow is a new frame used to create new, or edit existing recipes

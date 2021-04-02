@@ -8,6 +8,8 @@ public class RecipeIngredient {
     private Ingredient ingredient;
     private double amount;
 
+    public RecipeIngredient(){}
+
     public RecipeIngredient(Ingredient ingredient, double amount) {
         this.ingredient = ingredient;
         this.amount = amount;
