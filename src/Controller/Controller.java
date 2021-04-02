@@ -39,6 +39,7 @@ public class Controller {
         getRecipesFromDatabase();
     }
 
+
     public static void connectToFirebase() throws IOException {
         FileInputStream serviceAccount = new FileInputStream("./ServiceAccount.json");
         FirebaseOptions options = new FirebaseOptions
@@ -136,15 +137,15 @@ public class Controller {
 
     //<editor-fold desc="Functionality for recipes">
     public void getRecipesFromDatabase(){
-        allRecipes.clear();
-        databaseReference.child("Recipes").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Recipes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                allRecipes.clear();
                 for (DataSnapshot recept : dataSnapshot.getChildren()) {
                     Recipe rec = recept.getValue(Recipe.class);
                     allRecipes.add(rec);
                 }
+
             }
 
             @Override

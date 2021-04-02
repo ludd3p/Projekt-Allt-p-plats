@@ -9,6 +9,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 /**
@@ -17,7 +19,7 @@ import java.util.ArrayList;
  * @Version 1.0
  */
 
-public class RecipePanel extends JPanel {
+public class RecipePanel extends JPanel{
     private Controller controller;
     private NewRecipeWindow newRecipeWindow;
 
@@ -172,6 +174,8 @@ public class RecipePanel extends JPanel {
             System.out.println(spinner.getValue());
         }
     }
+
+
 
 
     /**
