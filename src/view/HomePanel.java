@@ -1,4 +1,4 @@
-package View;
+package view;
 
 /**
  * @author Qassem Aburas
@@ -6,9 +6,10 @@ package View;
  * with help from Hazem
  */
 
-import Controller.Controller;
-import Model.Holiday;
-import Model.Note;
+
+import controller.Controller;
+import model.Holiday;
+import model.Note;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

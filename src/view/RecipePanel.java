@@ -1,7 +1,7 @@
-package View;
+package view;
 
-import Controller.Controller;
-import Model.Recipe;
+import controller.Controller;
+import model.Recipe;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -15,11 +15,12 @@ import java.util.ArrayList;
 
 /**
  * Panel for managing recipes
+ *
  * @Author Ludvig Wedin Pettersson
  * @Version 1.0
  */
 
-public class RecipePanel extends JPanel implements PropertyChangeListener{
+public class RecipePanel extends JPanel implements PropertyChangeListener {
     private Controller controller;
     private NewRecipeWindow newRecipeWindow;
 
@@ -45,9 +46,8 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
     /**
      * Constructor for the panel
      */
-    public RecipePanel(Controller controller){
+    public RecipePanel(Controller controller) {
         this.controller = controller;
-        controller.addPropertyChangeListener(this);
         setLayout(new BorderLayout());
         setupPanels();
     }
@@ -55,7 +55,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
     /**
      * Method that sets everything up inside the panel
      */
-    public void setupPanels(){
+    public void setupPanels() {
         northPanel = new JPanel();
         leftPanel = new JPanel();
         centerPanel = new JPanel();
@@ -123,39 +123,40 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
 
     /**
      * Listener for the buttons
+     *
      * @param e Source of method call
      */
-    public void actionPerformed(ActionEvent e){
-        if (e.getSource() == done){
-            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du tillaggat receptet? Lagersaldo kommer att dras av", "asd", JOptionPane.YES_NO_OPTION) == 0){
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == done) {
+            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du tillaggat receptet? Lagersaldo kommer att dras av", "asd", JOptionPane.YES_NO_OPTION) == 0) {
                 // Recept tillagat och saldo ska dras av
             } else {
                 JOptionPane.showMessageDialog(null, "Inga varor dras av", "Meddelande", JOptionPane.PLAIN_MESSAGE);
             }
         }
 
-        if (e.getSource() == recipes){
+        if (e.getSource() == recipes) {
             //Byt recept som visas
             System.out.println(menu[recipes.getSelectedIndex()]);
         }
 
-        if (e.getSource() == addRecipe){
+        if (e.getSource() == addRecipe) {
             if (newRecipeWindow != null) {
                 newRecipeWindow.dispose();
             }
             newRecipeWindow = new NewRecipeWindow();
         }
 
-        if (e.getSource() == removeRecipe){
-            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ta bort recept", JOptionPane.YES_NO_OPTION) == 0){
+        if (e.getSource() == removeRecipe) {
+            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ta bort recept", JOptionPane.YES_NO_OPTION) == 0) {
                 //Ta bort valt recept
             } else {
                 JOptionPane.showMessageDialog(null, "Receptet tas inte bort", "Meddelande", JOptionPane.PLAIN_MESSAGE);
             }
         }
 
-        if (e.getSource() == modifyRecipe){
-            if (JOptionPane.showConfirmDialog(null, "Vill du ändra i " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ändra recept", JOptionPane.YES_NO_OPTION) == 0){
+        if (e.getSource() == modifyRecipe) {
+            if (JOptionPane.showConfirmDialog(null, "Vill du ändra i " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ändra recept", JOptionPane.YES_NO_OPTION) == 0) {
                 if (newRecipeWindow != null) {
                     newRecipeWindow.dispose();
                 }
@@ -167,10 +168,11 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
 
     /**
      * Listens to changed states of registered components
+     *
      * @param e Source of call
      */
-    public void stateChanged(ChangeEvent e){
-        if (e.getSource() == spinner){
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() == spinner) {
             //Metod för att multiplicera recept
             System.out.println(spinner.getValue());
         }
@@ -187,7 +189,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
     /**
      * ´NewRecipeWindow is a new frame used to create new, or edit existing recipes
      */
-    public class NewRecipeWindow extends JFrame{
+    public class NewRecipeWindow extends JFrame {
         private ArrayList<String> instructionsArray;
         private ArrayList<String> ingredientsArray;
 
@@ -220,7 +222,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
         /**
          * Constructor used when creating new recipe
          */
-        public NewRecipeWindow(){
+        public NewRecipeWindow() {
             //Frame settings
             instructionsArray = new ArrayList<>();
             ingredientsArray = new ArrayList<>();
@@ -232,9 +234,10 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
 
         /**
          * Constructor used when editing a recipe, receives a recicpe
+         *
          * @param recipe Received recipe
          */
-        public NewRecipeWindow(Recipe recipe){
+        public NewRecipeWindow(Recipe recipe) {
             //Frame settings
             instructionsArray = new ArrayList<>();
             ingredientsArray = new ArrayList<>();
@@ -246,7 +249,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
         /**
          * Sets up the frame
          */
-        public void setupNewRecipeFrame(){
+        public void setupNewRecipeFrame() {
             ingredients = controller.getIngredientNames();
             controller.resetRecipeIngredients();
             //West panel
@@ -267,7 +270,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
 
             unit = new JLabel("G");
             westNorth.add(unit);
-
 
 
             ingredientsListModel = new DefaultListModel<>();
@@ -318,7 +320,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
 
             eastSouth = new JPanel();
             recipeName = new JTextField("Receptnamn...");
-            recipeName.setPreferredSize(new Dimension(200,25));
+            recipeName.setPreferredSize(new Dimension(200, 25));
             eastSouth.add(recipeName);
             saveRecipe = new JButton("Spara recept");
             saveRecipe.addActionListener(this::actionPerformed);
@@ -335,28 +337,29 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
 
         /**
          * Listener for buttons
+         *
          * @param e
          */
-        public void actionPerformed(ActionEvent e){
-            if (e.getSource() == addInstruction){
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addInstruction) {
                 instructionsArray.add(instructionInput.getText());
                 updateInstructions();
             }
-            if (e.getSource() == removeInstruction){
-                if (instructionList.getSelectedIndex() != -1){
+            if (e.getSource() == removeInstruction) {
+                if (instructionList.getSelectedIndex() != -1) {
                     instructionsArray.remove(instructionList.getSelectedIndex());
                     updateInstructions();
                 }
             }
-            if (e.getSource() == addIngredient){
-                if ((double)amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
-                    controller.createRecipeIngredient((String)ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
+            if (e.getSource() == addIngredient) {
+                if ((double) amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
+                    controller.createRecipeIngredient((String) ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
                     updateIngredients();
                 }
             }
-            if (e.getSource() == removeIngredient){
+            if (e.getSource() == removeIngredient) {
                 System.out.println(ingredientsList.isSelectionEmpty());
-                if (!ingredientsList.isSelectionEmpty()){
+                if (!ingredientsList.isSelectionEmpty()) {
 
                     controller.removeRecipeIngredient(ingredientsList.getSelectedIndex());
                     updateIngredients();
@@ -365,14 +368,14 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
                 }
 
             }
-            if (e.getSource() == saveRecipe){
-                if (!ingredientsListModel.isEmpty()){ // Kan lägga till en JOptionpane för att bekräfta
+            if (e.getSource() == saveRecipe) {
+                if (!ingredientsListModel.isEmpty()) { // Kan lägga till en JOptionpane för att bekräfta
                     controller.addRecipeToDatabase(recipeName.getText(), instructionsArray);
-                } else  {
+                } else {
                     JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            if (e.getSource() == ingredientsMenu){
+            if (e.getSource() == ingredientsMenu) {
 
                 unit.setText(controller.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
             }
@@ -381,11 +384,11 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
         /**
          * Method for updating the GUI
          */
-        public void updateInstructions(){
+        public void updateInstructions() {
             int i = 1;
             instructionListModel.clear();
             ingredientsModel.clear();
-            for (String s : instructionsArray){
+            for (String s : instructionsArray) {
                 String formatted = (i) + ". " + s;
                 instructionListModel.addElement(formatted);
                 i++;
@@ -393,12 +396,148 @@ public class RecipePanel extends JPanel implements PropertyChangeListener{
 
         }
 
-        public void updateIngredients(){
+        public void updateIngredients() {
             ingredientsListModel.clear();
             ArrayList<String> ingredientStrings = controller.populateNewRecipeIngredients(this);
-            for (String s : ingredientStrings){
+            for (String s : ingredientStrings) {
                 ingredientsListModel.addElement(s);
             }
         }
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public NewRecipeWindow getNewRecipeWindow() {
+        return newRecipeWindow;
+    }
+
+    public void setNewRecipeWindow(NewRecipeWindow newRecipeWindow) {
+        this.newRecipeWindow = newRecipeWindow;
+    }
+
+    public JPanel getNorthPanel() {
+        return northPanel;
+    }
+
+    public void setNorthPanel(JPanel northPanel) {
+        this.northPanel = northPanel;
+    }
+
+    public JPanel getLeftPanel() {
+        return leftPanel;
+    }
+
+    public void setLeftPanel(JPanel leftPanel) {
+        this.leftPanel = leftPanel;
+    }
+
+    public JPanel getCenterPanel() {
+        return centerPanel;
+    }
+
+    public void setCenterPanel(JPanel centerPanel) {
+        this.centerPanel = centerPanel;
+    }
+
+    public SpinnerModel getSpinnerModel() {
+        return spinnerModel;
+    }
+
+    public void setSpinnerModel(SpinnerModel spinnerModel) {
+        this.spinnerModel = spinnerModel;
+    }
+
+    public JSpinner getSpinner() {
+        return spinner;
+    }
+
+    public void setSpinner(JSpinner spinner) {
+        this.spinner = spinner;
+    }
+
+    public JComboBox<String> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(JComboBox<String> recipes) {
+        this.recipes = recipes;
+    }
+
+    public DefaultListModel<String> getIngredientsModel() {
+        return ingredientsModel;
+    }
+
+    public void setIngredientsModel(DefaultListModel<String> ingredientsModel) {
+        this.ingredientsModel = ingredientsModel;
+    }
+
+    public DefaultListModel<String> getInstructionsModel() {
+        return instructionsModel;
+    }
+
+    public void setInstructionsModel(DefaultListModel<String> instructionsModel) {
+        this.instructionsModel = instructionsModel;
+    }
+
+    public JList<String> getIngredientsList() {
+        return ingredientsList;
+    }
+
+    public void setIngredientsList(JList<String> ingredientsList) {
+        this.ingredientsList = ingredientsList;
+    }
+
+    public JList<String> getRecipeInstructions() {
+        return recipeInstructions;
+    }
+
+    public void setRecipeInstructions(JList<String> recipeInstructions) {
+        this.recipeInstructions = recipeInstructions;
+    }
+
+    public JButton getDone() {
+        return done;
+    }
+
+    public void setDone(JButton done) {
+        this.done = done;
+    }
+
+    public JButton getAddRecipe() {
+        return addRecipe;
+    }
+
+    public void setAddRecipe(JButton addRecipe) {
+        this.addRecipe = addRecipe;
+    }
+
+    public JButton getRemoveRecipe() {
+        return removeRecipe;
+    }
+
+    public void setRemoveRecipe(JButton removeRecipe) {
+        this.removeRecipe = removeRecipe;
+    }
+
+    public JButton getModifyRecipe() {
+        return modifyRecipe;
+    }
+
+    public void setModifyRecipe(JButton modifyRecipe) {
+        this.modifyRecipe = modifyRecipe;
+    }
+
+    public String[] getMenu() {
+        return menu;
+    }
+
+    public void setMenu(String[] menu) {
+        this.menu = menu;
     }
 }

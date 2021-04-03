@@ -1,10 +1,6 @@
-package Controller;
+package controller;
 
 
-
-import Model.*;
-import View.MainView;
-import View.RecipePanel;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -14,12 +10,12 @@ import model.*;
 import view.MainView;
 import view.RecipePanel;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Controller {
     private static FirebaseDatabase database;
@@ -34,16 +30,10 @@ public class Controller {
     private ArrayList<String> ingredientNames = new ArrayList<>();
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        Controller controller = new Controller();
-    }
-
     public Controller() throws IOException {
         connectToFirebase();
-
-        getNotesFromDatabase();
+        this.dailyEvent = new DailyEvent();
         mainView = new MainView(this);
-
         orderController = new OrderController(this);
 
         getNotesFromDatabase();
@@ -98,21 +88,21 @@ public class Controller {
         return null;
     }
 
-    public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix){
+    public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix) {
         Ingredient ingredientToAddToDatabase = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
         databaseReference.child("Ingredient").push().setValueAsync(ingredientToAddToDatabase);
     }
 
-    public void changeProductInDatabase(String key, String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix){
+    public void changeProductInDatabase(String key, String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix) {
         Ingredient changedIngredient = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
         databaseReference.child("Ingredient").child(key).setValueAsync(changedIngredient);
     }
 
-    public void removeIngredientFromDatabase(String key){
+    public void removeIngredientFromDatabase(String key) {
         databaseReference.child("Ingredient").child(key).removeValueAsync();
     }
 
-    public void getIngredientsFromDatabase(){
+    public void getIngredientsFromDatabase() {
         ingredientNames.clear();
         allIngredients.clear();
         ArrayList<String> ingredientValueList = new ArrayList<>();
@@ -133,8 +123,7 @@ public class Controller {
                     allIngredients.add(ingredient);
 
 
-
-                    ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String)mapElement.getKey()));
+                    ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String) mapElement.getKey()));
                 }
 
                 mainView.getStoragePanel().updateList(ingredientValueList);
@@ -148,7 +137,7 @@ public class Controller {
     }
 
     //<editor-fold desc="Functionality for recipes">
-    public void getRecipesFromDatabase(){
+    public void getRecipesFromDatabase() {
         databaseReference.child("Recipes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -168,32 +157,32 @@ public class Controller {
     }
 
 
-    public void resetRecipeIngredients(){
+    public void resetRecipeIngredients() {
         recipeIngredient.clear();
     }
 
-    public void createRecipeIngredient(String ingredient, double amount){
-        for (Ingredient i :allIngredients){
-            if (i.getName().equals(ingredient)){
+    public void createRecipeIngredient(String ingredient, double amount) {
+        for (Ingredient i : allIngredients) {
+            if (i.getName().equals(ingredient)) {
                 recipeIngredient.add(new RecipeIngredient(i, amount));
                 break;
             }
         }
     }
 
-    public void removeRecipeIngredient(int i){
+    public void removeRecipeIngredient(int i) {
         System.out.println(recipeIngredient.get(i).toString());
         recipeIngredient.remove(i);
     }
 
-    public ArrayList<String> getIngredientNames(){
+    public ArrayList<String> getIngredientNames() {
         return ingredientNames;
     }
 
-    public String getIngredientPrefix(String name){
+    public String getIngredientPrefix(String name) {
         String prefix = "";
-        for (Ingredient i : allIngredients){
-            if (i.getName().equals(name)){
+        for (Ingredient i : allIngredients) {
+            if (i.getName().equals(name)) {
                 prefix = i.getUnit().getPrefix();
                 break;
             }
@@ -202,19 +191,88 @@ public class Controller {
         return prefix;
     }
 
-    public void addRecipeToDatabase(String name, ArrayList<String> instructions){
+    public void addRecipeToDatabase(String name, ArrayList<String> instructions) {
         Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
         databaseReference.child("Recipes").push().setValueAsync(recipeToAddToDatabase);
     }
 
-    public ArrayList<String> populateNewRecipeIngredients(RecipePanel.NewRecipeWindow newRecipeWindow){
+    public ArrayList<String> populateNewRecipeIngredients(RecipePanel.NewRecipeWindow newRecipeWindow) {
         ArrayList<String> strings = new ArrayList<>();
-        for (RecipeIngredient r : recipeIngredient){
+        for (RecipeIngredient r : recipeIngredient) {
             strings.add(r.toString());
         }
         return strings;
     }
     //</editor-fold>
+
+
+    public static FirebaseDatabase getDatabase() {
+        return database;
+    }
+
+    public static void setDatabase(FirebaseDatabase database) {
+        Controller.database = database;
+    }
+
+    public static DatabaseReference getDatabaseReference() {
+        return databaseReference;
+    }
+
+    public static void setDatabaseReference(DatabaseReference databaseReference) {
+        Controller.databaseReference = databaseReference;
+    }
+
+    public static MainView getMainView() {
+        return mainView;
+    }
+
+    public static void setMainView(MainView mainView) {
+        Controller.mainView = mainView;
+    }
+
+    public OrderController getOrderController() {
+        return orderController;
+    }
+
+    public void setOrderController(OrderController orderController) {
+        this.orderController = orderController;
+    }
+
+    public DailyEvent getDailyEvent() {
+        return dailyEvent;
+    }
+
+    public void setDailyEvent(DailyEvent dailyEvent) {
+        this.dailyEvent = dailyEvent;
+    }
+
+    public ArrayList<Recipe> getAllRecipes() {
+        return allRecipes;
+    }
+
+    public void setAllRecipes(ArrayList<Recipe> allRecipes) {
+        this.allRecipes = allRecipes;
+    }
+
+    public ArrayList<Ingredient> getAllIngredients() {
+        return allIngredients;
+    }
+
+    public void setAllIngredients(ArrayList<Ingredient> allIngredients) {
+        this.allIngredients = allIngredients;
+    }
+
+    public ArrayList<RecipeIngredient> getRecipeIngredient() {
+        return recipeIngredient;
+    }
+
+    public void setRecipeIngredient(ArrayList<RecipeIngredient> recipeIngredient) {
+        this.recipeIngredient = recipeIngredient;
+    }
+
+    public void setIngredientNames(ArrayList<String> ingredientNames) {
+        this.ingredientNames = ingredientNames;
+    }
 
 
 }
