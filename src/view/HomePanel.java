@@ -1,4 +1,4 @@
-package view;
+package View;
 
 /**
  * @author Qassem Aburas
@@ -6,9 +6,9 @@ package view;
  * with help from Hazem
  */
 
-import controller.Controller;
-import model.Holiday;
-import model.Note;
+import Controller.Controller;
+import Model.Holiday;
+import Model.Note;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -33,6 +33,7 @@ public class HomePanel extends JPanel implements ActionListener {
     private JButton deleteNote;
     private JButton addNewHoliday;
     private JButton deleteHoliday;
+    private JButton showSavedHolidays;
 
 
     public HomePanel() {
@@ -90,7 +91,7 @@ public class HomePanel extends JPanel implements ActionListener {
         rightPanel.add(listPane, BorderLayout.EAST);
         add(rightPanel, BorderLayout.EAST);
 
-
+        // south panel
         JPanel southPanel = new JPanel();
 
         submit = new JButton("Skapa en ny anteckning");
@@ -118,6 +119,10 @@ public class HomePanel extends JPanel implements ActionListener {
         southPanel.add(deleteHoliday);
         add(southPanel, BorderLayout.SOUTH);
 
+        showSavedHolidays = new JButton("visa/ändra högtid");
+        showSavedHolidays.addActionListener(this);
+        southPanel.add(showSavedHolidays);
+        add(southPanel, BorderLayout.SOUTH);
 
     }
 
@@ -136,14 +141,22 @@ public class HomePanel extends JPanel implements ActionListener {
         }
         if (e.getSource() == deleteNote) {
             // TODO: 2021-04-01
+            noteList.remove(notesJList.getSelectedIndex());
         }
         if (e.getSource() == addNewHoliday) {
+            new NewHolidayJFrame();
 
         }
         if (e.getSource() == deleteHoliday) {
-
+            holidayList.remove(holidaysJList.getSelectedIndex());
         }
-
+        if (e.getSource() == showSavedHolidays) {
+            if (holidaysJList.getSelectedValue() == null) {
+                JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            new NewHolidayJFrame(holidaysJList.getSelectedValue());
+        }
     }
 
     public void addNote(Note note) {
@@ -154,18 +167,26 @@ public class HomePanel extends JPanel implements ActionListener {
         Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // Sätter in värder i databasen
     }
 
+    public void addHoliday(Holiday holiday) {
+        holidayList.add(holiday);
+        Holiday[] newVal = new Holiday[holidayList.size()];
+        holidayList.toArray(newVal);
+        holidaysJList.setListData(newVal);
+        Controller.databaseReference.child("Holiday").child(holidayList.size() + "").setValueAsync(holiday); // Sätter in värder i databasen
+    }
+
     class NewNoteJFrame {
         public NewNoteJFrame() {
             JFrame noteFrame = new JFrame();
             JPanel panel = new JPanel();
 
-            noteFrame.setTitle("New note");
+            noteFrame.setTitle("Ny anteckning");
 
             noteFrame.setSize(new Dimension(500, 500));
             panel.setLayout(new BorderLayout(10, 10));
 
             JPanel noteArea = new JPanel();
-            noteArea.setBorder(new TitledBorder("Your note"));
+            noteArea.setBorder(new TitledBorder("Dina anteckningar"));
             JTextArea note = new JTextArea();
             note.setPreferredSize(new Dimension(480, 300));
             note.setEditable(true);
@@ -260,4 +281,109 @@ public class HomePanel extends JPanel implements ActionListener {
 
     }
 
+    class NewHolidayJFrame {
+        public NewHolidayJFrame() {
+            JFrame HolidayFrame = new JFrame();
+            JPanel panel = new JPanel();
+
+            HolidayFrame.setTitle("Lägg ny högtid");
+
+            HolidayFrame.setSize(new Dimension(500, 500));
+            panel.setLayout(new BorderLayout(10, 10));
+
+            JPanel HolidayArea = new JPanel();
+            HolidayArea.setBorder(new TitledBorder("Högtider"));
+            JTextArea holiday = new JTextArea();
+            holiday.setPreferredSize(new Dimension(480, 300));
+            holiday.setEditable(true);
+            holiday.setFont(new Font("Arial", Font.BOLD, 15));
+
+            HolidayArea.add(holiday);
+
+            JPanel controllArea = new JPanel();
+            controllArea.setBorder(new TitledBorder("Control panel"));
+
+            JTextField title = new JTextField();
+            title.setPreferredSize(new Dimension(340, 80));
+            title.setFont(new Font("Arial", Font.BOLD, 20));
+            title.setBorder(new TitledBorder("namn och datum"));
+
+            JButton button = new JButton("Spara");
+            button.setPreferredSize(new Dimension(120, 80));
+            button.addActionListener(e -> {
+                if (holiday.getText() == null || holiday.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Du måste skriva en högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                if (title.getText() == null || title.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Du måste skriva ett namn och datum!!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), holidayList.size() + 1);
+                addHoliday(holiday1);
+                HolidayFrame.setVisible(false);
+            });
+            controllArea.add(title);
+            controllArea.add(button);
+            panel.add(HolidayArea, BorderLayout.NORTH);
+            panel.add(controllArea, BorderLayout.SOUTH);
+
+            HolidayFrame.setContentPane(panel);
+            HolidayFrame.setResizable(false);
+            HolidayFrame.setVisible(true);
+        }
+
+
+        public NewHolidayJFrame(Holiday showHoliday) {
+            JFrame holidayFrame = new JFrame();
+            JPanel panel = new JPanel();
+
+            holidayFrame.setTitle("Ändra | Visa högtiden: " + showHoliday.getName());
+
+            holidayFrame.setSize(new Dimension(500, 500));
+            panel.setLayout(new BorderLayout(10, 10));
+
+            JPanel holidayArea = new JPanel();
+            holidayArea.setBorder(new TitledBorder("Högtider"));
+            JTextArea holiday = new JTextArea(showHoliday.getDescription());
+            holiday.setPreferredSize(new Dimension(480, 300));
+            holiday.setEditable(true);
+            holiday.setFont(new Font("Arial", Font.BOLD, 15));
+
+            holidayArea.add(holiday);
+
+            JPanel controllArea = new JPanel();
+            controllArea.setBorder(new TitledBorder("Control panel"));
+
+            JTextField title = new JTextField(showHoliday.getName());
+            title.setPreferredSize(new Dimension(340, 80));
+            title.setFont(new Font("Arial", Font.BOLD, 20));
+            title.setBorder(new TitledBorder("Namn"));
+
+            JButton button = new JButton("Spara");
+            button.setPreferredSize(new Dimension(120, 80));
+            button.addActionListener(e -> {
+                if (holiday.getText() == null || holiday.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Du måste skriva någon högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                if (title.getText() == null || title.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Högtiden måste ha ett namn!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                noteList.remove(showHoliday);
+                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), holidayList.size() + 1);
+                addHoliday(holiday1);
+                holidayFrame.setVisible(false);
+            });
+            controllArea.add(title);
+            controllArea.add(button);
+            panel.add(holidayArea, BorderLayout.NORTH);
+            panel.add(controllArea, BorderLayout.SOUTH);
+
+            holidayFrame.setContentPane(panel);
+            holidayFrame.setResizable(false);
+            holidayFrame.setVisible(true);
+        }
+    }
 }
