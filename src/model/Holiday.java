@@ -1,4 +1,4 @@
-package Model;
+package model;
 /**
  * @author Qassem Aburas
  * @version 1.0

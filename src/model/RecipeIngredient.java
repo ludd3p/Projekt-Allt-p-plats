@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 /**
  * Class used in Recipe to hold the ingredient and amount to be used.

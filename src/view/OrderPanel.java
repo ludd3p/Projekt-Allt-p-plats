@@ -1,9 +1,8 @@
-package View;
+package view;
 
-import Model.Ingredient;
-import Model.Order;
-import Model.OrderItem;
-import Model.Unit;
+import controller.OrderController;
+import model.order.Order;
+import model.order.OrderItem;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -22,12 +21,13 @@ public class OrderPanel extends JPanel {
     private JButton showOrder; // Visa info om vald order
     private JButton hasArrived; // Klicka när en order har kommit in
     private JButton remove; // Avbryt en order
+    private OrderController controller;
 
-
-    public OrderPanel() {
+    public OrderPanel(OrderController controller) {
         setLayout(new BorderLayout(5, 5));
         orderHistoryList = new ArrayList<>();
 
+        this.controller = controller;
         setupPanels();
     }
 
@@ -57,7 +57,7 @@ public class OrderPanel extends JPanel {
                 JOptionPane.showConfirmDialog(null, "Du måste välja en order!", "ERROR", JOptionPane.DEFAULT_OPTION);
                 return;
             }
-            orderPreview(orderHistoryJList.getSelectedValue());
+            this.controller.orderPreview(orderHistoryJList.getSelectedValue());
         });
         hasArrived = new JButton("Has arrived");
         hasArrived.addActionListener((e -> {
@@ -65,7 +65,10 @@ public class OrderPanel extends JPanel {
                 JOptionPane.showConfirmDialog(null, "Du måste välja en order!", "ERROR", JOptionPane.DEFAULT_OPTION);
                 return;
             }
-            orderHasArrived(orderHistoryJList.getSelectedValue());
+            if (orderHistoryJList.getSelectedIndex() == 0){
+                controller.saveCurrentOrder();
+            }
+            this.controller.orderHasArrived(orderHistoryJList.getSelectedValue());
         }));
         remove = new JButton("Cancel order");
         remove.addActionListener((e -> {
@@ -73,7 +76,7 @@ public class OrderPanel extends JPanel {
                 JOptionPane.showConfirmDialog(null, "Du måste välja en order att tabort!", "ERROR", JOptionPane.DEFAULT_OPTION);
                 return;
             }
-            cancelOrder(orderHistoryJList.getSelectedValue());
+            this.controller.cancelOrder(orderHistoryJList.getSelectedValue());
         }));
         controlPanel.add(showOrder);
         controlPanel.add(hasArrived);
@@ -82,48 +85,70 @@ public class OrderPanel extends JPanel {
 
         this.add(leftPanel, BorderLayout.WEST);
         this.add(rightPanel, BorderLayout.EAST);
-
-
-        Order order = new Order();
-        order.getOrderItems().add(new OrderItem(new Ingredient("test", Unit.AMOUNT), 10));
-        order.getOrderItems().add(new OrderItem(new Ingredient("test", Unit.AMOUNT), 10));
-        order.getOrderItems().add(new OrderItem(new Ingredient("test", Unit.AMOUNT), 10));
-        addOrderToHistory(order);
-        addOrderToHistory(order);
-        addOrderToHistory(order);
-        addOrderToHistory(order);
-
     }
 
-    public void addOrderToHistory(Order order) {
-        this.orderHistoryList.add(order);
-        Order[] val = new Order[orderHistoryList.size()];
-        orderHistoryList.toArray(val);
-        this.orderHistoryJList.setListData(val);
+
+    public JPanel getLeftPanel() {
+        return leftPanel;
     }
 
-    public void orderPreview(Order order) {
-        if (order == null)
-            order = new Order();
-        OrderItem[] items = new OrderItem[order.getOrderItems().size()];
-        order.getOrderItems().toArray(items);
-        currentOrderList.setListData(items);
+    public void setLeftPanel(JPanel leftPanel) {
+        this.leftPanel = leftPanel;
     }
 
-    public void orderHasArrived(Order order) {
-        //TODO Fyll på lagret
-        this.orderHistoryList.remove(order);
-        Order[] val = new Order[orderHistoryList.size()];
-        orderHistoryList.toArray(val);
-        this.orderHistoryJList.setListData(val);
-        orderPreview(null);
+    public JPanel getRightPanel() {
+        return rightPanel;
     }
 
-    public void cancelOrder(Order order) {
-        orderPreview(null);
-        this.orderHistoryList.remove(order);
-        Order[] val = new Order[orderHistoryList.size()];
-        orderHistoryList.toArray(val);
-        this.orderHistoryJList.setListData(val);
+    public void setRightPanel(JPanel rightPanel) {
+        this.rightPanel = rightPanel;
+    }
+
+    public JList<Order> getOrderHistoryJList() {
+        return orderHistoryJList;
+    }
+
+    public void setOrderHistoryJList(JList<Order> orderHistoryJList) {
+        this.orderHistoryJList = orderHistoryJList;
+    }
+
+    public List<Order> getOrderHistoryList() {
+        return orderHistoryList;
+    }
+
+    public void setOrderHistoryList(List<Order> orderHistoryList) {
+        this.orderHistoryList = orderHistoryList;
+    }
+
+    public JList<OrderItem> getCurrentOrderList() {
+        return currentOrderList;
+    }
+
+    public void setCurrentOrderList(JList<OrderItem> currentOrderList) {
+        this.currentOrderList = currentOrderList;
+    }
+
+    public JButton getShowOrder() {
+        return showOrder;
+    }
+
+    public void setShowOrder(JButton showOrder) {
+        this.showOrder = showOrder;
+    }
+
+    public JButton getHasArrived() {
+        return hasArrived;
+    }
+
+    public void setHasArrived(JButton hasArrived) {
+        this.hasArrived = hasArrived;
+    }
+
+    public JButton getRemove() {
+        return remove;
+    }
+
+    public void setRemove(JButton remove) {
+        this.remove = remove;
     }
 }

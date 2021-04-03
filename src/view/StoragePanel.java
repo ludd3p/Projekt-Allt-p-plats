@@ -1,9 +1,8 @@
-package View;
+package view;
 
-import Controller.Controller;
+import controller.Controller;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 
 /**
  * Panel used to keep track of products.
+ *
  * @Author Jonathan Engström
  * @Version 1.0
  */
@@ -44,9 +44,10 @@ public class StoragePanel extends JPanel {
 
     /**
      * Updates/Adds products on/to the list.
+     *
      * @param values
      */
-    public void updateList(ArrayList<String> values){
+    public void updateList(ArrayList<String> values) {
         this.values = values;
         model.clear();
         model.addAll(this.values);
@@ -55,7 +56,7 @@ public class StoragePanel extends JPanel {
     /**
      * Setup for the main panel.
      */
-    private void setupMainPanel(){
+    private void setupMainPanel() {
         setBorder(new EtchedBorder());
         setLayout(new BorderLayout());
         setupNorthPanel();
@@ -65,7 +66,7 @@ public class StoragePanel extends JPanel {
     /**
      * Adds components to and configure pnlNorth and adds it to the main panel.
      */
-    private void setupNorthPanel(){
+    private void setupNorthPanel() {
         pnlNorth = new JPanel();
         //pnlNorth.setLayout(new BorderLayout());
         pnlNorth.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -77,7 +78,7 @@ public class StoragePanel extends JPanel {
     /**
      * Adds components to and configure pnlCenter and adds it to the main panel.
      */
-    private void setupCenterPanel(){
+    private void setupCenterPanel() {
         pnlCenter = new JPanel();
         pnlCenter.setLayout(new BorderLayout());
         pnlCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -90,44 +91,15 @@ public class StoragePanel extends JPanel {
     }
 
     /**
-     * Inner-class used to change the look of the JList
-     */
-    private class CellRenderer extends DefaultListCellRenderer{
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus){
-            setText(value.toString());
-
-
-            if(index % 2 == 0){
-                setBackground(Color.WHITE);
-                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
-            }
-            else{
-                setBackground(new Color(220, 220, 220));
-                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
-            }
-
-            if(isSelected){
-                setBackground(productList.getSelectionBackground());
-                setForeground(productList.getForeground());
-                setBorder(new LineBorder(Color.BLUE));
-            }
-            else{
-                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
-            }
-
-            return this;
-        }
-    }
-
-    /**
      * Method to filter productList based on user input in txfFilter.
+     *
      * @param model
      * @param filter text in txfFilter
      */
-    private void filterModel(DefaultListModel<String> model, String filter){
+    private void filterModel(DefaultListModel<String> model, String filter) {
         model.clear();
-        for(String s : values){
-            if(s.substring(s.indexOf("Product: ") + "Product: ".length(), s.indexOf("<br>Current amount:") - 1).toLowerCase().startsWith(filter.toLowerCase())){
+        for (String s : values) {
+            if (s.substring(s.indexOf("Product: ") + "Product: ".length(), s.indexOf("<br>Current amount:") - 1).toLowerCase().startsWith(filter.toLowerCase())) {
                 model.addElement(s);
             }
         }
@@ -136,15 +108,14 @@ public class StoragePanel extends JPanel {
     /**
      * Configures and adds components to pnlNorth.
      */
-    private void addComponentsNorthPanel(){
+    private void addComponentsNorthPanel() {
         ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(e.getSource() == btnAddProduct){
+                if (e.getSource() == btnAddProduct) {
                     JFrame productWindow = new ProductWindow();
-                }
-                else if(e.getSource() == btnChangeProduct){
-                    if(productList.getSelectedValue() != null) {
+                } else if (e.getSource() == btnChangeProduct) {
+                    if (productList.getSelectedValue() != null) {
                         String selected = (String) productList.getSelectedValue();
                         System.out.println(selected);
                         JFrame productWindow = new ProductWindow(
@@ -153,29 +124,25 @@ public class StoragePanel extends JPanel {
                                 selected.substring(selected.indexOf("<br>Current amount: ") + "<br>Current amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Min amount:") - 2)),
                                 selected.substring(selected.indexOf("Min amount: ") + "Min amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("Max amount:") - 2)),
                                 selected.substring(selected.indexOf("Max amount: ") + "Max amount: ".length(), selected.lastIndexOf(" ", selected.indexOf("<!---") - 2)));
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(null, "Select a product to change.");
                     }
-                }
-                else if(e.getSource() == btnRemoveProduct){
+                } else if (e.getSource() == btnRemoveProduct) {
                     int answer = -1;
 
-                    if(productList.getSelectedValue() != null){
-                       answer = JOptionPane.showConfirmDialog(null, "Are you sure?", "Remove product",  JOptionPane.YES_NO_OPTION);
-                    }
-                    else{
+                    if (productList.getSelectedValue() != null) {
+                        answer = JOptionPane.showConfirmDialog(null, "Are you sure?", "Remove product", JOptionPane.YES_NO_OPTION);
+                    } else {
                         JOptionPane.showMessageDialog(null, "Select a product to remove first.");
                     }
 
-                    if(answer == 0) {
+                    if (answer == 0) {
                         String selected = (String) productList.getSelectedValue();
                         String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
                         controller.removeIngredientFromDatabase(key);
                         controller.getIngredientsFromDatabase();
                     }
-                }
-                else if(e.getSource() == btnUpdateList){
+                } else if (e.getSource() == btnUpdateList) {
                     controller.getIngredientsFromDatabase();
                 }
             }
@@ -206,7 +173,7 @@ public class StoragePanel extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(txfFilter.getText().equals("")){
+                if (txfFilter.getText().equals("")) {
                     txfFilter.setText("Search");
                 }
             }
@@ -237,9 +204,37 @@ public class StoragePanel extends JPanel {
     }
 
     /**
+     * Inner-class used to change the look of the JList
+     */
+    private class CellRenderer extends DefaultListCellRenderer {
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            setText(value.toString());
+
+
+            if (index % 2 == 0) {
+                setBackground(Color.WHITE);
+                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
+            } else {
+                setBackground(new Color(220, 220, 220));
+                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
+            }
+
+            if (isSelected) {
+                setBackground(productList.getSelectionBackground());
+                setForeground(productList.getForeground());
+                setBorder(new LineBorder(Color.BLUE));
+            } else {
+                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
+            }
+
+            return this;
+        }
+    }
+
+    /**
      * Inner-class used to create a window for inserting and changing products.
      */
-    private class ProductWindow extends JFrame{
+    private class ProductWindow extends JFrame {
         private JPanel pnlProductWindowMainPanel;
         private JPanel pnlProductWindowCenter;
         private JPanel pnlProductWindowSouth;
@@ -271,7 +266,7 @@ public class StoragePanel extends JPanel {
         /**
          * Constructor used when adding a new product.
          */
-        public ProductWindow(){
+        public ProductWindow() {
             addOrChange = true;
 
             setupProductWindow();
@@ -279,11 +274,12 @@ public class StoragePanel extends JPanel {
 
         /**
          * Constructor used when changing values for a product.
+         *
          * @param productName
          * @param minAmount
          * @param maxAmount
          */
-        public ProductWindow(String productName, String cost, String currentAmount,String minAmount, String maxAmount){
+        public ProductWindow(String productName, String cost, String currentAmount, String minAmount, String maxAmount) {
             addOrChange = false;
             setupProductWindow();
 
@@ -297,7 +293,7 @@ public class StoragePanel extends JPanel {
         /**
          * Configures the frame and adds the main panel to it. Also calls methods to add components to the main panel.
          */
-        private void setupProductWindow(){
+        private void setupProductWindow() {
             pnlProductWindowMainPanel = new JPanel();
             pnlProductWindowMainPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
             pnlProductWindowMainPanel.setLayout(new BorderLayout());
@@ -315,10 +311,10 @@ public class StoragePanel extends JPanel {
         /**
          * Configures and adds components to pnlProductWindowCenter and adds it to the main panel.
          */
-        private void setupProductWindowCenterPanel(){
+        private void setupProductWindowCenterPanel() {
             pnlProductWindowCenter = new JPanel();
             pnlProductWindowCenter.setBorder(BorderFactory.createEtchedBorder(0));
-            pnlProductWindowCenter.setLayout(new GridLayout(6,2,10 ,1));
+            pnlProductWindowCenter.setLayout(new GridLayout(6, 2, 10, 1));
 
             lblProductName = new JLabel(" Product: ");
             pnlProductWindowCenter.add(lblProductName);
@@ -357,27 +353,27 @@ public class StoragePanel extends JPanel {
         /**
          * Configures and adds components to pnlProductWindowSouth and adds it to the main panel.
          */
-        private void setupProductWindowSouthPanel(){
+        private void setupProductWindowSouthPanel() {
             pnlProductWindowSouth = new JPanel();
             pnlProductWindowSouth.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowSouth.setLayout(new GridLayout(1,2, 1, 1));
+            pnlProductWindowSouth.setLayout(new GridLayout(1, 2, 1, 1));
 
             ActionListener listener = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(e.getSource() == btnOk) {
+                    if (e.getSource() == btnOk) {
                         try {
                             boolean proceed = true;
                             if (txfProductName.getText().toLowerCase().contains("Product:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Cost:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Current amount:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Min amount:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Max amount:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("<!---")){
-                                    JOptionPane.showMessageDialog(null, "Error: Invalid input.", "Invalid input", JOptionPane.PLAIN_MESSAGE);
-                                    proceed = false;
+                                    txfProductName.getText().toLowerCase().contains("Cost:".toLowerCase()) ||
+                                    txfProductName.getText().toLowerCase().contains("Current amount:".toLowerCase()) ||
+                                    txfProductName.getText().toLowerCase().contains("Min amount:".toLowerCase()) ||
+                                    txfProductName.getText().toLowerCase().contains("Max amount:".toLowerCase()) ||
+                                    txfProductName.getText().toLowerCase().contains("<!---")) {
+                                JOptionPane.showMessageDialog(null, "Error: Invalid input.", "Invalid input", JOptionPane.PLAIN_MESSAGE);
+                                proceed = false;
                             }
-                            if(proceed) {
+                            if (proceed) {
                                 for (String value : values) {
                                     if (value.substring(value.indexOf("Product: ") + "Product: ".length(), value.indexOf("<br>Cost") - 1).toLowerCase().equals(txfProductName.getText().toLowerCase())) {
                                         JOptionPane.showMessageDialog(null, "That product already exists.", "Product already exists", JOptionPane.PLAIN_MESSAGE);
@@ -385,7 +381,7 @@ public class StoragePanel extends JPanel {
                                     }
                                 }
                             }
-                            if(proceed) {
+                            if (proceed) {
                                 if (addOrChange) {
                                     controller.addIngredientToDatabase(
                                             txfProductName.getText(),
@@ -412,9 +408,8 @@ public class StoragePanel extends JPanel {
                         } catch (NumberFormatException nfe) {
                             JOptionPane.showMessageDialog(null, "Error: Invalid input.");
                         }
-                    }
-                    else if (e.getSource() == btnCancel) {
-                            dispose();
+                    } else if (e.getSource() == btnCancel) {
+                        dispose();
                     }
                 }
             };

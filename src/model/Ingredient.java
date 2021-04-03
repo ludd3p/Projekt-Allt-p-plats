@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 // Använd klassen när vi lägger till ingridienser i recepten.
 
@@ -10,9 +10,10 @@ public class Ingredient {
     private double recommendedAmount;
     private Unit unit;
 
-    public Ingredient(){}
+    public Ingredient() {
+    }
 
-    public Ingredient(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, Unit unit){
+    public Ingredient(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, Unit unit) {
         this.name = name;
         this.cost = cost;
         this.currentAmount = currentAmount;

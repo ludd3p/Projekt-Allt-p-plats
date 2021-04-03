@@ -1,6 +1,6 @@
-package View;
+package view;
 
-import Controller.Controller;
+import controller.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,15 +14,17 @@ public class MainView extends JFrame {
     private HomePanel homePanel;
     private Controller controller;
 
+
     public MainView(Controller controller) {
         this.controller = controller;
         setTitle("Allt på plats");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1000, 600));
+        setResizable(false);
         setBounds(400, 300, 500, 300);
         recipePanel = new RecipePanel(controller);
         storagePanel = new StoragePanel(controller);
-        orderPanel = new OrderPanel();
+        orderPanel = new OrderPanel(controller.getOrderController());
         supplierPanel = new SupplierPanel(controller);
         homePanel = new HomePanel();
 

@@ -1,7 +1,7 @@
-package View;
+package view;
 
-import Controller.Controller;
-import Model.Supplier;
+import controller.Controller;
+import model.Supplier;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

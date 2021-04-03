@@ -1,4 +1,4 @@
-package View;
+package view;
 
 /**
  * @author Qassem Aburas
@@ -6,9 +6,9 @@ package View;
  * with help from Hazem
  */
 
-import Controller.Controller;
-import Model.Holiday;
-import Model.Note;
+import controller.Controller;
+import model.Holiday;
+import model.Note;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -119,7 +119,6 @@ public class HomePanel extends JPanel implements ActionListener {
         add(southPanel, BorderLayout.SOUTH);
 
 
-
     }
 
     // if the button is pressed
@@ -135,13 +134,13 @@ public class HomePanel extends JPanel implements ActionListener {
             }
             new NewNoteJFrame(notesJList.getSelectedValue());
         }
-        if (e.getSource()==deleteNote){
+        if (e.getSource() == deleteNote) {
             // TODO: 2021-04-01
         }
-        if (e.getSource()==addNewHoliday){
+        if (e.getSource() == addNewHoliday) {
 
         }
-        if (e.getSource() == deleteHoliday){
+        if (e.getSource() == deleteHoliday) {
 
         }
 

@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 // Ifall man räknar order i gram eller styck
 // Exemepl en order på mjöl läggs följade: 500 gram mjöl meddans
