@@ -92,25 +92,4 @@ public class StorageController {
             }
         });
     }
-
-    public void bla(Ingredient ingredient, double quantity){
-
-        Controller.getDatabaseReference().child("Ingredient").child(ingredient.getKey()).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        HashMap<String, Object> map = (HashMap<String, Object>)dataSnapshot.getValue();
-
-                        for(Map.Entry<String, Object> mapEntry : map.entrySet()){
-                            System.out.println();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                }
-        );
-    }
 }
