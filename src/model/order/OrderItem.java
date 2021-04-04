@@ -2,7 +2,7 @@ package model.order;
 
 // En orderitem representerar en ingridient och hur mycket av igridienten som behövs köpas in
 
-import model.Ingredient;
+import model.ingredient.Ingredient;
 
 public class OrderItem {
     private Ingredient ingredient;

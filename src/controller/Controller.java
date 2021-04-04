@@ -7,6 +7,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import model.daily.DailyEvent;
 import model.*;
+import model.ingredient.Ingredient;
 import view.MainView;
 import view.RecipePanel;
 
@@ -22,6 +23,7 @@ public class Controller {
     public static DatabaseReference databaseReference;
     private static MainView mainView;
     private OrderController orderController;
+    private StorageController storageController;
     private DailyEvent dailyEvent;
 
     private ArrayList<Recipe> allRecipes = new ArrayList<>();
@@ -33,6 +35,7 @@ public class Controller {
     public Controller() throws IOException {
         connectToFirebase();
         this.dailyEvent = new DailyEvent();
+        storageController = new StorageController(this);
         mainView = new MainView(this);
         orderController = new OrderController(this);
 
@@ -107,7 +110,6 @@ public class Controller {
         allIngredients.clear();
         ArrayList<String> ingredientValueList = new ArrayList<>();
 
-
         databaseReference.child("Ingredient").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -123,7 +125,7 @@ public class Controller {
                     allIngredients.add(ingredient);
 
 
-                    ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String) mapElement.getKey()));
+                    //ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String) mapElement.getKey()));
                 }
 
                 mainView.getStoragePanel().updateList(ingredientValueList);
@@ -236,6 +238,10 @@ public class Controller {
 
     public void setOrderController(OrderController orderController) {
         this.orderController = orderController;
+    }
+
+    public StorageController getStorageController(){
+        return storageController;
     }
 
     public DailyEvent getDailyEvent() {

@@ -1,5 +1,7 @@
 package model;
 
+import model.ingredient.Ingredient;
+
 /**
  * Class used in Recipe to hold the ingredient and amount to be used.
  * @Author Ludvig Wedin Pettersson
