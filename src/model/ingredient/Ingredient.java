@@ -171,7 +171,12 @@ public class Ingredient {
         return updatedIngredient;
     }
 
-
+    /**
+     * Adds a specified quantity to the current quantity of an object.
+     * @param key of ingredient to change.
+     * @param quantityToAdd
+     * @return the updated Ingredient-object.
+     */
     public static Ingredient updateIngredientCurrentQuantity(String key, double quantityToAdd){
         Ingredient updatedIngredient = null;
 
