@@ -5,7 +5,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
-import model.Daily.DailyEvent;
+import model.daily.DailyEvent;
 import model.*;
 import view.MainView;
 import view.RecipePanel;
