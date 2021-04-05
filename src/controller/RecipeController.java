@@ -116,7 +116,17 @@ public class RecipeController {
 
     public void addRecipeToDatabase(String name, ArrayList<String> instructions) {
         Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
-        databaseReference.child("Recipes").push().setValueAsync(recipeToAddToDatabase);
+        databaseReference.child("Recipes").child(name).setValueAsync(recipeToAddToDatabase);
+    }
+
+    public void updateRecipeDatabase(String name, ArrayList<String> instructions) {
+        Recipe updatedRecipe = new Recipe(name, recipeIngredient, instructions);
+        databaseReference.child("Recipes").child(name).removeValueAsync();
+        databaseReference.child("Recipes").child(name).setValueAsync(updatedRecipe);
+    }
+
+    public void removeRecipeFromDatabase(String name){
+        databaseReference.child("Recipes").child(name).removeValueAsync();
     }
 
     public ArrayList<String> populateNewRecipeIngredients(RecipePanel.NewRecipeWindow newRecipeWindow) {
@@ -138,6 +148,15 @@ public class RecipeController {
 
     public ArrayList<String> getSelectedRecipeInstructions(int i){
         return allRecipes.get(i).getInstructions();
+    }
+
+    public Boolean checkDuplicateRecipe(String recName){
+        for (Recipe r : allRecipes){
+            if (r.getName().equals(recName)){
+                return true;
+            }
+        }
+        return false;
     }
 
     //<editor-fold desc="Getters, setters">

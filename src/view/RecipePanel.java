@@ -1,6 +1,5 @@
 package view;
 
-import controller.Controller;
 import controller.RecipeController;
 import model.Recipe;
 
@@ -142,9 +141,12 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             for (String s : recIngredients){
                 ingredientsModel.addElement(s);
             }
-            for (String s : recInstructions){
-                instructionsModel.addElement(s);
+            if (recInstructions != null){
+                for (String s : recInstructions){
+                    instructionsModel.addElement(s);
+                }
             }
+
         }
 
         if (e.getSource() == addRecipe) {
@@ -156,7 +158,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         if (e.getSource() == removeRecipe) {
             if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ta bort recept", JOptionPane.YES_NO_OPTION) == 0) {
-                //Ta bort valt recept
+                recipeController.removeRecipeFromDatabase(recipes.getItemAt(recipes.getSelectedIndex()));
             } else {
                 JOptionPane.showMessageDialog(null, "Receptet tas inte bort", "Meddelande", JOptionPane.PLAIN_MESSAGE);
             }
@@ -167,7 +169,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                 if (newRecipeWindow != null) {
                     newRecipeWindow.dispose();
                 }
-                newRecipeWindow = new NewRecipeWindow();
+                newRecipeWindow = new NewRecipeWindow(recipes.getItemAt(recipes.getSelectedIndex()));
             }
         }
 
@@ -254,15 +256,24 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         /**
          * Constructor used when editing a recipe, receives a recicpe
          *
-         * @param recipe Received recipe
+         *
          */
-        public NewRecipeWindow(Recipe recipe) {
+        public NewRecipeWindow(String recName) {
             //Frame settings
-            instructionsArray = new ArrayList<>();
-            ingredientsArray = new ArrayList<>();
-            setTitle("Ändra recept");
+            ingredientsListModel.clear();
+            instructionListModel.clear();
+            setTitle("Ändra recept: " + recName);
             setPreferredSize(new Dimension(1000, 600));
             setupNewRecipeFrame();
+            recipeName.setText(recName);
+            ingredientsArray = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), 1);
+            instructionsArray = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
+            for (String s : ingredientsArray){
+                ingredientsListModel.addElement(s);
+            }
+            for (String s : instructionsArray){
+                instructionListModel.addElement(s);
+            }
         }
 
         /**
@@ -389,7 +400,11 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             }
             if (e.getSource() == saveRecipe) {
                 if (!ingredientsListModel.isEmpty()) { // Kan lägga till en JOptionpane för att bekräfta
-                    recipeController.addRecipeToDatabase(recipeName.getText(), instructionsArray);
+                    if (!recipeController.checkDuplicateRecipe(recipeName.getText())){
+                        recipeController.addRecipeToDatabase(recipeName.getText(), instructionsArray);
+                    } else {
+                        // Ändra i recept
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
                 }
