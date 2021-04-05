@@ -33,6 +33,11 @@ public class RecipeIngredient {
         this.amount = amount;
     }
 
+    public String toString2(int multi){
+        String s = String.format("%s %.2f %s", ingredient.getName(), (amount*multi), ingredient.getUnit());
+        return s;
+    }
+
     public String toString(){
         String s = String.format("%s %.2f %s", ingredient.getName(), amount, ingredient.getUnit());
         return s;

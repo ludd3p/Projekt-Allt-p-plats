@@ -31,7 +31,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     private SpinnerModel spinnerModel; // Bestämmer hur spinner fungerar
     private JSpinner spinner; // För att välja antal
-    private JComboBox recipes; // För att välja recept
+    private JComboBox<String> recipes; // För att välja recept
     private DefaultListModel<String> ingredientsModel;
     private DefaultListModel<String> instructionsModel;
     private JList<String> ingredientsList; // Visar ingredienser för recept. Byt namn.
@@ -75,7 +75,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         spinner.addChangeListener(this::stateChanged);
         northPanel.add(spinner);
 
-        recipes = new JComboBox<>(menu);
+        recipes = new JComboBox<String>();
         recipes.setPreferredSize(new Dimension(200, 25));
         recipes.addActionListener(this::actionPerformed);
         northPanel.add(recipes);
@@ -101,7 +101,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         ingredientsList.setPreferredSize(new Dimension(200, 800));
         ingredientsList.setBorder(new TitledBorder("Innehåll"));
         ingredientsList.setModel(ingredientsModel);
-        ingredientsModel.addElement("ÄGGGGGGGGGGGGG");
         leftPanel.add(ingredientsList);
         leftPanel.setPreferredSize(new Dimension(200, 800));
 
@@ -113,9 +112,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         recipeInstructions = new JList<>();
         recipeInstructions.setModel(instructionsModel);
         recipeInstructions.setBorder(new TitledBorder("Instruktioner"));
-        instructionsModel.addElement("Vispa ägg med jord \n");
-        instructionsModel.addElement("rör ner hackad banan \n");
-        instructionsModel.addElement("Häll i form, salta på toppen och backa på 0 grader i 80 minuter \n");
         centerPanel.add(recipeInstructions, BorderLayout.CENTER);
 
         add(centerPanel, BorderLayout.CENTER);
@@ -139,8 +135,11 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         }
 
         if (e.getSource() == recipes) {
-            //Byt recept som visas
-            System.out.println(menu[recipes.getSelectedIndex()]);
+            ingredientsModel.clear();
+            ArrayList<String> recIngredients = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), (int) spinner.getValue());
+            for (String s : recIngredients){
+                ingredientsModel.addElement(s);
+            }
         }
 
         if (e.getSource() == addRecipe) {
@@ -176,16 +175,24 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
      */
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spinner) {
-            //Metod för att multiplicera recept
-            System.out.println(spinner.getValue());
+            ingredientsModel.clear();
+            ArrayList<String> recIngredients = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), (int) spinner.getValue());
+            for (String s : recIngredients){
+                ingredientsModel.addElement(s);
+            }
         }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("RecipeNames")) {
+            System.out.println("hallå");
+            System.out.println(evt.getNewValue());
             ArrayList<String> recNames = (ArrayList<String>) evt.getNewValue();
-            recipes = new JComboBox(recNames.toArray());
+            recipes.removeAllItems();
+            for (String s : recNames){
+                recipes.addItem(s);
+            }
         }
         if (evt.getPropertyName().equals("IngredientNames")){
             ArrayList<String> ingNames = (ArrayList<String>) evt.getNewValue();

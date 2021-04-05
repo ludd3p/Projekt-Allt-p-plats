@@ -127,6 +127,15 @@ public class RecipeController {
         return strings;
     }
 
+    public ArrayList<String> populateRecipeIngredients(int i, int multi){
+        Recipe rec = allRecipes.get(i);
+        ArrayList<String> al = new ArrayList<>();
+        for (RecipeIngredient ri : rec.getIngredients()){
+            al.add(ri.toString2(multi));
+        }
+        return al;
+    }
+
     //<editor-fold desc="Getters, setters">
     public ArrayList<Recipe> getAllRecipes() {
         return allRecipes;
