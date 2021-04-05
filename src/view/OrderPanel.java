@@ -26,8 +26,8 @@ public class OrderPanel extends JPanel {
     public OrderPanel(OrderController controller) {
         setLayout(new BorderLayout(5, 5));
         orderHistoryList = new ArrayList<>();
-
         this.controller = controller;
+        controller.setPanel(this);
         setupPanels();
     }
 

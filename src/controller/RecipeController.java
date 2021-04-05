@@ -27,8 +27,9 @@ public class RecipeController {
 
     public RecipeController(Controller controller, DatabaseReference databaseReference){
         this.controller = controller;
-        this.recPanel = controller.getMainView().getRecipePanel();
         this.databaseReference = databaseReference;
+        getRecipesFromDatabase();
+        getIngredientsFromDatabase();
     }
 
     public void registerPropertyChangeListener(PropertyChangeListener listener){
@@ -40,11 +41,13 @@ public class RecipeController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 allRecipes.clear();
+                allRecipeNames.clear();
                 for (DataSnapshot recept : dataSnapshot.getChildren()) {
                     Recipe rec = recept.getValue(Recipe.class);
                     allRecipes.add(rec);
                     allRecipeNames.add(rec.getName());
                 }
+                pcs.firePropertyChange("RecipeNames", null, allRecipeNames);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -67,6 +70,7 @@ public class RecipeController {
                     ingredientNames.add(s);
                     allIngredients.add(ingredient);
                 }
+                pcs.firePropertyChange("IngredientNames", null, ingredientNames);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -123,6 +127,7 @@ public class RecipeController {
         return strings;
     }
 
+    //<editor-fold desc="Getters, setters">
     public ArrayList<Recipe> getAllRecipes() {
         return allRecipes;
     }
@@ -158,4 +163,9 @@ public class RecipeController {
     public void setAllRecipeNames(ArrayList<String> allRecipeNames) {
         this.allRecipeNames = allRecipeNames;
     }
+
+    public void setRecPanel(RecipePanel recPanel){
+        this.recPanel = recPanel;
+    }
+    //</editor-fold>
 }

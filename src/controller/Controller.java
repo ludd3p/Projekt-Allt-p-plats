@@ -32,13 +32,12 @@ public class Controller {
 
     public Controller() throws IOException {
         connectToFirebase();
-        mainView = new MainView(this);
         this.dailyEvent = new DailyEvent();
         recipeController = new RecipeController(this, databaseReference);
         storageController = new StorageController(this);
         orderController = new OrderController(this);
-
-        getNotesFromDatabase();
+        mainView = new MainView(this);
+        //getNotesFromDatabase();
     }
 
 

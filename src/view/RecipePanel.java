@@ -31,7 +31,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     private SpinnerModel spinnerModel; // Bestämmer hur spinner fungerar
     private JSpinner spinner; // För att välja antal
-    private JComboBox<String> recipes; // För att välja recept
+    private JComboBox recipes; // För att välja recept
     private DefaultListModel<String> ingredientsModel;
     private DefaultListModel<String> instructionsModel;
     private JList<String> ingredientsList; // Visar ingredienser för recept. Byt namn.
@@ -49,6 +49,8 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
      */
     public RecipePanel(RecipeController recipeController) {
         this.recipeController = recipeController;
+        recipeController.setRecPanel(this);
+        recipeController.registerPropertyChangeListener(this);
         setLayout(new BorderLayout());
         setupPanels();
     }
@@ -181,8 +183,12 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("updRecipes")) {
-            // Bla bla behöver kod
+        if (evt.getPropertyName().equals("RecipeNames")) {
+            ArrayList<String> recNames = (ArrayList<String>) evt.getNewValue();
+            recipes = new JComboBox(recNames.toArray());
+        }
+        if (evt.getPropertyName().equals("IngredientNames")){
+            ArrayList<String> ingNames = (ArrayList<String>) evt.getNewValue();
         }
     }
 

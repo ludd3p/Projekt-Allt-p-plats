@@ -13,10 +13,9 @@ public class OrderController {
 
     public OrderController(Controller controller) {
         this.controller = controller;
-        this.panel = controller.getMainView().getOrderPanel();
         this.currentOrder = new Order();
         controller.getDailyEvent().addAction(this::saveCurrentOrder);
-        addOrderToHistory(currentOrder);
+        //addOrderToHistory(currentOrder);
 
     }
 
@@ -65,5 +64,9 @@ public class OrderController {
 
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+
+    public void setPanel(OrderPanel panel){
+        this.panel = panel;
     }
 }
