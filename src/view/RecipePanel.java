@@ -260,20 +260,31 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
          */
         public NewRecipeWindow(String recName) {
             //Frame settings
-            ingredientsListModel.clear();
-            instructionListModel.clear();
+
+            //ingredientsArray = new ArrayList<>();
             setTitle("Ändra recept: " + recName);
             setPreferredSize(new Dimension(1000, 600));
             setupNewRecipeFrame();
             recipeName.setText(recName);
+            ingredientsListModel.clear();
+            instructionListModel.clear();
             ingredientsArray = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), 1);
-            instructionsArray = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
+
+            if (recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex()) != null){
+                instructionsArray = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
+            } else {
+                instructionsArray = new ArrayList<>();
+            }
+
             for (String s : ingredientsArray){
                 ingredientsListModel.addElement(s);
             }
-            for (String s : instructionsArray){
-                instructionListModel.addElement(s);
+            if (instructionsArray != null){
+                for (String s : instructionsArray){
+                    instructionListModel.addElement(s);
+                }
             }
+
         }
 
         /**
@@ -403,7 +414,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                     if (!recipeController.checkDuplicateRecipe(recipeName.getText())){
                         recipeController.addRecipeToDatabase(recipeName.getText(), instructionsArray);
                     } else {
-                        // Ändra i recept
+                        recipeController.updateRecipeDatabase(recipeName.getText(), instructionsArray);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
