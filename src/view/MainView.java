@@ -22,7 +22,7 @@ public class MainView extends JFrame {
         setPreferredSize(new Dimension(1000, 600));
         setResizable(false);
         setBounds(400, 300, 500, 300);
-        recipePanel = new RecipePanel(controller);
+        recipePanel = new RecipePanel(controller.getRecipeController());
         storagePanel = new StoragePanel(controller.getStorageController());
         orderPanel = new OrderPanel(controller.getOrderController());
         supplierPanel = new SupplierPanel(controller);

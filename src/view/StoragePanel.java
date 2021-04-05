@@ -39,7 +39,7 @@ public class StoragePanel extends JPanel {
     public StoragePanel(StorageController storageController) {
         this.storageController = storageController;
         setupMainPanel();
-        storageController.getIngredientsFromDatabase();
+        //storageController.getIngredientsFromDatabase();
     }
 
     /**

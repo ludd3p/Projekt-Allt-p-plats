@@ -1,6 +1,7 @@
 package view;
 
 import controller.Controller;
+import controller.RecipeController;
 import model.Recipe;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  */
 
 public class RecipePanel extends JPanel implements PropertyChangeListener {
-    private Controller controller;
+    private RecipeController recipeController;
     private NewRecipeWindow newRecipeWindow;
 
     private JPanel northPanel; //Topp panelen
@@ -46,8 +47,8 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
     /**
      * Constructor for the panel
      */
-    public RecipePanel(Controller controller) {
-        this.controller = controller;
+    public RecipePanel(RecipeController recipeController) {
+        this.recipeController = recipeController;
         setLayout(new BorderLayout());
         setupPanels();
     }
@@ -250,8 +251,8 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
          * Sets up the frame
          */
         public void setupNewRecipeFrame() {
-            ingredients = controller.getIngredientNames();
-            controller.resetRecipeIngredients();
+            ingredients = recipeController.getIngredientNames();
+            recipeController.resetRecipeIngredients();
             //West panel
             westPanel = new JPanel();
             westPanel.setLayout(new BorderLayout());
@@ -332,7 +333,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             pack();
             setVisible(true);
 
-            unit.setText(controller.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
+            unit.setText(recipeController.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
         }
 
         /**
@@ -353,7 +354,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             }
             if (e.getSource() == addIngredient) {
                 if ((double) amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
-                    controller.createRecipeIngredient((String) ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
+                    recipeController.createRecipeIngredient((String) ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
                     updateIngredients();
                 }
             }
@@ -361,7 +362,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                 System.out.println(ingredientsList.isSelectionEmpty());
                 if (!ingredientsList.isSelectionEmpty()) {
 
-                    controller.removeRecipeIngredient(ingredientsList.getSelectedIndex());
+                    recipeController.removeRecipeIngredient(ingredientsList.getSelectedIndex());
                     updateIngredients();
                 } else {
                     JOptionPane.showMessageDialog(null, "Inget markerat", "Fel", JOptionPane.ERROR_MESSAGE);
@@ -370,14 +371,14 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             }
             if (e.getSource() == saveRecipe) {
                 if (!ingredientsListModel.isEmpty()) { // Kan lägga till en JOptionpane för att bekräfta
-                    controller.addRecipeToDatabase(recipeName.getText(), instructionsArray);
+                    recipeController.addRecipeToDatabase(recipeName.getText(), instructionsArray);
                 } else {
                     JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
                 }
             }
             if (e.getSource() == ingredientsMenu) {
 
-                unit.setText(controller.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
+                unit.setText(recipeController.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
             }
         }
 
@@ -398,19 +399,19 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         public void updateIngredients() {
             ingredientsListModel.clear();
-            ArrayList<String> ingredientStrings = controller.populateNewRecipeIngredients(this);
+            ArrayList<String> ingredientStrings = recipeController.populateNewRecipeIngredients(this);
             for (String s : ingredientStrings) {
                 ingredientsListModel.addElement(s);
             }
         }
     }
 
-    public Controller getController() {
-        return controller;
+    public RecipeController getController() {
+        return recipeController;
     }
 
-    public void setController(Controller controller) {
-        this.controller = controller;
+    public void setController(RecipeController recipeController) {
+        this.recipeController = recipeController;
     }
 
     public NewRecipeWindow getNewRecipeWindow() {

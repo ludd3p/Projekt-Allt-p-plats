@@ -24,23 +24,21 @@ public class Controller {
     private static MainView mainView;
     private OrderController orderController;
     private StorageController storageController;
+    private RecipeController recipeController;
     private DailyEvent dailyEvent;
 
-    private ArrayList<Recipe> allRecipes = new ArrayList<>();
-    private ArrayList<Ingredient> allIngredients = new ArrayList<>();
-    private ArrayList<RecipeIngredient> recipeIngredient = new ArrayList<>();
-    private ArrayList<String> ingredientNames = new ArrayList<>();
+
 
 
     public Controller() throws IOException {
         connectToFirebase();
-        this.dailyEvent = new DailyEvent();
-        storageController = new StorageController(this);
         mainView = new MainView(this);
+        this.dailyEvent = new DailyEvent();
+        recipeController = new RecipeController(this, databaseReference);
+        storageController = new StorageController(this);
         orderController = new OrderController(this);
 
         getNotesFromDatabase();
-        getRecipesFromDatabase();
     }
 
 
@@ -106,8 +104,6 @@ public class Controller {
     }
 
     public void getIngredientsFromDatabase() {
-        ingredientNames.clear();
-        allIngredients.clear();
         ArrayList<String> ingredientValueList = new ArrayList<>();
 
         databaseReference.child("Ingredient").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -118,11 +114,7 @@ public class Controller {
                     Map.Entry mapElement = stringHashMapEntry;
 
 
-                    // Testkod
-                    String s = dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).getName();
-                    ingredientNames.add(s);
-                    Ingredient ingredient = dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class);
-                    allIngredients.add(ingredient);
+
 
 
                     //ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String) mapElement.getKey()));
@@ -138,74 +130,6 @@ public class Controller {
         });
     }
 
-    //<editor-fold desc="Functionality for recipes">
-    public void getRecipesFromDatabase() {
-        databaseReference.child("Recipes").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                allRecipes.clear();
-                for (DataSnapshot recept : dataSnapshot.getChildren()) {
-                    Recipe rec = recept.getValue(Recipe.class);
-                    allRecipes.add(rec);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("Fel i hämtning av recept");
-            }
-        });
-    }
-
-
-    public void resetRecipeIngredients() {
-        recipeIngredient.clear();
-    }
-
-    public void createRecipeIngredient(String ingredient, double amount) {
-        for (Ingredient i : allIngredients) {
-            if (i.getName().equals(ingredient)) {
-                recipeIngredient.add(new RecipeIngredient(i, amount));
-                break;
-            }
-        }
-    }
-
-    public void removeRecipeIngredient(int i) {
-        System.out.println(recipeIngredient.get(i).toString());
-        recipeIngredient.remove(i);
-    }
-
-    public ArrayList<String> getIngredientNames() {
-        return ingredientNames;
-    }
-
-    public String getIngredientPrefix(String name) {
-        String prefix = "";
-        for (Ingredient i : allIngredients) {
-            if (i.getName().equals(name)) {
-                prefix = i.getUnit().getPrefix();
-                break;
-            }
-        }
-
-        return prefix;
-    }
-
-    public void addRecipeToDatabase(String name, ArrayList<String> instructions) {
-        Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
-        databaseReference.child("Recipes").push().setValueAsync(recipeToAddToDatabase);
-    }
-
-    public ArrayList<String> populateNewRecipeIngredients(RecipePanel.NewRecipeWindow newRecipeWindow) {
-        ArrayList<String> strings = new ArrayList<>();
-        for (RecipeIngredient r : recipeIngredient) {
-            strings.add(r.toString());
-        }
-        return strings;
-    }
-    //</editor-fold>
 
 
     public static FirebaseDatabase getDatabase() {
@@ -232,6 +156,10 @@ public class Controller {
         Controller.mainView = mainView;
     }
 
+    public RecipeController getRecipeController(){ return recipeController; }
+
+    public void setRecipeController(RecipeController recipeController){ this.recipeController = recipeController; }
+
     public OrderController getOrderController() {
         return orderController;
     }
@@ -252,33 +180,7 @@ public class Controller {
         this.dailyEvent = dailyEvent;
     }
 
-    public ArrayList<Recipe> getAllRecipes() {
-        return allRecipes;
-    }
 
-    public void setAllRecipes(ArrayList<Recipe> allRecipes) {
-        this.allRecipes = allRecipes;
-    }
-
-    public ArrayList<Ingredient> getAllIngredients() {
-        return allIngredients;
-    }
-
-    public void setAllIngredients(ArrayList<Ingredient> allIngredients) {
-        this.allIngredients = allIngredients;
-    }
-
-    public ArrayList<RecipeIngredient> getRecipeIngredient() {
-        return recipeIngredient;
-    }
-
-    public void setRecipeIngredient(ArrayList<RecipeIngredient> recipeIngredient) {
-        this.recipeIngredient = recipeIngredient;
-    }
-
-    public void setIngredientNames(ArrayList<String> ingredientNames) {
-        this.ingredientNames = ingredientNames;
-    }
 
 
 }
