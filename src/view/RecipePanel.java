@@ -136,9 +136,14 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         if (e.getSource() == recipes) {
             ingredientsModel.clear();
+            instructionsModel.clear();
             ArrayList<String> recIngredients = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), (int) spinner.getValue());
+            ArrayList<String> recInstructions = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
             for (String s : recIngredients){
                 ingredientsModel.addElement(s);
+            }
+            for (String s : recInstructions){
+                instructionsModel.addElement(s);
             }
         }
 

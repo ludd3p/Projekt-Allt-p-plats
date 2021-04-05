@@ -136,6 +136,10 @@ public class RecipeController {
         return al;
     }
 
+    public ArrayList<String> getSelectedRecipeInstructions(int i){
+        return allRecipes.get(i).getInstructions();
+    }
+
     //<editor-fold desc="Getters, setters">
     public ArrayList<Recipe> getAllRecipes() {
         return allRecipes;
