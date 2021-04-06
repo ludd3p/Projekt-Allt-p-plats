@@ -31,7 +31,7 @@ public class Controller {
 
     public Controller() throws IOException {
         connectToFirebase();
-        this.dailyEvent = new DailyEvent();
+        dailyEvent = new DailyEvent();
         recipeController = new RecipeController(this, databaseReference);
         storageController = new StorageController(this);
         orderController = new OrderController(this);

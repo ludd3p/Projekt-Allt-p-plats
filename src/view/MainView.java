@@ -5,6 +5,12 @@ import controller.Controller;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Main GUI component that holds each separate panel using JTabbedPane
+ * @Author Ludvig Wedin Pettersson
+ * @Version 1.0
+ */
+
 public class MainView extends JFrame {
     private JTabbedPane tp;
     private StoragePanel storagePanel;
@@ -15,6 +21,10 @@ public class MainView extends JFrame {
     private Controller controller;
 
 
+    /**
+     * Constructor setting up the frame and its components.
+     * @param controller Reference to the main controller.
+     */
     public MainView(Controller controller) {
         this.controller = controller;
         setTitle("Allt på plats");
