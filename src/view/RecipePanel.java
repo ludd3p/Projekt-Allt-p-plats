@@ -378,25 +378,28 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Listener for buttons
-         * @param e
+         * @param e source of call
          */
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addInstruction) {
                 instructionsArray.add(instructionInput.getText());
                 updateInstructions();
             }
+            
             if (e.getSource() == removeInstruction) {
                 if (instructionList.getSelectedIndex() != -1) {
                     instructionsArray.remove(instructionList.getSelectedIndex());
                     updateInstructions();
                 }
             }
+
             if (e.getSource() == addIngredient) {
                 if ((double) amountModel.getValue() > 0) { // Kan lägga till en JOptionpane för att bekräfta
                     recipeController.createRecipeIngredient((String) ingredientsMenu.getSelectedItem(), (double) amountModel.getValue());
                     updateIngredients();
                 }
             }
+
             if (e.getSource() == removeIngredient) {
                 System.out.println(ingredientsList.isSelectionEmpty());
                 if (!ingredientsList.isSelectionEmpty()) {
@@ -406,8 +409,8 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                 } else {
                     JOptionPane.showMessageDialog(null, "Inget markerat", "Fel", JOptionPane.ERROR_MESSAGE);
                 }
-
             }
+
             if (e.getSource() == saveRecipe) {
                 if (!ingredientsListModel.isEmpty()) { // Kan lägga till en JOptionpane för att bekräfta
                     if (!recipeController.checkDuplicateRecipe(recipeName.getText())) {
