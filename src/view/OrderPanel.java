@@ -41,6 +41,7 @@ public class OrderPanel extends JPanel {
         this.controller = controller;
         controller.setPanel(this);
         setupPanels();
+        controller.setup(this);
     }
 
     /**
@@ -50,7 +51,7 @@ public class OrderPanel extends JPanel {
         leftPanel = new JPanel();
         rightPanel = new JPanel();
 
-        leftPanel.setBorder(new TitledBorder("Order history"));
+        leftPanel.setBorder(new TitledBorder("Order Historik"));
         orderHistoryJList = new JList<>();
         orderHistoryJList.setPreferredSize(new Dimension(500, 600));
         leftPanel.add(orderHistoryJList);

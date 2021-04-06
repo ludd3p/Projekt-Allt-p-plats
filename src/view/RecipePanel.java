@@ -1,7 +1,6 @@
 package view;
 
 import controller.RecipeController;
-import model.Recipe;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -138,11 +137,11 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             instructionsModel.clear();
             ArrayList<String> recIngredients = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), (int) spinner.getValue());
             ArrayList<String> recInstructions = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
-            for (String s : recIngredients){
+            for (String s : recIngredients) {
                 ingredientsModel.addElement(s);
             }
-            if (recInstructions != null){
-                for (String s : recInstructions){
+            if (recInstructions != null) {
+                for (String s : recInstructions) {
                     instructionsModel.addElement(s);
                 }
             }
@@ -184,7 +183,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         if (e.getSource() == spinner) {
             ingredientsModel.clear();
             ArrayList<String> recIngredients = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), (int) spinner.getValue());
-            for (String s : recIngredients){
+            for (String s : recIngredients) {
                 ingredientsModel.addElement(s);
             }
         }
@@ -197,11 +196,11 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             System.out.println(evt.getNewValue());
             ArrayList<String> recNames = (ArrayList<String>) evt.getNewValue();
             recipes.removeAllItems();
-            for (String s : recNames){
+            for (String s : recNames) {
                 recipes.addItem(s);
             }
         }
-        if (evt.getPropertyName().equals("IngredientNames")){
+        if (evt.getPropertyName().equals("IngredientNames")) {
             ArrayList<String> ingNames = (ArrayList<String>) evt.getNewValue();
         }
     }
@@ -255,8 +254,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Constructor used when editing a recipe, receives a recicpe
-         *
-         *
          */
         public NewRecipeWindow(String recName) {
             //Frame settings
@@ -270,17 +267,17 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             instructionListModel.clear();
             ingredientsArray = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), 1);
 
-            if (recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex()) != null){
+            if (recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex()) != null) {
                 instructionsArray = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
             } else {
                 instructionsArray = new ArrayList<>();
             }
 
-            for (String s : ingredientsArray){
+            for (String s : ingredientsArray) {
                 ingredientsListModel.addElement(s);
             }
-            if (instructionsArray != null){
-                for (String s : instructionsArray){
+            if (instructionsArray != null) {
+                for (String s : instructionsArray) {
                     instructionListModel.addElement(s);
                 }
             }
@@ -411,7 +408,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             }
             if (e.getSource() == saveRecipe) {
                 if (!ingredientsListModel.isEmpty()) { // Kan lägga till en JOptionpane för att bekräfta
-                    if (!recipeController.checkDuplicateRecipe(recipeName.getText())){
+                    if (!recipeController.checkDuplicateRecipe(recipeName.getText())) {
                         recipeController.addRecipeToDatabase(recipeName.getText(), instructionsArray);
                     } else {
                         recipeController.updateRecipeDatabase(recipeName.getText(), instructionsArray);

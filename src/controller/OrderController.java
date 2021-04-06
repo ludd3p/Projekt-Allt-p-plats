@@ -14,8 +14,8 @@ import view.OrderPanel;
 
 public class OrderController {
     private Controller controller;
-    private OrderPanel panel;
     private Order currentOrder;
+    private OrderPanel panel;
 
     /**
      * @param controller which controller to use
@@ -23,6 +23,10 @@ public class OrderController {
     public OrderController(Controller controller) {
         this.controller = controller;
         this.currentOrder = new Order();
+    }
+
+    public void setup(OrderPanel panel) {
+        this.panel = panel;
         controller.getDailyEvent().addAction(this::saveCurrentOrder);
         addOrderToHistory(currentOrder);
     }

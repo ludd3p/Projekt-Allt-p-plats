@@ -35,7 +35,9 @@ public class Controller {
         recipeController = new RecipeController(this, databaseReference);
         storageController = new StorageController(this);
         orderController = new OrderController(this);
+
         mainView = new MainView(this);
+
         //getNotesFromDatabase();
     }
 
@@ -178,4 +180,7 @@ public class Controller {
     }
 
 
+    public void setStorageController(StorageController storageController) {
+        this.storageController = storageController;
+    }
 }
