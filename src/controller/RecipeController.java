@@ -25,14 +25,14 @@ public class RecipeController {
     private ArrayList<RecipeIngredient> recipeIngredient = new ArrayList<>();
     private ArrayList<String> ingredientNames = new ArrayList<>();
 
-    public RecipeController(Controller controller, DatabaseReference databaseReference){
+    public RecipeController(Controller controller, DatabaseReference databaseReference) {
         this.controller = controller;
         this.databaseReference = databaseReference;
         getRecipesFromDatabase();
         getIngredientsFromDatabase();
     }
 
-    public void registerPropertyChangeListener(PropertyChangeListener listener){
+    public void registerPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
@@ -49,6 +49,7 @@ public class RecipeController {
                 }
                 pcs.firePropertyChange("RecipeNames", null, allRecipeNames);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("Fel vid hämtning av recept");
@@ -72,6 +73,7 @@ public class RecipeController {
                 }
                 pcs.firePropertyChange("IngredientNames", null, ingredientNames);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
@@ -102,6 +104,10 @@ public class RecipeController {
         return ingredientNames;
     }
 
+    public void setIngredientNames(ArrayList<String> ingredientNames) {
+        this.ingredientNames = ingredientNames;
+    }
+
     public String getIngredientPrefix(String name) {
         String prefix = "";
         for (Ingredient i : allIngredients) {
@@ -125,7 +131,7 @@ public class RecipeController {
         databaseReference.child("Recipes").child(name).setValueAsync(updatedRecipe);
     }
 
-    public void removeRecipeFromDatabase(String name){
+    public void removeRecipeFromDatabase(String name) {
         databaseReference.child("Recipes").child(name).removeValueAsync();
     }
 
@@ -137,22 +143,22 @@ public class RecipeController {
         return strings;
     }
 
-    public ArrayList<String> populateRecipeIngredients(int i, int multi){
+    public ArrayList<String> populateRecipeIngredients(int i, int multi) {
         Recipe rec = allRecipes.get(i);
         ArrayList<String> al = new ArrayList<>();
-        for (RecipeIngredient ri : rec.getIngredients()){
+        for (RecipeIngredient ri : rec.getIngredients()) {
             al.add(ri.toString2(multi));
         }
         return al;
     }
 
-    public ArrayList<String> getSelectedRecipeInstructions(int i){
+    public ArrayList<String> getSelectedRecipeInstructions(int i) {
         return allRecipes.get(i).getInstructions();
     }
 
-    public Boolean checkDuplicateRecipe(String recName){
-        for (Recipe r : allRecipes){
-            if (r.getName().equals(recName)){
+    public Boolean checkDuplicateRecipe(String recName) {
+        for (Recipe r : allRecipes) {
+            if (r.getName().equals(recName)) {
                 return true;
             }
         }
@@ -184,10 +190,6 @@ public class RecipeController {
         this.recipeIngredient = recipeIngredient;
     }
 
-    public void setIngredientNames(ArrayList<String> ingredientNames) {
-        this.ingredientNames = ingredientNames;
-    }
-
     public ArrayList<String> getAllRecipeNames() {
         return allRecipeNames;
     }
@@ -196,7 +198,7 @@ public class RecipeController {
         this.allRecipeNames = allRecipeNames;
     }
 
-    public void setRecPanel(RecipePanel recPanel){
+    public void setRecPanel(RecipePanel recPanel) {
         this.recPanel = recPanel;
     }
     //</editor-fold>

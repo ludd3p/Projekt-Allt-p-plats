@@ -10,6 +10,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Panel used to keep track of order history and current orders.
+ *
+ * @Author Hazem Elkhalil
+ */
+
 public class OrderPanel extends JPanel {
     private JPanel leftPanel; // Vänstra panelen
     private JPanel rightPanel; // höger panelen
@@ -23,6 +29,12 @@ public class OrderPanel extends JPanel {
     private JButton remove; // Avbryt en order
     private OrderController controller;
 
+
+    /**
+     * Constructor to initiate the panel with an OrderController
+     *
+     * @param controller which controller to use
+     */
     public OrderPanel(OrderController controller) {
         setLayout(new BorderLayout(5, 5));
         orderHistoryList = new ArrayList<>();
@@ -31,6 +43,9 @@ public class OrderPanel extends JPanel {
         setupPanels();
     }
 
+    /**
+     * Function to setup all the components
+     */
     public void setupPanels() {
         leftPanel = new JPanel();
         rightPanel = new JPanel();
@@ -65,7 +80,7 @@ public class OrderPanel extends JPanel {
                 JOptionPane.showConfirmDialog(null, "Du måste välja en order!", "ERROR", JOptionPane.DEFAULT_OPTION);
                 return;
             }
-            if (orderHistoryJList.getSelectedIndex() == 0){
+            if (orderHistoryJList.getSelectedIndex() == 0) {
                 controller.saveCurrentOrder();
             }
             this.controller.orderHasArrived(orderHistoryJList.getSelectedValue());
@@ -87,68 +102,74 @@ public class OrderPanel extends JPanel {
         this.add(rightPanel, BorderLayout.EAST);
     }
 
-
+    /**
+     * @return panel on the west side (Order history)
+     */
     public JPanel getLeftPanel() {
         return leftPanel;
     }
 
+    /**
+     * @param leftPanel replaces the left panel
+     */
     public void setLeftPanel(JPanel leftPanel) {
         this.leftPanel = leftPanel;
     }
 
+    /**
+     * @return the east side of the panel (control panel)
+     */
     public JPanel getRightPanel() {
         return rightPanel;
     }
+
+    /**
+     * @param rightPanel replaces the right panel
+     */
 
     public void setRightPanel(JPanel rightPanel) {
         this.rightPanel = rightPanel;
     }
 
+    /**
+     * @return returns the current orderhistory as a JList
+     */
     public JList<Order> getOrderHistoryJList() {
         return orderHistoryJList;
     }
 
+    /**
+     * @param orderHistoryJList replaces the current order history
+     */
     public void setOrderHistoryJList(JList<Order> orderHistoryJList) {
         this.orderHistoryJList = orderHistoryJList;
     }
 
+    /**
+     * @return orderHistoryList returns the current order history as an arraylist
+     */
     public List<Order> getOrderHistoryList() {
         return orderHistoryList;
     }
 
+    /**
+     * @param orderHistoryList replaces the arraylist
+     */
     public void setOrderHistoryList(List<Order> orderHistoryList) {
         this.orderHistoryList = orderHistoryList;
     }
 
+    /**
+     * @return current order view list
+     */
     public JList<OrderItem> getCurrentOrderList() {
         return currentOrderList;
     }
 
+    /**
+     * @param currentOrderList replace the current order view list
+     */
     public void setCurrentOrderList(JList<OrderItem> currentOrderList) {
         this.currentOrderList = currentOrderList;
-    }
-
-    public JButton getShowOrder() {
-        return showOrder;
-    }
-
-    public void setShowOrder(JButton showOrder) {
-        this.showOrder = showOrder;
-    }
-
-    public JButton getHasArrived() {
-        return hasArrived;
-    }
-
-    public void setHasArrived(JButton hasArrived) {
-        this.hasArrived = hasArrived;
-    }
-
-    public JButton getRemove() {
-        return remove;
-    }
-
-    public void setRemove(JButton remove) {
-        this.remove = remove;
     }
 }

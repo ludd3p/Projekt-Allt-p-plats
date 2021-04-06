@@ -5,11 +5,12 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
+import model.Note;
+import model.Unit;
+import model.WeekDays;
 import model.daily.DailyEvent;
-import model.*;
 import model.ingredient.Ingredient;
 import view.MainView;
-import view.RecipePanel;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,15 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 public class Controller {
-    private static FirebaseDatabase database;
     public static DatabaseReference databaseReference;
+    private static FirebaseDatabase database;
     private static MainView mainView;
     private OrderController orderController;
     private StorageController storageController;
     private RecipeController recipeController;
     private DailyEvent dailyEvent;
-
-
 
 
     public Controller() throws IOException {
@@ -52,14 +51,6 @@ public class Controller {
         FirebaseApp.initializeApp(options);
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
-    }
-
-    public WeekDays[] getWeekDays() {
-        return WeekDays.values();
-    }
-
-    public String[] getUnitsPrefixArray() {
-        return Unit.getPrefixArray();
     }
 
     // läser data från databasen
@@ -88,6 +79,38 @@ public class Controller {
         return null;
     }
 
+    public static FirebaseDatabase getDatabase() {
+        return database;
+    }
+
+    public static void setDatabase(FirebaseDatabase database) {
+        Controller.database = database;
+    }
+
+    public static DatabaseReference getDatabaseReference() {
+        return databaseReference;
+    }
+
+    public static void setDatabaseReference(DatabaseReference databaseReference) {
+        Controller.databaseReference = databaseReference;
+    }
+
+    public static MainView getMainView() {
+        return mainView;
+    }
+
+    public static void setMainView(MainView mainView) {
+        Controller.mainView = mainView;
+    }
+
+    public WeekDays[] getWeekDays() {
+        return WeekDays.values();
+    }
+
+    public String[] getUnitsPrefixArray() {
+        return Unit.getPrefixArray();
+    }
+
     public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix) {
         Ingredient ingredientToAddToDatabase = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
         databaseReference.child("Ingredient").push().setValueAsync(ingredientToAddToDatabase);
@@ -113,9 +136,6 @@ public class Controller {
                     Map.Entry mapElement = stringHashMapEntry;
 
 
-
-
-
                     //ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String) mapElement.getKey()));
                 }
 
@@ -129,35 +149,13 @@ public class Controller {
         });
     }
 
-
-
-    public static FirebaseDatabase getDatabase() {
-        return database;
+    public RecipeController getRecipeController() {
+        return recipeController;
     }
 
-    public static void setDatabase(FirebaseDatabase database) {
-        Controller.database = database;
+    public void setRecipeController(RecipeController recipeController) {
+        this.recipeController = recipeController;
     }
-
-    public static DatabaseReference getDatabaseReference() {
-        return databaseReference;
-    }
-
-    public static void setDatabaseReference(DatabaseReference databaseReference) {
-        Controller.databaseReference = databaseReference;
-    }
-
-    public static MainView getMainView() {
-        return mainView;
-    }
-
-    public static void setMainView(MainView mainView) {
-        Controller.mainView = mainView;
-    }
-
-    public RecipeController getRecipeController(){ return recipeController; }
-
-    public void setRecipeController(RecipeController recipeController){ this.recipeController = recipeController; }
 
     public OrderController getOrderController() {
         return orderController;
@@ -167,7 +165,7 @@ public class Controller {
         this.orderController = orderController;
     }
 
-    public StorageController getStorageController(){
+    public StorageController getStorageController() {
         return storageController;
     }
 
@@ -178,8 +176,6 @@ public class Controller {
     public void setDailyEvent(DailyEvent dailyEvent) {
         this.dailyEvent = dailyEvent;
     }
-
-
 
 
 }

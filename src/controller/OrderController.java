@@ -66,7 +66,7 @@ public class OrderController {
         this.controller = controller;
     }
 
-    public void setPanel(OrderPanel panel){
+    public void setPanel(OrderPanel panel) {
         this.panel = panel;
     }
 }
