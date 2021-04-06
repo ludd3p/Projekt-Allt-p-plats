@@ -68,9 +68,6 @@ public class Supplier {
         this.countrty = countrty;
     }
 
-    public String toStringName(){
-        return name;
-    }
 
     public String toString(){
         return String.format("Supplier: %s \n Address: %s \n City; %s \n Country: %s \n Email: %s \n Phone number: %s", name, address, city, countrty, email, phonenumber);
