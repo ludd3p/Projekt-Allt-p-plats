@@ -1,14 +1,19 @@
 package view;
 
 import controller.Controller;
+import controller.SupplierController;
 import model.supplier.Supplier;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 /**
  * Class for the supplier panel
@@ -18,24 +23,28 @@ import java.beans.PropertyChangeEvent;
  */
 
 
-public class SupplierPanel extends JPanel {
+public class SupplierPanel extends JPanel implements PropertyChangeListener {
 
-    private Controller controller;
+    private SupplierController supController;
 
     private JPanel northPanel;
     private JPanel centerPanel;
     private JPanel westPanel;
-    private JList<Supplier> supplierNameJList;
-    private JList<Supplier> supplierInfoJList;
+    private DefaultListModel<Supplier> supModel;
+    private DefaultListModel<String> supNameModel;
+    private JList<Supplier> supplierJList;;
+    private JList<String> supplierNameJList;
+    private JTextArea supplierInfoArea;
     private JButton addSupplier, removeSupplier, updateSupplier;
     private JComboBox cmbWeekDays;
 
     /**
      * Constructor to create supplier panel GUI
      */
-    public SupplierPanel(Controller controller) {
-        this.controller = controller;
-
+    public SupplierPanel(SupplierController controller) {
+        supController = controller;
+        supController.setSupplierPanel(this);
+        supController.registerPropertyChangeListener(this);
         setLayout(new BorderLayout());
         setupPanels();
     }
@@ -48,6 +57,10 @@ public class SupplierPanel extends JPanel {
         centerPanel = new JPanel();
         westPanel = new JPanel();
 
+        supModel = new DefaultListModel<>();
+        supplierJList = new JList<>();
+        supplierJList.setModel(supModel);
+
         addSupplier = new JButton("Add supplier");
         removeSupplier = new JButton("Remove supplier");
         updateSupplier = new JButton("Update supplier");
@@ -59,26 +72,33 @@ public class SupplierPanel extends JPanel {
         northPanel.add(updateSupplier);
 
         westPanel.setBorder(new TitledBorder("Suppliers"));
+        supNameModel = new DefaultListModel<>();
         supplierNameJList = new JList<>();
         supplierNameJList.setPreferredSize(new Dimension(200, 550));
+        supplierNameJList.setModel(supNameModel);
         supplierNameJList.setEnabled(true);
         supplierNameJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         westPanel.setLayout(new BorderLayout(5, 0));
         westPanel.add(supplierNameJList);
 
         centerPanel.setBorder(new TitledBorder("Info"));
-        supplierInfoJList = new JList<>();
-        supplierInfoJList.setPreferredSize(new Dimension(700, 550));
-        supplierInfoJList.setEnabled(true);
-        supplierInfoJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        supplierInfoArea = new JTextArea();
+        supplierInfoArea.setPreferredSize(new Dimension(700, 550));
+        supplierInfoArea.setEnabled(false);
         centerPanel.setLayout(new BorderLayout(5, 0));
-        centerPanel.add(supplierInfoJList);
+        centerPanel.add(supplierInfoArea);
 
         this.add(northPanel, BorderLayout.NORTH);
         this.add(westPanel, BorderLayout.WEST);
         this.add(centerPanel, BorderLayout.CENTER);
 
         addListeners();
+
+        supplierNameJList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent evt) {
+                listValueChanged(evt);
+            }
+        });
     }
 
     /**
@@ -91,7 +111,7 @@ public class SupplierPanel extends JPanel {
         JTextField supAddress = new JTextField(5);
         JTextField supCity = new JTextField(5);
         JTextField supCountry = new JTextField(5);
-        cmbWeekDays = new JComboBox(controller.getWeekDays());
+        cmbWeekDays = new JComboBox(supController.getWeekDays());
 
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(320, 133));
@@ -124,9 +144,8 @@ public class SupplierPanel extends JPanel {
                     String address = supAddress.getText();
                     String city = supCity.getText();
                     String country = supCountry.getText();
-                    //controller.addNewSupplier(name,phone,email,address,city,country); // När det skall skickas till controller.
-                    Supplier supplier = new Supplier(name, address, city, country, email, phone);
-                    Controller.databaseReference.child("Suppliers").child(supplier.getName()).setValueAsync(supplier);
+                    supController.addSupplierToDatabase(name,address,city,country, email, phone); // När det skall skickas till controller.
+                    supController.getSuppliersFromDatabase();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -138,13 +157,13 @@ public class SupplierPanel extends JPanel {
      * A panel which is opened in a JOptionPane to update current supplier
      */
     public void updateSupplier() {
-        JTextField supName = new JTextField(supplierNameJList.getSelectedValue().getName(), 5);
-        JTextField supPhone = new JTextField(supplierNameJList.getSelectedValue().getPhonenumber(), 5);
-        JTextField supEmail = new JTextField(supplierNameJList.getSelectedValue().getEmail(), 5);
-        JTextField supAddress = new JTextField(supplierNameJList.getSelectedValue().getAddress(), 5);
-        JTextField supCity = new JTextField(supplierNameJList.getSelectedValue().getCity(), 5);
-        JTextField supCountry = new JTextField(supplierNameJList.getSelectedValue().getCountrty(), 5);
-        cmbWeekDays = new JComboBox(controller.getWeekDays());
+        JTextField supName = new JTextField(supplierJList.getSelectedValue().getName(), 5);
+        JTextField supPhone = new JTextField(supplierJList.getSelectedValue().getPhonenumber(), 5);
+        JTextField supEmail = new JTextField(supplierJList.getSelectedValue().getEmail(), 5);
+        JTextField supAddress = new JTextField(supplierJList.getSelectedValue().getAddress(), 5);
+        JTextField supCity = new JTextField(supplierJList.getSelectedValue().getCity(), 5);
+        JTextField supCountry = new JTextField(supplierJList.getSelectedValue().getCountrty(), 5);
+        cmbWeekDays = new JComboBox(supController.getWeekDays());
 
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(320, 133));
@@ -185,15 +204,17 @@ public class SupplierPanel extends JPanel {
         }
     }
 
-    public void propertyChangeSupplierList(PropertyChangeEvent evt){
-        if (evt.getPropertyName().equals("supplier") && evt.getNewValue() instanceof Supplier){
-
-        }
-    }
-
-    public void propertyChangeSupplierInfo(PropertyChangeEvent evt){
-        if (evt.getPropertyName().equals("info") && evt.getNewValue() instanceof Supplier){
-
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("Supplier list")) {
+            System.out.println("hej");
+            supModel.clear();
+            supNameModel.clear();
+            ArrayList<Supplier> tempList = (ArrayList<Supplier>) evt.getNewValue();
+            for (Supplier sup : tempList){
+                supModel.addElement(sup);
+                supNameModel.addElement(sup.getName());
+            }
         }
     }
 
@@ -205,6 +226,15 @@ public class SupplierPanel extends JPanel {
         addSupplier.addActionListener(listener);
         removeSupplier.addActionListener(listener);
         updateSupplier.addActionListener(listener);
+    }
+
+    private void listValueChanged(ListSelectionEvent evt) {
+        if (!supplierNameJList.getValueIsAdjusting()) {
+            if (supplierNameJList.getSelectedIndex() >= 0) {
+                Supplier tempSup = supplierJList.getSelectedValue();
+                supplierInfoArea.append(tempSup.toString());
+            }
+        }
     }
 
     /**
