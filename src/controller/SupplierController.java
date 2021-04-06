@@ -8,18 +8,19 @@ import model.supplier.Supplier;
 import model.supplier.WeekDays;
 import view.SupplierPanel;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 public class SupplierController {
 
     private Controller controller;
-    private Supplier currentSupplier;
     private SupplierPanel panel;
     private DatabaseReference databaseReference;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     private ArrayList<Supplier> supplierList = new ArrayList<>();
+    private ArrayList<String> supplierNames = new ArrayList<>();
 
     public SupplierController(Controller controller, DatabaseReference databaseReference) {
         this.controller = controller;
@@ -27,13 +28,13 @@ public class SupplierController {
         getSuppliersFromDatabase();
     }
 
-    public WeekDays[] getWeekDays() {
-        return WeekDays.values();
+    public void registerPropertyChangeListener(PropertyChangeListener listener){
+        pcs.addPropertyChangeListener(listener);
     }
 
     public void addSupplierToDatabase(String name, String address, String city, String countrty, String email, String phonenumber){
-        currentSupplier = new Supplier(name, address, city, countrty, email, phonenumber);
-        //add
+        Supplier newSupplier = new Supplier(name, address, city, countrty, email, phonenumber);
+        databaseReference.child("Suppliers").child(name).setValueAsync(newSupplier);
     }
 
     public void getSuppliersFromDatabase(){
@@ -42,24 +43,25 @@ public class SupplierController {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 supplierList.clear();
                 for (DataSnapshot supplier : dataSnapshot.getChildren()){
-                    currentSupplier = supplier.getValue(Supplier.class);
-                    supplierList.add(currentSupplier);
+                    Supplier newSupplier = supplier.getValue(Supplier.class);
+                    supplierList.add(newSupplier);
                 }
-                pcs.firePropertyChange("Suppliers", null, supplierList);
+
+                pcs.firePropertyChange("Supplier list", null, supplierList);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                System.out.println(databaseError.toString());
             }
         });
     }
 
-    public String getSupplierNames(){
-        return currentSupplier.toStringName();
+    public WeekDays[] getWeekDays() {
+        return WeekDays.values();
     }
 
-    public String getSupplierInfo(){
-        return currentSupplier.toString();
+    public void setSupplierPanel(SupplierPanel panel){
+        this.panel = panel;
     }
 }

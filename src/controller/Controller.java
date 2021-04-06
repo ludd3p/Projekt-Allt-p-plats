@@ -107,10 +107,6 @@ public class Controller {
         Controller.mainView = mainView;
     }
 
-    public WeekDays[] getWeekDays() {
-        return supplierController.getWeekDays();
-    }
-
     public String[] getUnitsPrefixArray() {
         return Unit.getPrefixArray();
     }
