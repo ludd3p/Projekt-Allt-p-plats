@@ -2,6 +2,7 @@ package model.ingredient;
 
 // Använd klassen när vi lägger till ingridienser i recepten.
 
+import com.google.firebase.database.Exclude;
 import model.Unit;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class Ingredient {
     }
 
     //<editor-fold desc = "Setters and getters">
+    @Exclude
     public String getKey() {
         return key;
     }
