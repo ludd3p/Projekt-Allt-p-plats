@@ -180,21 +180,26 @@ public class StoragePanel extends JPanel {
         };
 
         txfFilter = new JTextField("Sök");
+        txfFilter.setToolTipText("Skriv in namnet på den produkt du söker efter.");
         txfFilter.setPreferredSize(new Dimension(100, 27));
         txfFilter.addFocusListener(focusListener);
         txfFilter.addKeyListener(keyListener);
         pnlNorth.add(txfFilter);
 
         btnAddProduct = new JButton("Lägg till");
+        btnAddProduct.setToolTipText("Klicka för att lägga till  en ny produkt.");
         btnAddProduct.addActionListener(actionListener);
 
         btnChangeProduct = new JButton("Ändra");
+        btnChangeProduct.setToolTipText("Klicka för att ändra den valda produkten.");
         btnChangeProduct.addActionListener(actionListener);
 
         btnRemoveProduct = new JButton("Ta bort");
+        btnRemoveProduct.setToolTipText("Klicka för att ta bort den valda produkten.");
         btnRemoveProduct.addActionListener(actionListener);
 
         btnUpdateList = new JButton("Uppdatera");
+        btnUpdateList.setToolTipText("Klicka för att uppdatera listan av produkter.");
         btnUpdateList.addActionListener(actionListener);
 
         pnlNorth.add(btnAddProduct);
@@ -269,6 +274,7 @@ public class StoragePanel extends JPanel {
         public ProductWindow() {
             addOrChange = true;
 
+            setTitle("Lägg till ny produkt");
             setupProductWindow();
         }
 
@@ -281,6 +287,7 @@ public class StoragePanel extends JPanel {
          */
         public ProductWindow(String productName, String cost, String currentAmount, String minAmount, String maxAmount, String unit) {
             addOrChange = false;
+            setTitle("Ändra produkten");
             setupProductWindow();
 
             txfProductName.setText(productName);
@@ -321,31 +328,37 @@ public class StoragePanel extends JPanel {
             pnlProductWindowCenter.add(lblProductName);
             txfProductName = new JTextField();
             txfProductName.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
+            txfProductName.setToolTipText("Skriv in namnet på den produkt du vill lägga till.");
             pnlProductWindowCenter.add(txfProductName);
 
             lblCost = new JLabel(" Kostnad: ");
             pnlProductWindowCenter.add(lblCost);
             txfCost = new JTextField();
+            txfCost.setToolTipText("Skriv in kostnaden per vald enhet för produkten.");
             pnlProductWindowCenter.add(txfCost);
 
             lblCurrentAmount = new JLabel(" Nuvarande mängd:");
             pnlProductWindowCenter.add(lblCurrentAmount);
             txfCurrentAmount = new JTextField();
+            txfCurrentAmount.setToolTipText("Skriv in den nuvarande mängden av denna produkt i lagret.");
             pnlProductWindowCenter.add(txfCurrentAmount);
 
             lblMinAmount = new JLabel(" Minsta mängd:");
             pnlProductWindowCenter.add(lblMinAmount);
             txfMinAmount = new JTextField();
+            txfMinAmount.setToolTipText("Skriv in den mängd av produkten då du vill bli varnad att det behövs köpas in mer.");
             pnlProductWindowCenter.add(txfMinAmount);
 
             lblMaxAmount = new JLabel(" Rekommenderad mängd:");
             pnlProductWindowCenter.add(lblMaxAmount);
             txfMaxAmount = new JTextField();
+            txfMinAmount.setToolTipText("Skriv in den mängd av produkten du vill ha i lagret.");
             pnlProductWindowCenter.add(txfMaxAmount);
 
             lblUnit = new JLabel(" Enhet:");
             pnlProductWindowCenter.add(lblUnit);
             cbxUnit = new JComboBox(storageController.getUnitsPrefixArray());
+            cbxUnit.setToolTipText("Välj enhet för produkten.");
             pnlProductWindowCenter.add(cbxUnit);
 
             pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);
@@ -371,7 +384,7 @@ public class StoragePanel extends JPanel {
                                     txfProductName.getText().toLowerCase().contains("Minsta mängd:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("Rekommenderad mängd:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("<!---")) {
-                                JOptionPane.showMessageDialog(null, "Error: Felaktig inmatning.", "Felaktig inmatning", JOptionPane.PLAIN_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Error: Otillåtet produktnamn.", "Felaktig inmatning", JOptionPane.PLAIN_MESSAGE);
                                 proceed = false;
                             }
                             if (addOrChange && proceed) {
@@ -415,11 +428,25 @@ public class StoragePanel extends JPanel {
                 }
             };
 
-            btnOk = new JButton("Ok");
+            btnOk = new JButton();
             btnOk.addActionListener(listener);
+            if(addOrChange){
+                btnOk.setText("Lägg till");
+                btnOk.setToolTipText("Lägg till produkten i lagret.");
+            }
+            else if(!addOrChange){
+                btnOk.setText("Ändra");
+                btnOk.setToolTipText("Slutför ändringarna för den valda produkten.");
+            }
             pnlProductWindowSouth.add(btnOk);
 
             btnCancel = new JButton("Avbryt");
+            if(addOrChange){
+                btnCancel.setToolTipText("Avbryt tilläget av produkten i lagret.");
+            }
+            else if(!addOrChange){
+                btnCancel.setToolTipText("Avbryt ändringarna för den valda produkten..");
+            }
             btnCancel.addActionListener(listener);
             pnlProductWindowSouth.add(btnCancel);
 
