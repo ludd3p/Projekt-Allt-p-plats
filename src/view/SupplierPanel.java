@@ -26,7 +26,7 @@ public class SupplierPanel extends JPanel {
     private JPanel centerPanel;
     private JPanel westPanel;
     private JList<Supplier> supplierNameJList;
-    private JList<String> supplierInfoJList;
+    private JList<Supplier> supplierInfoJList;
     private JButton addSupplier, removeSupplier, updateSupplier;
     private JComboBox cmbWeekDays;
 
@@ -186,13 +186,13 @@ public class SupplierPanel extends JPanel {
     }
 
     public void propertyChangeSupplierList(PropertyChangeEvent evt){
-        if (evt.getPropertyName().equals("supplier")){
+        if (evt.getPropertyName().equals("supplier") && evt.getNewValue() instanceof Supplier){
 
         }
     }
 
     public void propertyChangeSupplierInfo(PropertyChangeEvent evt){
-        if (evt.getPropertyName().equals("info")){
+        if (evt.getPropertyName().equals("info") && evt.getNewValue() instanceof Supplier){
 
         }
     }
