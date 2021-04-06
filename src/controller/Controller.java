@@ -7,7 +7,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import model.Note;
 import model.Unit;
-import model.WeekDays;
+import model.supplier.WeekDays;
 import model.daily.DailyEvent;
 import model.ingredient.Ingredient;
 import view.MainView;
@@ -26,6 +26,7 @@ public class Controller {
     private OrderController orderController;
     private StorageController storageController;
     private RecipeController recipeController;
+    private SupplierController supplierController;
     private DailyEvent dailyEvent;
 
 
@@ -35,6 +36,7 @@ public class Controller {
         recipeController = new RecipeController(this, databaseReference);
         storageController = new StorageController(this);
         orderController = new OrderController(this);
+        supplierController = new SupplierController(this, databaseReference);
 
         mainView = new MainView(this);
 
@@ -106,7 +108,7 @@ public class Controller {
     }
 
     public WeekDays[] getWeekDays() {
-        return WeekDays.values();
+        return supplierController.getWeekDays();
     }
 
     public String[] getUnitsPrefixArray() {
@@ -169,6 +171,14 @@ public class Controller {
 
     public StorageController getStorageController() {
         return storageController;
+    }
+
+    public SupplierController getSupplierController() {
+        return supplierController;
+    }
+
+    public void setSupplierController(SupplierController supplierController) {
+        this.supplierController = supplierController;
     }
 
     public DailyEvent getDailyEvent() {

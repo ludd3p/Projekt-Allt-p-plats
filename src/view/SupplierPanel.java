@@ -1,13 +1,14 @@
 package view;
 
 import controller.Controller;
-import model.Supplier;
+import model.supplier.Supplier;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 
 /**
  * Class for the supplier panel
@@ -23,7 +24,9 @@ public class SupplierPanel extends JPanel {
 
     private JPanel northPanel;
     private JPanel centerPanel;
-    private JList<Supplier> supplierJList;
+    private JPanel westPanel;
+    private JList<Supplier> supplierNameJList;
+    private JList<String> supplierInfoJList;
     private JButton addSupplier, removeSupplier, updateSupplier;
     private JComboBox cmbWeekDays;
 
@@ -43,6 +46,7 @@ public class SupplierPanel extends JPanel {
     private void setupPanels() {
         northPanel = new JPanel();
         centerPanel = new JPanel();
+        westPanel = new JPanel();
 
         addSupplier = new JButton("Add supplier");
         removeSupplier = new JButton("Remove supplier");
@@ -54,25 +58,27 @@ public class SupplierPanel extends JPanel {
         northPanel.add(removeSupplier);
         northPanel.add(updateSupplier);
 
-        centerPanel.setBorder(new TitledBorder("Suppliers"));
-        supplierJList = new JList<>();
-        supplierJList.setPreferredSize(new Dimension(900, 550));
-        supplierJList.setEnabled(true);
-        supplierJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        westPanel.setBorder(new TitledBorder("Suppliers"));
+        supplierNameJList = new JList<>();
+        supplierNameJList.setPreferredSize(new Dimension(200, 550));
+        supplierNameJList.setEnabled(true);
+        supplierNameJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        westPanel.setLayout(new BorderLayout(5, 0));
+        westPanel.add(supplierNameJList);
+
+        centerPanel.setBorder(new TitledBorder("Info"));
+        supplierInfoJList = new JList<>();
+        supplierInfoJList.setPreferredSize(new Dimension(700, 550));
+        supplierInfoJList.setEnabled(true);
+        supplierInfoJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         centerPanel.setLayout(new BorderLayout(5, 0));
-        centerPanel.add(supplierJList);
+        centerPanel.add(supplierInfoJList);
 
         this.add(northPanel, BorderLayout.NORTH);
+        this.add(westPanel, BorderLayout.WEST);
         this.add(centerPanel, BorderLayout.CENTER);
 
         addListeners();
-    }
-
-    public void addSupplierToList(Supplier[] supplier) {
-        if (supplier != null) {
-            supplierJList.setListData(supplier);
-
-        }
     }
 
     /**
@@ -132,12 +138,12 @@ public class SupplierPanel extends JPanel {
      * A panel which is opened in a JOptionPane to update current supplier
      */
     public void updateSupplier() {
-        JTextField supName = new JTextField(supplierJList.getSelectedValue().getName(), 5);
-        JTextField supPhone = new JTextField(supplierJList.getSelectedValue().getPhonenumber(), 5);
-        JTextField supEmail = new JTextField(supplierJList.getSelectedValue().getEmail(), 5);
-        JTextField supAddress = new JTextField(supplierJList.getSelectedValue().getAddress(), 5);
-        JTextField supCity = new JTextField(supplierJList.getSelectedValue().getCity(), 5);
-        JTextField supCountry = new JTextField(supplierJList.getSelectedValue().getCountrty(), 5);
+        JTextField supName = new JTextField(supplierNameJList.getSelectedValue().getName(), 5);
+        JTextField supPhone = new JTextField(supplierNameJList.getSelectedValue().getPhonenumber(), 5);
+        JTextField supEmail = new JTextField(supplierNameJList.getSelectedValue().getEmail(), 5);
+        JTextField supAddress = new JTextField(supplierNameJList.getSelectedValue().getAddress(), 5);
+        JTextField supCity = new JTextField(supplierNameJList.getSelectedValue().getCity(), 5);
+        JTextField supCountry = new JTextField(supplierNameJList.getSelectedValue().getCountrty(), 5);
         cmbWeekDays = new JComboBox(controller.getWeekDays());
 
         JPanel panel = new JPanel();
@@ -179,6 +185,18 @@ public class SupplierPanel extends JPanel {
         }
     }
 
+    public void propertyChangeSupplierList(PropertyChangeEvent evt){
+        if (evt.getPropertyName().equals("supplier")){
+
+        }
+    }
+
+    public void propertyChangeSupplierInfo(PropertyChangeEvent evt){
+        if (evt.getPropertyName().equals("info")){
+
+        }
+    }
+
     /**
      * Add listeners to Swing componenets which needs it
      */
@@ -199,14 +217,14 @@ public class SupplierPanel extends JPanel {
                 addSupplier();
             }
             if (e.getSource() == removeSupplier) {
-                if (supplierJList.getSelectedValue() != null) {
+                if (supplierNameJList.getSelectedValue() != null) {
 
                 } else {
                     JOptionPane.showMessageDialog(null, "Please select a supplier");
                 }
             }
             if (e.getSource() == updateSupplier) {
-                if (supplierJList.getSelectedValue() != null) {
+                if (supplierNameJList.getSelectedValue() != null) {
                     updateSupplier();
                 } else {
                     JOptionPane.showMessageDialog(null, "Please select a supplier");
