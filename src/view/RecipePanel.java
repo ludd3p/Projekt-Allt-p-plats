@@ -14,9 +14,8 @@ import java.util.ArrayList;
 
 /**
  * Panel for managing recipes
- *
  * @Author Ludvig Wedin Pettersson
- * @Version 1.0
+ * @Version 1.1
  */
 
 public class RecipePanel extends JPanel implements PropertyChangeListener {
@@ -189,27 +188,29 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Handles PropertyChange
+     *
+     * @param evt incoming message with the changed property
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("RecipeNames")) {
-            System.out.println("hallå");
             System.out.println(evt.getNewValue());
             ArrayList<String> recNames = (ArrayList<String>) evt.getNewValue();
             recipes.removeAllItems();
             for (String s : recNames) {
                 recipes.addItem(s);
             }
-        }
-        if (evt.getPropertyName().equals("IngredientNames")) {
-            ArrayList<String> ingNames = (ArrayList<String>) evt.getNewValue();
+
         }
     }
 
 
     /**
-     * ´NewRecipeWindow is a new frame used to create new, or edit existing recipes
+     * NewRecipeWindow is a new frame used to create new, or edit existing recipes
      */
-    public class NewRecipeWindow extends JFrame {
+    public class NewRecipeWindow extends JFrame implements PropertyChangeListener {
         private ArrayList<String> instructionsArray;
         private ArrayList<String> ingredientsArray;
 
@@ -217,7 +218,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         private JPanel westPanel;
         private JPanel westNorth;
         private JPanel westSouth;
-        private JComboBox ingredientsMenu;
+        private JComboBox<String> ingredientsMenu;
         private JButton addIngredient;
         private JButton removeIngredient;
         private JSpinner amount;
@@ -249,6 +250,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             setTitle("Nytt recept");
             setPreferredSize(new Dimension(1000, 600));
             setupNewRecipeFrame();
+            recipeController.registerPropertyChangeListener(this);
 
         }
 
@@ -266,6 +268,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             ingredientsListModel.clear();
             instructionListModel.clear();
             ingredientsArray = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), 1);
+            recipeController.registerPropertyChangeListener(this);
 
             if (recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex()) != null) {
                 instructionsArray = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
@@ -375,7 +378,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Listener for buttons
-         *
          * @param e
          */
         public void actionPerformed(ActionEvent e) {
@@ -424,7 +426,22 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         }
 
         /**
-         * Method for updating the GUI
+         * Handles PropertyChangeListener
+         * @param evt Incoming message with new object
+         */
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (evt.getPropertyName().equals("IngredientNames")) {
+                ingredientsMenu.removeAllItems();
+                ArrayList<String> ingNames = (ArrayList<String>) evt.getNewValue();
+                for (String s : ingNames) {
+                    ingredientsMenu.addItem(s);
+                }
+            }
+        }
+
+        /**
+         * Method for updating the recipe instructions in GUI
          */
         public void updateInstructions() {
             int i = 1;
@@ -438,13 +455,18 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         }
 
+        /**
+         * Method updating recipe ingredients in GUI
+         */
         public void updateIngredients() {
             ingredientsListModel.clear();
-            ArrayList<String> ingredientStrings = recipeController.populateNewRecipeIngredients(this);
+            ArrayList<String> ingredientStrings = recipeController.populateNewRecipeIngredients();
             for (String s : ingredientStrings) {
                 ingredientsListModel.addElement(s);
             }
         }
+
+
     }
 
     public RecipeController getController() {
@@ -453,133 +475,5 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     public void setController(RecipeController recipeController) {
         this.recipeController = recipeController;
-    }
-
-    public NewRecipeWindow getNewRecipeWindow() {
-        return newRecipeWindow;
-    }
-
-    public void setNewRecipeWindow(NewRecipeWindow newRecipeWindow) {
-        this.newRecipeWindow = newRecipeWindow;
-    }
-
-    public JPanel getNorthPanel() {
-        return northPanel;
-    }
-
-    public void setNorthPanel(JPanel northPanel) {
-        this.northPanel = northPanel;
-    }
-
-    public JPanel getLeftPanel() {
-        return leftPanel;
-    }
-
-    public void setLeftPanel(JPanel leftPanel) {
-        this.leftPanel = leftPanel;
-    }
-
-    public JPanel getCenterPanel() {
-        return centerPanel;
-    }
-
-    public void setCenterPanel(JPanel centerPanel) {
-        this.centerPanel = centerPanel;
-    }
-
-    public SpinnerModel getSpinnerModel() {
-        return spinnerModel;
-    }
-
-    public void setSpinnerModel(SpinnerModel spinnerModel) {
-        this.spinnerModel = spinnerModel;
-    }
-
-    public JSpinner getSpinner() {
-        return spinner;
-    }
-
-    public void setSpinner(JSpinner spinner) {
-        this.spinner = spinner;
-    }
-
-    public JComboBox<String> getRecipes() {
-        return recipes;
-    }
-
-    public void setRecipes(JComboBox<String> recipes) {
-        this.recipes = recipes;
-    }
-
-    public DefaultListModel<String> getIngredientsModel() {
-        return ingredientsModel;
-    }
-
-    public void setIngredientsModel(DefaultListModel<String> ingredientsModel) {
-        this.ingredientsModel = ingredientsModel;
-    }
-
-    public DefaultListModel<String> getInstructionsModel() {
-        return instructionsModel;
-    }
-
-    public void setInstructionsModel(DefaultListModel<String> instructionsModel) {
-        this.instructionsModel = instructionsModel;
-    }
-
-    public JList<String> getIngredientsList() {
-        return ingredientsList;
-    }
-
-    public void setIngredientsList(JList<String> ingredientsList) {
-        this.ingredientsList = ingredientsList;
-    }
-
-    public JList<String> getRecipeInstructions() {
-        return recipeInstructions;
-    }
-
-    public void setRecipeInstructions(JList<String> recipeInstructions) {
-        this.recipeInstructions = recipeInstructions;
-    }
-
-    public JButton getDone() {
-        return done;
-    }
-
-    public void setDone(JButton done) {
-        this.done = done;
-    }
-
-    public JButton getAddRecipe() {
-        return addRecipe;
-    }
-
-    public void setAddRecipe(JButton addRecipe) {
-        this.addRecipe = addRecipe;
-    }
-
-    public JButton getRemoveRecipe() {
-        return removeRecipe;
-    }
-
-    public void setRemoveRecipe(JButton removeRecipe) {
-        this.removeRecipe = removeRecipe;
-    }
-
-    public JButton getModifyRecipe() {
-        return modifyRecipe;
-    }
-
-    public void setModifyRecipe(JButton modifyRecipe) {
-        this.modifyRecipe = modifyRecipe;
-    }
-
-    public String[] getMenu() {
-        return menu;
-    }
-
-    public void setMenu(String[] menu) {
-        this.menu = menu;
     }
 }
