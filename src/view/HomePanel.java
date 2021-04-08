@@ -1,15 +1,17 @@
 package view;
 
 /**
+ * Panel to handle and manage the notes and notifications in the homepage
  * @author Qassem Aburas
  * @version 1.1
- * with help from Hazem
+ *
  */
 
 
 import controller.Controller;
-import model.Holiday;
-import model.Note;
+import controller.HomeController;
+import model.home.Holiday;
+import model.home.Note;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -35,13 +37,21 @@ public class HomePanel extends JPanel implements ActionListener {
     private JButton addNewHoliday;
     private JButton deleteHoliday;
     private JButton showSavedHolidays;
+    private HomeController homeController;
 
 
-    public HomePanel() {
+    public HomePanel(HomeController homeController) {
         setLayout(new BorderLayout());
+        this.homeController = homeController;
+        homeController.setHomePanel(this);
         createPanels();
     }
 
+    /**
+     * This method creates all the panels for the homepage and inside the panels there is the buttons
+     * and text area to write text in it.
+     *
+     */
     public void createPanels() {
         leftPanel = new JPanel();
         rightPanel = new JPanel();
@@ -127,7 +137,10 @@ public class HomePanel extends JPanel implements ActionListener {
 
     }
 
-    // if the button is pressed
+    /**
+     * Whenever a button is pressed it will take action and listen
+     * @param e Source
+     */
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == submit) {
@@ -313,7 +326,7 @@ public class HomePanel extends JPanel implements ActionListener {
             button.setPreferredSize(new Dimension(120, 80));
             button.addActionListener(e -> {
                 if (holiday.getText() == null || holiday.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva en högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Du måste skriva om en högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
                 if (title.getText() == null || title.getText().equals("")) {

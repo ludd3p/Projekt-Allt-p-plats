@@ -5,12 +5,11 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
-import model.Note;
-import model.Unit;
-import model.supplier.WeekDays;
 import model.daily.DailyEvent;
+import model.*;
 import model.ingredient.Ingredient;
 import view.MainView;
+import view.RecipePanel;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,27 +19,25 @@ import java.util.List;
 import java.util.Map;
 
 public class Controller {
-    public static DatabaseReference databaseReference;
     private static FirebaseDatabase database;
+    public static DatabaseReference databaseReference;
     private static MainView mainView;
     private OrderController orderController;
     private StorageController storageController;
     private RecipeController recipeController;
-    private SupplierController supplierController;
     private DailyEvent dailyEvent;
+    private HomeController homeController;
+
 
 
     public Controller() throws IOException {
         connectToFirebase();
-        dailyEvent = new DailyEvent();
+        this.dailyEvent = new DailyEvent();
         recipeController = new RecipeController(this, databaseReference);
         storageController = new StorageController(this);
         orderController = new OrderController(this);
-        supplierController = new SupplierController(this, databaseReference);
-
         mainView = new MainView(this);
-
-        //getNotesFromDatabase();
+        homeController = new HomeController(this);
     }
 
 
@@ -57,54 +54,8 @@ public class Controller {
         databaseReference = database.getReference();
     }
 
-    // läser data från databasen
-    public static Note[] getNotesFromDatabase() {
-        databaseReference.child("Notes").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Object> allNotesList = (List<Object>) dataSnapshot.getValue();
-                for (Object objectMap : allNotesList) {
-                    if (objectMap == null)
-                        continue;
-                    HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
-                    String title = map.get("title").toString();
-                    String desc = map.get("description").toString();
-                    int id = Integer.parseInt(map.get("id").toString());
-                    Note note = new Note(title, desc, id);
-                    mainView.getHomePanel().addNote(note);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println(databaseError.toString());
-            }
-        });
-        return null;
-    }
-
-    public static FirebaseDatabase getDatabase() {
-        return database;
-    }
-
-    public static void setDatabase(FirebaseDatabase database) {
-        Controller.database = database;
-    }
-
-    public static DatabaseReference getDatabaseReference() {
-        return databaseReference;
-    }
-
-    public static void setDatabaseReference(DatabaseReference databaseReference) {
-        Controller.databaseReference = databaseReference;
-    }
-
-    public static MainView getMainView() {
-        return mainView;
-    }
-
-    public static void setMainView(MainView mainView) {
-        Controller.mainView = mainView;
+    public WeekDays[] getWeekDays() {
+        return WeekDays.values();
     }
 
     public String[] getUnitsPrefixArray() {
@@ -136,6 +87,9 @@ public class Controller {
                     Map.Entry mapElement = stringHashMapEntry;
 
 
+
+
+
                     //ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String) mapElement.getKey()));
                 }
 
@@ -149,13 +103,35 @@ public class Controller {
         });
     }
 
-    public RecipeController getRecipeController() {
-        return recipeController;
+
+
+    public static FirebaseDatabase getDatabase() {
+        return database;
     }
 
-    public void setRecipeController(RecipeController recipeController) {
-        this.recipeController = recipeController;
+    public static void setDatabase(FirebaseDatabase database) {
+        Controller.database = database;
     }
+
+    public static DatabaseReference getDatabaseReference() {
+        return databaseReference;
+    }
+
+    public static void setDatabaseReference(DatabaseReference databaseReference) {
+        Controller.databaseReference = databaseReference;
+    }
+
+    public static MainView getMainView() {
+        return mainView;
+    }
+
+    public static void setMainView(MainView mainView) {
+        Controller.mainView = mainView;
+    }
+
+    public RecipeController getRecipeController(){ return recipeController; }
+
+    public void setRecipeController(RecipeController recipeController){ this.recipeController = recipeController; }
 
     public OrderController getOrderController() {
         return orderController;
@@ -165,16 +141,8 @@ public class Controller {
         this.orderController = orderController;
     }
 
-    public StorageController getStorageController() {
+    public StorageController getStorageController(){
         return storageController;
-    }
-
-    public SupplierController getSupplierController() {
-        return supplierController;
-    }
-
-    public void setSupplierController(SupplierController supplierController) {
-        this.supplierController = supplierController;
     }
 
     public DailyEvent getDailyEvent() {
@@ -185,8 +153,14 @@ public class Controller {
         this.dailyEvent = dailyEvent;
     }
 
-
-    public void setStorageController(StorageController storageController) {
-        this.storageController = storageController;
+    public HomeController getHomeController(){
+        return homeController;
     }
+
+    public void setHomeController(HomeController homeController){
+        this.homeController = homeController;
+    }
+
+
+
 }
