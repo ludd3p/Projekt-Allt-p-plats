@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Panel for managing recipes
+ *
  * @Author Ludvig Wedin Pettersson
  * @Version 1.1
  */
@@ -196,7 +197,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("RecipeNames")) {
-            System.out.println(evt.getNewValue());
             ArrayList<String> recNames = (ArrayList<String>) evt.getNewValue();
             recipes.removeAllItems();
             for (String s : recNames) {
@@ -378,6 +378,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Listener for buttons
+         *
          * @param e source of call
          */
         public void actionPerformed(ActionEvent e) {
@@ -385,7 +386,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                 instructionsArray.add(instructionInput.getText());
                 updateInstructions();
             }
-            
+
             if (e.getSource() == removeInstruction) {
                 if (instructionList.getSelectedIndex() != -1) {
                     instructionsArray.remove(instructionList.getSelectedIndex());
@@ -401,7 +402,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             }
 
             if (e.getSource() == removeIngredient) {
-                System.out.println(ingredientsList.isSelectionEmpty());
                 if (!ingredientsList.isSelectionEmpty()) {
 
                     recipeController.removeRecipeIngredient(ingredientsList.getSelectedIndex());
@@ -430,6 +430,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Handles PropertyChangeListener
+         *
          * @param evt Incoming message with new object
          */
         @Override

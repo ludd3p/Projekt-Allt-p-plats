@@ -7,6 +7,7 @@ import java.awt.*;
 
 /**
  * Main GUI component that holds each separate panel using JTabbedPane
+ *
  * @Author Ludvig Wedin Pettersson
  * @Version 1.0
  */
@@ -23,6 +24,7 @@ public class MainView extends JFrame {
 
     /**
      * Constructor setting up the frame and its components.
+     *
      * @param controller Reference to the main controller.
      */
     public MainView(Controller controller) {
@@ -34,7 +36,6 @@ public class MainView extends JFrame {
         setBounds(400, 300, 500, 300);
         recipePanel = new RecipePanel(controller.getRecipeController());
         storagePanel = new StoragePanel(controller.getStorageController());
-        orderPanel = new OrderPanel(controller.getOrderController());
         supplierPanel = new SupplierPanel(controller.getSupplierController());
         homePanel = new HomePanel();
 
@@ -43,7 +44,7 @@ public class MainView extends JFrame {
         tp.add("Statsida", homePanel);
         tp.add("Recept", recipePanel);
         tp.add("Lager", storagePanel);
-        tp.add("Order history", orderPanel);
+        tp.add("Order history", new OrderPanel(controller.getOrderController()));
         tp.add("Leverantörer", supplierPanel);
 
         add(tp);

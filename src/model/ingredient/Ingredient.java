@@ -3,13 +3,13 @@ package model.ingredient;
 // Använd klassen när vi lägger till ingridienser i recepten.
 
 import com.google.firebase.database.Exclude;
+import controller.StorageController;
 import model.Unit;
 
 import java.util.ArrayList;
 
 
 public class Ingredient {
-    private static ArrayList<Ingredient> ingredientList = new ArrayList<>();
 
     private String key;
     private String name;
@@ -24,9 +24,10 @@ public class Ingredient {
 
     /**
      * Constructor.
-     * @param name of ingredient
-     * @param cost of ingredient. cost/unit
-     * @param currentAmount of ingredient in storage
+     *
+     * @param name              of ingredient
+     * @param cost              of ingredient. cost/unit
+     * @param currentAmount     of ingredient in storage
      * @param criticalAmount
      * @param recommendedAmount of ingredient in storage
      * @param unit
@@ -119,47 +120,42 @@ public class Ingredient {
     }
 
     //<editor-fold desc = "Static methods">
-    /**
-     * Returns a list of ingredients.
-     * @return ArrayList containing Ingredient-objects.
-     */
-    public static ArrayList<Ingredient> getIngredientList(){
-        return ingredientList;
-    }
+
 
     /**
      * Adds an ingredient to the list of ingredients.
+     *
      * @param ingredient Ingredient-object.
-     * @param key Unique-key for the ingredient from the database.
+     * @param key        Unique-key for the ingredient from the database.
      */
-    public static void addIngredientToList(Ingredient ingredient, String key){
-        if(!checkIfIngredientExists(key)) {
+    public static void addIngredientToList(Ingredient ingredient, String key) {
+        if (!checkIfIngredientExists(key)) {
             Ingredient ingredientToAdd = ingredient;
             ingredientToAdd.setKey(key);
-            ingredientList.add(ingredient);
-            System.out.println("Ingredient added to list: " + ingredient.getName());
+            StorageController.allIngredients.add(ingredient);
         }
     }
 
     /**
      * Removes an ingredient form the list.
+     *
      * @param key of the ingredient to remove.
      */
-    public static void removeIngredientFromList(String key){
-        ingredientList.removeIf(ingredient -> ingredient.getKey().equals(key));
+    public static void removeIngredientFromList(String key) {
+        StorageController.allIngredients.removeIf(ingredient -> ingredient.getKey().equals(key));
     }
 
     /**
      * Updates an ingredient in the ingredientList
+     *
      * @param key
      * @param ingredientNewValues Ingredient-object with updated values.
      * @return
      */
-    public static Ingredient updateIngredient(String key, Ingredient ingredientNewValues){
+    public static Ingredient updateIngredient(String key, Ingredient ingredientNewValues) {
         Ingredient updatedIngredient = null;
-
-        for(Ingredient ingredient : ingredientList){
-            if(ingredient.getKey().equals(key)){
+        for (Ingredient ingredient : StorageController.allIngredients) {
+            if (ingredient.getKey().equals(key)) {
                 ingredient.setName(ingredientNewValues.getName());
                 ingredient.setCost(ingredientNewValues.getCost());
                 ingredient.setCurrentAmount(ingredientNewValues.getCurrentAmount());
@@ -175,15 +171,16 @@ public class Ingredient {
 
     /**
      * Adds a specified quantity to the current quantity of an object.
-     * @param key of ingredient to change.
+     *
+     * @param key           of ingredient to change.
      * @param quantityToAdd
      * @return the updated Ingredient-object.
      */
-    public static Ingredient updateIngredientCurrentQuantity(String key, double quantityToAdd){
+    public static Ingredient updateIngredientCurrentQuantity(String key, double quantityToAdd) {
         Ingredient updatedIngredient = null;
 
-        for(Ingredient ingredient : ingredientList){
-            if(ingredient.getKey().equals(key)){
+        for (Ingredient ingredient : StorageController.allIngredients) {
+            if (ingredient.getKey().equals(key)) {
                 ingredient.setCurrentAmount(ingredient.getCurrentAmount() + quantityToAdd);
                 updatedIngredient = ingredient;
             }
@@ -194,13 +191,13 @@ public class Ingredient {
 
     /**
      * Checks if an ingredient already exists in the list.
+     *
      * @param key
      * @return
      */
-    public static boolean checkIfIngredientExists(String key){
-        for(Ingredient ingredient : ingredientList){
-            if(ingredient.getKey().equals(key)){
-                System.out.println("Ingredient exists.");
+    public static boolean checkIfIngredientExists(String key) {
+        for (Ingredient ingredient : StorageController.allIngredients) {
+            if (ingredient.getKey().equals(key)) {
                 return true;
             }
         }
@@ -209,15 +206,15 @@ public class Ingredient {
 
     /**
      * Checks if the amount of any of the ingredients are below the critical amount.
+     *
      * @return an ArrayList containing all ingredients below the critical amount.
      */
-    public static ArrayList<Ingredient> checkIfIngredientsBelowCriticalAmount(){
+    public static ArrayList<Ingredient> checkIfIngredientsBelowCriticalAmount() {
         ArrayList<Ingredient> ingredientsBelowCriticalAmount = new ArrayList<>();
 
-        for(Ingredient ingredient : ingredientList){
-            if(ingredient.getCurrentAmount() < ingredient.getCriticalAmount()){
+        for (Ingredient ingredient : StorageController.allIngredients) {
+            if (ingredient.getCurrentAmount() < ingredient.getCriticalAmount()) {
                 ingredientsBelowCriticalAmount.add(ingredient);
-                System.out.println("Below critical: " + ingredient.toString());
             }
         }
 
@@ -226,13 +223,13 @@ public class Ingredient {
 
     /**
      * Returns an ArrayList with strings for the storage panel.
+     *
      * @return ArrayList containing strings with info about the ingredients.
      */
-    public static ArrayList<String> getIngredientStringsForStorage(){
+    public static ArrayList<String> getIngredientStringsForStorage() {
         ArrayList<String> stringsForStorage = new ArrayList<>();
 
-        for(Ingredient ingredient : ingredientList){
-            System.out.println(ingredient.toString());
+        for (Ingredient ingredient : StorageController.allIngredients) {
             stringsForStorage.add(ingredient.toString());
         }
 

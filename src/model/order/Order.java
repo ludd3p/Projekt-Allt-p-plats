@@ -1,8 +1,8 @@
 package model.order;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * An object representing an order.
@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 public class Order {
-    private Set<OrderItem> orderItems;
+    private List<OrderItem> orderItems;
     private long id;
     private OrderStatus status;
 
@@ -20,29 +20,27 @@ public class Order {
      * Initiates order to the basic values
      */
     public Order() {
-        this.orderItems = new HashSet<>();
+        this.orderItems = new ArrayList<>();
         this.id = System.currentTimeMillis();
         this.status = OrderStatus.PENDING;
     }
 
+
     /**
-     *
      * @return all items in the order
      */
-    public Set<OrderItem> getOrderItems() {
+    public List<OrderItem> getOrderItems() {
         return orderItems;
     }
 
     /**
-     *
      * @param orderItems replace the orderitems
      */
-    public void setOrderItems(Set<OrderItem> orderItems) {
+    public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
 
     /**
-     *
      * @return gets the id
      */
     public long getId() {
@@ -50,7 +48,6 @@ public class Order {
     }
 
     /**
-     *
      * @param id replaces the id
      */
     public void setId(long id) {
@@ -76,6 +73,8 @@ public class Order {
      */
     @Override
     public String toString() {
-        return "Order: " + new Date(id) + " items: " + orderItems.size();
+        return new Date(id) + " | " + orderItems.size() + " | " + status.name().toLowerCase();
     }
+
+
 }

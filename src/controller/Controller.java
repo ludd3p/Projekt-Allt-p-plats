@@ -7,7 +7,6 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import model.Note;
 import model.Unit;
-import model.supplier.WeekDays;
 import model.daily.DailyEvent;
 import model.ingredient.Ingredient;
 import view.MainView;
@@ -30,16 +29,17 @@ public class Controller {
     private DailyEvent dailyEvent;
 
 
-    public Controller() throws IOException {
+    public Controller() throws IOException, InterruptedException {
         connectToFirebase();
+        System.out.println("Loading controllers...");
+        System.out.println("5 seconds left!");
         dailyEvent = new DailyEvent();
-        recipeController = new RecipeController(this, databaseReference);
-        storageController = new StorageController(this);
         orderController = new OrderController(this);
+        storageController = new StorageController(this);
+        recipeController = new RecipeController(this, databaseReference);
         supplierController = new SupplierController(this, databaseReference);
-
+        Thread.sleep(5000);
         mainView = new MainView(this);
-
         //getNotesFromDatabase();
     }
 

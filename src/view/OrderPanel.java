@@ -1,14 +1,17 @@
 package view;
 
 import controller.OrderController;
+import model.ingredient.Ingredient;
 import model.order.Order;
 import model.order.OrderItem;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static controller.StorageController.allIngredients;
 
 /**
  * Panel used to keep track of order history and current orders.
@@ -19,16 +22,23 @@ import java.util.List;
 public class OrderPanel extends JPanel {
     private JPanel leftPanel; // Vänstra panelen
     private JPanel rightPanel; // höger panelen
+    private JPanel centerPanel;
 
     private JList<Order> orderHistoryJList; // Order history jlist
     private List<Order> orderHistoryList; // Order history list
 
     private JList<OrderItem> currentOrderList; // Info om vald order
+
     private JButton showOrder; // Visa info om vald order
     private JButton hasArrived; // Klicka när en order har kommit in
     private JButton remove; // Avbryt en order
-    private OrderController controller;
 
+    private JComboBox ingredientToAdd;
+    private JSpinner quantitySelector;
+    private JButton addOrderItem;
+    private JButton removeOrderItem;
+
+    private OrderController controller;
 
     /**
      * Constructor to initiate the panel with an OrderController
@@ -36,9 +46,9 @@ public class OrderPanel extends JPanel {
      * @param controller which controller to use
      */
     public OrderPanel(OrderController controller) {
-        setLayout(new BorderLayout(5, 5));
-        orderHistoryList = new ArrayList<>();
         this.controller = controller;
+        setLayout(null);
+        orderHistoryList = controller.getOrderHistoryList();
         controller.setPanel(this);
         setupPanels();
         controller.setup(this);
@@ -49,58 +59,159 @@ public class OrderPanel extends JPanel {
      */
     public void setupPanels() {
         leftPanel = new JPanel();
-        rightPanel = new JPanel();
-
+        leftPanel.setBackground(Color.white);
+        leftPanel.setBounds(0, 0, 300, 600);
         leftPanel.setBorder(new TitledBorder("Order Historik"));
-        orderHistoryJList = new JList<>();
-        orderHistoryJList.setPreferredSize(new Dimension(500, 600));
-        leftPanel.add(orderHistoryJList);
+        setUpLeftPanel();
 
+        centerPanel = new JPanel(null);
+        centerPanel.setBackground(Color.white);
+        centerPanel.setBounds(300, 0, 400, 600);
+        centerPanel.setBorder(new TitledBorder("Control Panel"));
+        setUpCenterPanel();
 
-        rightPanel.setBorder(new TitledBorder("Info"));
-        rightPanel.setPreferredSize(new Dimension(400, 600));
+        rightPanel = new JPanel();
+        rightPanel.setBackground(Color.white);
+        rightPanel.setBorder(new TitledBorder("Order Info"));
+        rightPanel.setBounds(700, 0, 300, 600);
         rightPanel.setLayout(new BorderLayout(5, 0));
+        setUpRightPanel();
 
-        currentOrderList = new JList<>();
-        currentOrderList.setPreferredSize(new Dimension(500, 450));
-        rightPanel.add(currentOrderList, BorderLayout.NORTH);
+    }
 
-        JPanel controlPanel = new JPanel();
-        controlPanel.setBorder(new TitledBorder("Control panel"));
-        showOrder = new JButton("Show order");
-        showOrder.addActionListener((e) -> {
+    public void setUpLeftPanel() {
+        orderHistoryJList = new JList<>();
+        JScrollPane jScrollPane = new JScrollPane(orderHistoryJList);
+        jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.setBorder(null);
+        leftPanel.add(jScrollPane);
+
+        this.add(leftPanel);
+    }
+
+    public void setUpCenterPanel() {
+        JPanel orderControlPanel = new JPanel(null);
+        orderControlPanel.setBounds(25, 30, 350, 270);
+
+        orderControlPanel.setBorder(new TitledBorder("Order control"));
+        orderControlPanel.setBackground(Color.white);
+
+        this.showOrder = new JButton("Show order");
+        this.showOrder.setToolTipText("Shows items in selected order");
+        showOrder.setBounds(25, 30, 300, 65);
+        showOrder.addActionListener(l -> {
             if (orderHistoryJList.getSelectedValue() == null) {
-                JOptionPane.showConfirmDialog(null, "Du måste välja en order!", "ERROR", JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
-            this.controller.orderPreview(orderHistoryJList.getSelectedValue());
+            controller.orderPreview(orderHistoryJList.getSelectedValue());
         });
-        hasArrived = new JButton("Has arrived");
-        hasArrived.addActionListener((e -> {
-            if (orderHistoryJList.getSelectedValue() == null) {
-                JOptionPane.showConfirmDialog(null, "Du måste välja en order!", "ERROR", JOptionPane.DEFAULT_OPTION);
-                return;
-            }
-            if (orderHistoryJList.getSelectedIndex() == 0) {
-                controller.saveCurrentOrder();
-            }
-            this.controller.orderHasArrived(orderHistoryJList.getSelectedValue());
-        }));
-        remove = new JButton("Cancel order");
-        remove.addActionListener((e -> {
-            if (orderHistoryJList.getSelectedValue() == null) {
-                JOptionPane.showConfirmDialog(null, "Du måste välja en order att tabort!", "ERROR", JOptionPane.DEFAULT_OPTION);
-                return;
-            }
-            this.controller.cancelOrder(orderHistoryJList.getSelectedValue());
-        }));
-        controlPanel.add(showOrder);
-        controlPanel.add(hasArrived);
-        controlPanel.add(remove);
-        rightPanel.add(controlPanel, BorderLayout.SOUTH);
 
-        this.add(leftPanel, BorderLayout.WEST);
-        this.add(rightPanel, BorderLayout.EAST);
+        this.hasArrived = new JButton("Has arrived");
+        this.hasArrived.setToolTipText("Marks an order as arrived");
+        this.hasArrived.setBounds(25, 110, 300, 65);
+
+        this.remove = new JButton("Delete");
+        this.remove.setToolTipText("Removes an order from history");
+        this.remove.setBounds(25, 190, 300, 65);
+        this.remove.addActionListener(l -> {
+            if (controller.getCurrentPreview() == null) {
+                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                return;
+            }
+            controller.removeOrder(controller.getCurrentPreview());
+        });
+
+        orderControlPanel.add(showOrder);
+        orderControlPanel.add(hasArrived);
+        orderControlPanel.add(remove);
+        centerPanel.add(orderControlPanel);
+
+        JPanel addItemToOrderPanel = new JPanel(null);
+        addItemToOrderPanel.setBounds(25, 300, 350, 300);
+        addItemToOrderPanel.setBorder(new TitledBorder("Order Item Control"));
+        addItemToOrderPanel.setBackground(null);
+
+        JLabel ingredientLabel = new JLabel("Ingredient");
+        ingredientLabel.setBounds(10, 20, 250, 20);
+
+        ingredientToAdd = new JComboBox(ingredientList());
+        ingredientToAdd.setBounds(10, 40, 250, 30);
+        ingredientToAdd.setBackground(null);
+
+        JLabel quantityLabel = new JLabel("Quantity");
+        quantityLabel.setBounds(290, 20, 250, 20);
+        quantitySelector = new JSpinner();
+        quantitySelector.setBounds(290, 40, 50, 30);
+        SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel();
+        spinnerNumberModel.setStepSize(1);
+        spinnerNumberModel.setValue(1);
+        spinnerNumberModel.setMinimum(1);
+        quantitySelector.setModel(spinnerNumberModel);
+
+        addOrderItem = new JButton("Add item");
+        addOrderItem.setBounds(10, 160, 150, 50);
+        addOrderItem.addActionListener(e -> {
+            if (controller.getCurrentPreview() == null) {
+                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                return;
+            }
+            Ingredient ingredient = getIngredientFromString((String) ingredientToAdd.getSelectedItem());
+            int amount = (int) quantitySelector.getValue();
+            OrderItem orderItem = new OrderItem(ingredient, amount);
+            controller.addOrderItemToCurrentOrder(orderItem);
+        });
+
+
+        removeOrderItem = new JButton("Remove item");
+        removeOrderItem.setBounds(190, 160, 150, 50);
+        removeOrderItem.addActionListener(p -> {
+            if (controller.getCurrentPreview() == null || this.getCurrentOrderList().getSelectedValue() == null) {
+                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                return;
+            }
+            controller.removeOrderItemFromCurrentOrder(this.getCurrentOrderList().getSelectedValue());
+        });
+
+        addItemToOrderPanel.add(ingredientLabel);
+        addItemToOrderPanel.add(quantityLabel);
+        addItemToOrderPanel.add(ingredientToAdd);
+        addItemToOrderPanel.add(quantitySelector);
+        addItemToOrderPanel.add(addOrderItem);
+        addItemToOrderPanel.add(removeOrderItem);
+
+        centerPanel.add(addItemToOrderPanel);
+        this.add(centerPanel);
+    }
+
+    public void setUpRightPanel() {
+        currentOrderList = new JList<>();
+        JScrollPane jScrollPane = new JScrollPane(currentOrderList);
+        jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.setBorder(null);
+        rightPanel.add(jScrollPane);
+
+        this.add(rightPanel);
+    }
+
+    public Ingredient getIngredientFromString(String name) {
+        for (Ingredient ingredient : allIngredients) {
+            if (ingredient.getName().equals(name))
+                return ingredient;
+        }
+        return null;
+    }
+
+    public String[] ingredientList() {
+        String[] arr = new String[allIngredients.size()];
+        int x = 0;
+        for (Ingredient ingredient : allIngredients) {
+            arr[x] = ingredient.getName();
+            x++;
+        }
+        return arr;
     }
 
     /**

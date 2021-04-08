@@ -7,13 +7,18 @@ import model.Unit;
 import model.ingredient.Ingredient;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class StorageController {
     private Controller controller;
 
+    public static Set<Ingredient> allIngredients = new HashSet<>();
+
     public StorageController(Controller controller) {
         this.controller = controller;
+        getIngredientsFromDatabase();
     }
 
     public String[] getUnitsPrefixArray() {
@@ -84,7 +89,9 @@ public class StorageController {
                 for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
                     Map.Entry mapElement = stringHashMapEntry;
 
-                    Ingredient.addIngredientToList((dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class)), (String) mapElement.getKey());
+                    Ingredient ingredient = (dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class));
+                    ingredient.setKey((String) mapElement.getKey());
+                    allIngredients.add(ingredient);
                 }
 
                 Controller.getMainView().getStoragePanel().updateList(Ingredient.getIngredientStringsForStorage());
@@ -96,4 +103,5 @@ public class StorageController {
             }
         });
     }
+
 }

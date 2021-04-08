@@ -4,17 +4,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import model.ingredient.Ingredient;
 import model.recipe.Recipe;
 import model.recipe.RecipeIngredient;
-import model.ingredient.Ingredient;
 import view.RecipePanel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Controller class for handling everything related to recipes
+ *
  * @Author Ludvig Wedin Pettersson
  * @Version 1.0
  */
@@ -26,13 +28,14 @@ public class RecipeController {
 
     private ArrayList<Recipe> allRecipes = new ArrayList<>();
     private ArrayList<String> allRecipeNames = new ArrayList<>();
-    private ArrayList<Ingredient> allIngredients = new ArrayList<>();
+    private Set<Ingredient> allIngredients = StorageController.allIngredients;
     private ArrayList<RecipeIngredient> recipeIngredient = new ArrayList<>();
     private ArrayList<String> ingredientNames = new ArrayList<>();
 
     /**
      * Constructor for the class
-     * @param controller Reference to main controller
+     *
+     * @param controller        Reference to main controller
      * @param databaseReference Reference to use database
      */
     public RecipeController(Controller controller, DatabaseReference databaseReference) {
@@ -44,6 +47,7 @@ public class RecipeController {
 
     /**
      * Used by other classes to register listeners
+     *
      * @param listener reference to the class that registers
      */
     public void registerPropertyChangeListener(PropertyChangeListener listener) {
@@ -111,8 +115,9 @@ public class RecipeController {
 
     /**
      * Creates a new RecipeIngredient object and saves it in a list.
+     *
      * @param ingredient The chosen ingredient
-     * @param amount The selected amount that should be used in recipe
+     * @param amount     The selected amount that should be used in recipe
      */
     public void createRecipeIngredient(String ingredient, double amount) {
         for (Ingredient i : allIngredients) {
@@ -125,15 +130,16 @@ public class RecipeController {
 
     /**
      * Removes a specific RecipeIngredient from list.
+     *
      * @param i index of RecipeIngredient
      */
     public void removeRecipeIngredient(int i) {
-        System.out.println(recipeIngredient.get(i).toString());
         recipeIngredient.remove(i);
     }
 
     /**
      * Gets a list of all registered ingredients names.
+     *
      * @return
      */
     public ArrayList<String> getIngredientNames() {
@@ -142,6 +148,7 @@ public class RecipeController {
 
     /**
      * Sets list with ingredient names.
+     *
      * @param ingredientNames
      */
     public void setIngredientNames(ArrayList<String> ingredientNames) {
@@ -150,6 +157,7 @@ public class RecipeController {
 
     /**
      * Gets the unit type of a specific ingredient.
+     *
      * @param name Name of the ingredient.
      * @return Returns the unit.
      */
@@ -167,7 +175,8 @@ public class RecipeController {
 
     /**
      * Creates a new Recipe and saves it in the database
-     * @param name Name of the recipe
+     *
+     * @param name         Name of the recipe
      * @param instructions List of instructions for recipe.
      */
     public void addRecipeToDatabase(String name, ArrayList<String> instructions) {
@@ -177,7 +186,8 @@ public class RecipeController {
 
     /**
      * Used when trying to save an edited recipe.
-     * @param name Name of recipe.
+     *
+     * @param name         Name of recipe.
      * @param instructions List of instructions for recipe.
      */
     public void updateRecipeDatabase(String name, ArrayList<String> instructions) {
@@ -188,6 +198,7 @@ public class RecipeController {
 
     /**
      * Removes a specified recipe from the database
+     *
      * @param name Name of the recipe.
      */
     public void removeRecipeFromDatabase(String name) {
@@ -196,6 +207,7 @@ public class RecipeController {
 
     /**
      * Called by GUI when a new RecipeIngredient is created, creates a list of String containing ingredient names, and amounts.
+     *
      * @return String list.
      */
     public ArrayList<String> populateNewRecipeIngredients() {
@@ -208,7 +220,8 @@ public class RecipeController {
 
     /**
      * Called by GUI when user selects a recipe to view.
-     * @param i Index of selected recipe.
+     *
+     * @param i     Index of selected recipe.
      * @param multi Int used to multiply ingredients amount when making bigger batches.
      * @return String list with ingredients and their amounts.
      */
@@ -223,6 +236,7 @@ public class RecipeController {
 
     /**
      * Gets the instructions for a spoecified recipe.
+     *
      * @param i Index of selected recipe.
      * @return String list of instructions.
      */
@@ -232,6 +246,7 @@ public class RecipeController {
 
     /**
      * Used when trying to save a recipe, checks if recipe already exists.
+     *
      * @param recName Name of recipe that should be checked.
      * @return Boolean, true if duplicate.
      */
@@ -253,11 +268,11 @@ public class RecipeController {
         this.allRecipes = allRecipes;
     }
 
-    public ArrayList<Ingredient> getAllIngredients() {
+    public Set<Ingredient> getAllIngredients() {
         return allIngredients;
     }
 
-    public void setAllIngredients(ArrayList<Ingredient> allIngredients) {
+    public void setAllIngredients(Set<Ingredient> allIngredients) {
         this.allIngredients = allIngredients;
     }
 
