@@ -7,10 +7,8 @@ import model.home.Holiday;
 import model.home.Note;
 import model.home.Notifications;
 import view.HomePanel;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class HomeController {
@@ -31,23 +29,14 @@ public class HomeController {
 
     /**
      * reads the data (all notes) from the database where its stored
-     *
-     * @return
      */
-    public Note[] getNotesFromDatabase() {
+    public void getNotesFromDatabase() {
         Controller.databaseReference.child("Notes").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Object> allNotesList = (List<Object>) dataSnapshot.getValue();
-                for (Object objectMap : allNotesList) {
-                    if (objectMap != null) {
-                        HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
-                        String title = map.get("title").toString();
-                        String desc = map.get("description").toString();
-                        int id = Integer.parseInt(map.get("id").toString());
-                        Note note = new Note(title, desc, id);
-                        addNote(note);
-                    }
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Note note = d.getValue(Note.class);
+                    getNoteList().add(note);
                 }
             }
 
@@ -56,95 +45,106 @@ public class HomeController {
                 System.out.println(databaseError.toString());
             }
         });
-        return null;
     }
 
 
     /**
      * reads the data (all the holidays) from the database where its stored
-     *
-     * @return
      */
-    public Holiday[] getHolidaysFromDatabase() {
-        Controller.databaseReference.child("Holiday").addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getHolidaysFromDatabase() {
+        Controller.databaseReference.child("Holidays").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Object> allHolidaysList = (List<Object>) dataSnapshot.getValue();
-                for (Object objectMap : allHolidaysList) {
-                    if (objectMap != null) {
-                        HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
-                        String title = map.get("title").toString();
-                        String desc = map.get("description").toString();
-                        int id = Integer.parseInt(map.get("id").toString());
-                        Holiday holiday = new Holiday(title, desc, id);
-                        addHoliday(holiday);
-                    }
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Holiday holiday = d.getValue(Holiday.class);
+                    getHolidayList().add(holiday);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
             }
         });
-        return null;
     }
 
     /**
      * reads the data (all the holidays) from the database where its stored
-     *
-     * @return
      */
-    public Notifications[] getNotificationsFromDatabase() {
+    public void getNotificationsFromDatabase() {
         Controller.databaseReference.child("Notifications").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Object> allNotificationsList = (List<Object>) dataSnapshot.getValue();
-                for (Object objectMap : allNotificationsList) {
-                    if (objectMap != null) {
-                        HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
-                        String title = map.get("title").toString();
-                        String desc = map.get("description").toString();
-                        int id = Integer.parseInt(map.get("id").toString());
-                        Notifications notifications = new Notifications(id, title, desc);
-                        addNotification(notifications);
-                    }
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Notifications notifications = d.getValue(Notifications.class);
+                    getNotificationsList().add(notifications);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
             }
         });
-        return null;
-    }
-    public void registerPropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
+    /**
+     * adds the notes to the database and to the notes list in (UI)
+     *
+     * @param note
+     */
+
     public void addNote(Note note) {
-        noteList.add(note);
+        noteList.add(note); // adds to list
+        updateNoteViewer();
+        Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // adds to the database
+    }
+
+    /**
+     * Updates the notes in the database and UI
+     */
+    public void updateNoteViewer() {
         Note[] newVal = new Note[noteList.size()];
         noteList.toArray(newVal);
         homePanel.getNotesJList().setListData(newVal);
-        Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // Sätter in värder i databasen
     }
 
+    /**
+     * adds the holidays to the database and the ui list
+     *
+     * @param holiday
+     */
     public void addHoliday(Holiday holiday) {
-        holidayList.add(holiday);
+        holidayList.add(holiday); //add to the list
+        updateHolidayViewer();
+        Controller.databaseReference.child("Holidays").child(holidayList.size() + "").setValueAsync(holiday); //add to the database
+    }
+
+    /**
+     * Updates the holidays in the database and the list UI
+     */
+    public void updateHolidayViewer() {
         Holiday[] newVal = new Holiday[holidayList.size()];
         holidayList.toArray(newVal);
         homePanel.getHolidaysJList().setListData(newVal);
-        Controller.databaseReference.child("Holidays").child(holidayList.size() + "").setValueAsync(holiday); // Sätter in värder i databasen
     }
 
+    /**
+     * adds the notifications to the database and the list (UI)
+     *
+     * @param notifications
+     */
     public void addNotification(Notifications notifications) {
-        notificationslist.add(notifications);
+        notificationslist.add(notifications);// add to the list
+        updateNotificationsViewer();
+        Controller.databaseReference.child("Notifications").child(notificationslist.size() + "").setValueAsync(notifications); //add to the database
+    }
+
+    /**
+     * Updates the notifications in the database and UI
+     */
+    private void updateNotificationsViewer() {
         Notifications[] newVal = new Notifications[notificationslist.size()];
         notificationslist.toArray(newVal);
         homePanel.getNotificationsJList().setListData(newVal);
-        Controller.databaseReference.child("Notifications").child(notificationslist.size() + "").setValueAsync(notifications); // Sätter in värder i databasen
     }
 
     public void setHomePanel(HomePanel homePanel) {
@@ -198,13 +198,46 @@ public class HomeController {
         this.holidayList = holidayList;
     }
 
-    public List<Notifications> getNotificationslist() {
+    public List<Notifications> getNotificationsList() {
         return notificationslist;
     }
 
-    public void setNotificationslist(List<Notifications> notificationslist) {
+    public void setNotificationsList(List<Notifications> notificationslist) {
         this.notificationslist = notificationslist;
     }
 
+
+    /**
+     * This method is to delete the note from the list and the database
+     *
+     * @param selectedValue
+     */
+    public void removeNote(Note selectedValue) {
+        Controller.getDatabaseReference().child("Notes").child(selectedValue.getId() + "").setValueAsync(null); // remove from the database
+        getNoteList().remove(selectedValue); // remove from the list
+        updateNoteViewer();// and then update the list
+    }
+
+    /**
+     * This method is to delete the holidays from the list and the database
+     *
+     * @param selectedValue
+     */
+    public void removeHoliday(Holiday selectedValue) {
+        Controller.getDatabaseReference().child("Holidays").child(selectedValue.getId() + "").setValueAsync(null); // remove from the database
+        getHolidayList().remove(selectedValue); // remove from the list
+        updateHolidayViewer(); // and then update the list
+    }
+
+    /**
+     * This method is to delete the Notifications from the list and the database
+     *
+     * @param selectedValue
+     */
+    public void removeNotification(Notifications selectedValue) {
+        Controller.getDatabaseReference().child("Notifications").child(selectedValue.getId() + "").setValueAsync(null); // remove from the database
+        getNotificationsList().remove(selectedValue); // remove from the list
+        updateNotificationsViewer();// and then update the list
+    }
 
 }

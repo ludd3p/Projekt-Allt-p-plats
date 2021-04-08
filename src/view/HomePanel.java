@@ -49,7 +49,6 @@ public class HomePanel extends JPanel implements ActionListener {
     /**
      * This method creates all the panels for the homepage and inside the panels there is the buttons
      * and text area to write text in it.
-     *
      */
     public void createPanels() {
         leftPanel = new JPanel();
@@ -60,7 +59,7 @@ public class HomePanel extends JPanel implements ActionListener {
         leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBorder(BorderFactory.createTitledBorder("Anteckningar"));
 
-        notesJList = new JList<>();
+        notesJList = new JList<>(homeController.getNoteList().toArray(new Note[0]));
         notesJList.setPreferredSize(new Dimension(300, 600));
         notesJList.setFont(new Font("Times New Roman", Font.BOLD, 20));
 
@@ -138,6 +137,7 @@ public class HomePanel extends JPanel implements ActionListener {
 
     /**
      * Whenever a button is pressed it will take action and listen
+     *
      * @param e Source
      */
     public void actionPerformed(ActionEvent e) {
@@ -153,15 +153,13 @@ public class HomePanel extends JPanel implements ActionListener {
             new NewNoteJFrame(notesJList.getSelectedValue());
         }
         if (e.getSource() == deleteNote) {
-            // TODO: 2021-04-01
-            homeController.getNoteList().remove(notesJList.getSelectedIndex());
+            homeController.removeNote(notesJList.getSelectedValue());
         }
         if (e.getSource() == addNewHoliday) {
             new NewHolidayJFrame();
-
         }
         if (e.getSource() == deleteHoliday) {
-            homeController.getHolidayList().remove(holidaysJList.getSelectedIndex());
+            homeController.removeHoliday(holidaysJList.getSelectedValue());
         }
         if (e.getSource() == showSavedHolidays) {
             if (holidaysJList.getSelectedValue() == null) {
@@ -173,7 +171,6 @@ public class HomePanel extends JPanel implements ActionListener {
 
         // buttons for notifications???
     }
-
 
 
     class NewNoteJFrame {
