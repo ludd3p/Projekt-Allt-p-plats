@@ -12,24 +12,23 @@ import controller.Controller;
 import controller.HomeController;
 import model.home.Holiday;
 import model.home.Note;
+import model.home.Notifications;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomePanel extends JPanel implements ActionListener {
     private JPanel leftPanel;
     private JPanel rightPanel;
     private JPanel centerPanel;
+
     private JTextPane notifications;
     private JList<Note> notesJList;
     private JList<Holiday> holidaysJList;
-    private List<Note> noteList = new ArrayList<>();
-    private List<Holiday> holidayList = new ArrayList<>();
+    private JList<Notifications> notificationsJList;
     private JScrollPane listPane;
     private JButton submit;
     private JButton showSavedNotes;
@@ -155,14 +154,14 @@ public class HomePanel extends JPanel implements ActionListener {
         }
         if (e.getSource() == deleteNote) {
             // TODO: 2021-04-01
-            noteList.remove(notesJList.getSelectedIndex());
+            homeController.getNoteList().remove(notesJList.getSelectedIndex());
         }
         if (e.getSource() == addNewHoliday) {
             new NewHolidayJFrame();
 
         }
         if (e.getSource() == deleteHoliday) {
-            holidayList.remove(holidaysJList.getSelectedIndex());
+            homeController.getHolidayList().remove(holidaysJList.getSelectedIndex());
         }
         if (e.getSource() == showSavedHolidays) {
             if (holidaysJList.getSelectedValue() == null) {
@@ -171,23 +170,11 @@ public class HomePanel extends JPanel implements ActionListener {
             }
             new NewHolidayJFrame(holidaysJList.getSelectedValue());
         }
+
+        // buttons for notifications???
     }
 
-    public void addNote(Note note) {
-        noteList.add(note);
-        Note[] newVal = new Note[noteList.size()];
-        noteList.toArray(newVal);
-        notesJList.setListData(newVal);
-        Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // Sätter in värder i databasen
-    }
 
-    public void addHoliday(Holiday holiday) {
-        holidayList.add(holiday);
-        Holiday[] newVal = new Holiday[holidayList.size()];
-        holidayList.toArray(newVal);
-        holidaysJList.setListData(newVal);
-        Controller.databaseReference.child("Holiday").child(holidayList.size() + "").setValueAsync(holiday); // Sätter in värder i databasen
-    }
 
     class NewNoteJFrame {
         public NewNoteJFrame() {
@@ -216,7 +203,7 @@ public class HomePanel extends JPanel implements ActionListener {
             title.setFont(new Font("Arial", Font.BOLD, 20));
             title.setBorder(new TitledBorder("Title"));
 
-            JButton button = new JButton("Save");
+            JButton button = new JButton("Spara");
             button.setPreferredSize(new Dimension(120, 80));
             button.addActionListener(e -> {
                 if (note.getText() == null || note.getText().equals("")) {
@@ -227,8 +214,8 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Du måste skriva en title!!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                Note noteO = new Note(title.getText(), note.getText(), noteList.size() + 1);
-                addNote(noteO);
+                Note noteO = new Note(title.getText(), note.getText(), homeController.getNoteList().size() + 1);
+                homeController.addNote(noteO);
                 noteFrame.setVisible(false);
             });
             controllArea.add(title);
@@ -278,9 +265,9 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Du måste skriva en title!!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                noteList.remove(noteToShow);
-                Note noteO = new Note(title.getText(), note.getText(), noteList.size() + 1);
-                addNote(noteO);
+                homeController.getNoteList().remove(noteToShow);
+                Note noteO = new Note(title.getText(), note.getText(), homeController.getNoteList().size() + 1);
+                homeController.addNote(noteO);
                 noteFrame.setVisible(false);
             });
             controllArea.add(title);
@@ -333,8 +320,8 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Du måste skriva ett namn och datum!!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), holidayList.size() + 1);
-                addHoliday(holiday1);
+                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), homeController.getHolidayList().size() + 1);
+                homeController.addHoliday(holiday1);
                 HolidayFrame.setVisible(false);
             });
             controllArea.add(title);
@@ -385,9 +372,9 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Högtiden måste ha ett namn!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                noteList.remove(showHoliday);
-                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), holidayList.size() + 1);
-                addHoliday(holiday1);
+                homeController.getNoteList().remove(showHoliday);
+                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), homeController.getHolidayList().size() + 1);
+                homeController.addHoliday(holiday1);
                 holidayFrame.setVisible(false);
             });
             controllArea.add(title);
@@ -400,4 +387,127 @@ public class HomePanel extends JPanel implements ActionListener {
             holidayFrame.setVisible(true);
         }
     }
+
+
+    public JPanel getLeftPanel() {
+        return leftPanel;
+    }
+
+    public void setLeftPanel(JPanel leftPanel) {
+        this.leftPanel = leftPanel;
+    }
+
+    public JPanel getRightPanel() {
+        return rightPanel;
+    }
+
+    public void setRightPanel(JPanel rightPanel) {
+        this.rightPanel = rightPanel;
+    }
+
+    public JPanel getCenterPanel() {
+        return centerPanel;
+    }
+
+    public void setCenterPanel(JPanel centerPanel) {
+        this.centerPanel = centerPanel;
+    }
+
+    public JTextPane getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(JTextPane notifications) {
+        this.notifications = notifications;
+    }
+
+    public JList<Note> getNotesJList() {
+        return notesJList;
+    }
+
+    public void setNotesJList(JList<Note> notesJList) {
+        this.notesJList = notesJList;
+    }
+
+    public JList<Holiday> getHolidaysJList() {
+        return holidaysJList;
+    }
+
+    public void setHolidaysJList(JList<Holiday> holidaysJList) {
+        this.holidaysJList = holidaysJList;
+    }
+
+    public JScrollPane getListPane() {
+        return listPane;
+    }
+
+    public void setListPane(JScrollPane listPane) {
+        this.listPane = listPane;
+    }
+
+    public JButton getSubmit() {
+        return submit;
+    }
+
+    public void setSubmit(JButton submit) {
+        this.submit = submit;
+    }
+
+    public JButton getShowSavedNotes() {
+        return showSavedNotes;
+    }
+
+    public void setShowSavedNotes(JButton showSavedNotes) {
+        this.showSavedNotes = showSavedNotes;
+    }
+
+    public JButton getDeleteNote() {
+        return deleteNote;
+    }
+
+    public void setDeleteNote(JButton deleteNote) {
+        this.deleteNote = deleteNote;
+    }
+
+    public JButton getAddNewHoliday() {
+        return addNewHoliday;
+    }
+
+    public void setAddNewHoliday(JButton addNewHoliday) {
+        this.addNewHoliday = addNewHoliday;
+    }
+
+    public JButton getDeleteHoliday() {
+        return deleteHoliday;
+    }
+
+    public void setDeleteHoliday(JButton deleteHoliday) {
+        this.deleteHoliday = deleteHoliday;
+    }
+
+    public JButton getShowSavedHolidays() {
+        return showSavedHolidays;
+    }
+
+    public void setShowSavedHolidays(JButton showSavedHolidays) {
+        this.showSavedHolidays = showSavedHolidays;
+    }
+
+    public HomeController getHomeController() {
+        return homeController;
+    }
+
+    public void setHomeController(HomeController homeController) {
+        this.homeController = homeController;
+    }
+
+    public JList<Notifications> getNotificationsJList() {
+        return notificationsJList;
+    }
+
+    public void setNotificationsJList(JList<Notifications> notificationsJList) {
+        this.notificationsJList = notificationsJList;
+    }
+
+
 }

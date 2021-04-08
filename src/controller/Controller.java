@@ -7,15 +7,14 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import model.Unit;
 import model.daily.DailyEvent;
-import model.home.Note;
 import model.ingredient.Ingredient;
+import model.supplier.WeekDays;
 import view.MainView;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Controller {
@@ -58,31 +57,6 @@ public class Controller {
         databaseReference = database.getReference();
     }
 
-    // läser data från databasen
-    public static Note[] getNotesFromDatabase() {
-        databaseReference.child("Notes").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Object> allNotesList = (List<Object>) dataSnapshot.getValue();
-                for (Object objectMap : allNotesList) {
-                    if (objectMap == null)
-                        continue;
-                    HashMap<String, Object> map = (HashMap<String, Object>) objectMap;
-                    String title = map.get("title").toString();
-                    String desc = map.get("description").toString();
-                    int id = Integer.parseInt(map.get("id").toString());
-                    Note note = new Note(title, desc, id);
-                    mainView.getHomePanel().addNote(note);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println(databaseError.toString());
-            }
-        });
-        return null;
-    }
 
     public static FirebaseDatabase getDatabase() {
         return database;
