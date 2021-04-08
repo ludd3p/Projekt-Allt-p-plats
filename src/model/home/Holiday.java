@@ -1,4 +1,4 @@
-package model;
+package model.home;
 /**
  * @author Qassem Aburas
  * @version 1.0
@@ -9,6 +9,9 @@ public class Holiday {
     private String description;
     private int id;
 
+    public Holiday(){
+
+    }
     public Holiday(String name, String description, int id) {
         this.name = name;
         this.description = description;

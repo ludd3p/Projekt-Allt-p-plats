@@ -1,4 +1,4 @@
-package model;
+package model.home;
 
 /**
  * @author Qassem Aburas
@@ -9,6 +9,7 @@ public class Note {
     private String title;
     private String description;
 
+    public Note(){}
     public Note(String title, String description, int id) {
         this.title = title;
         this.description = description;

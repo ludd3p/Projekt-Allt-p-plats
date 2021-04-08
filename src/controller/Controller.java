@@ -27,20 +27,19 @@ public class Controller {
     private RecipeController recipeController;
     private SupplierController supplierController;
     private DailyEvent dailyEvent;
+    private HomeController homeController;
 
 
-    public Controller() throws IOException, InterruptedException {
+    public Controller() throws IOException {
         connectToFirebase();
-        System.out.println("Loading controllers...");
-        System.out.println("5 seconds left!");
         dailyEvent = new DailyEvent();
-        orderController = new OrderController(this);
-        storageController = new StorageController(this);
         recipeController = new RecipeController(this, databaseReference);
+        storageController = new StorageController(this);
+        orderController = new OrderController(this);
         supplierController = new SupplierController(this, databaseReference);
+        homeController = new HomeController(this);
         Thread.sleep(5000);
         mainView = new MainView(this);
-        //getNotesFromDatabase();
     }
 
 
