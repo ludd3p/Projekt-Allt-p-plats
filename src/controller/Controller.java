@@ -5,9 +5,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
-import model.Note;
 import model.Unit;
 import model.daily.DailyEvent;
+import model.home.Note;
 import model.ingredient.Ingredient;
 import view.MainView;
 
@@ -30,7 +30,7 @@ public class Controller {
     private HomeController homeController;
 
 
-    public Controller() throws IOException {
+    public Controller() throws IOException, InterruptedException {
         connectToFirebase();
         dailyEvent = new DailyEvent();
         recipeController = new RecipeController(this, databaseReference);
@@ -38,7 +38,9 @@ public class Controller {
         orderController = new OrderController(this);
         supplierController = new SupplierController(this, databaseReference);
         homeController = new HomeController(this);
+        System.out.println("Hämtar data från firebase!");
         Thread.sleep(5000);
+        System.out.println("Data hämtad!");
         mainView = new MainView(this);
     }
 
@@ -187,5 +189,13 @@ public class Controller {
 
     public void setStorageController(StorageController storageController) {
         this.storageController = storageController;
+    }
+
+    public HomeController getHomeController() {
+        return homeController;
+    }
+
+    public void setHomeController(HomeController homeController) {
+        this.homeController = homeController;
     }
 }

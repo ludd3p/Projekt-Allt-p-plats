@@ -2,7 +2,6 @@ package controller;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import model.home.Holiday;
 import model.home.Note;
@@ -17,7 +16,6 @@ import java.util.List;
 
 public class HomeController {
     private Controller controller;
-    private DatabaseReference databaseReference;
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private HomePanel homePanel;
 
@@ -38,7 +36,7 @@ public class HomeController {
      * @return
      */
     public Note[] getNotesFromDatabase() {
-        databaseReference.child("Notes").addListenerForSingleValueEvent(new ValueEventListener() {
+        Controller.databaseReference.child("Notes").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Object> allNotesList = (List<Object>) dataSnapshot.getValue();
@@ -70,7 +68,7 @@ public class HomeController {
      * @return
      */
     public Holiday[] getHolidaysFromDatabase() {
-        databaseReference.child("Holiday").addListenerForSingleValueEvent(new ValueEventListener() {
+        Controller.databaseReference.child("Holiday").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Object> allHolidaysList = (List<Object>) dataSnapshot.getValue();
@@ -94,7 +92,8 @@ public class HomeController {
         });
         return null;
     }
-    public void registerPropertyChangeListener(PropertyChangeListener listener){
+
+    public void registerPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
@@ -103,7 +102,7 @@ public class HomeController {
         Note[] newVal = new Note[noteList.size()];
         noteList.toArray(newVal);
         notesJList.setListData(newVal);
-        databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // Sätter in värder i databasen
+        Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // Sätter in värder i databasen
     }
 
     public void addHoliday(Holiday holiday) {
@@ -111,7 +110,7 @@ public class HomeController {
         Holiday[] newVal = new Holiday[holidayList.size()];
         holidayList.toArray(newVal);
         holidaysJList.setListData(newVal);
-        databaseReference.child("Holiday").child(holidayList.size() + "").setValueAsync(holiday); // Sätter in värder i databasen
+        Controller.databaseReference.child("Holiday").child(holidayList.size() + "").setValueAsync(holiday); // Sätter in värder i databasen
     }
 
 
