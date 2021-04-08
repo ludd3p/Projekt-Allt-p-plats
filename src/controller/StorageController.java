@@ -86,12 +86,15 @@ public class StorageController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, HashMap<String, Object>> ingredientMap = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
+                int counter = 0;
                 for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
+                    counter++;
+                    System.out.println(counter);
                     Map.Entry mapElement = stringHashMapEntry;
 
                     Ingredient ingredient = (dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class));
                     ingredient.setKey((String) mapElement.getKey());
-                    allIngredients.add(ingredient);
+                    Ingredient.addIngredientToList(ingredient);
                 }
 
                 Controller.getMainView().getStoragePanel().updateList(Ingredient.getIngredientStringsForStorage());

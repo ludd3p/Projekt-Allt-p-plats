@@ -90,10 +90,11 @@ public class RecipeController {
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Ingredient ingredient = d.getValue(Ingredient.class);
+                    ingredient.setKey(d.getKey());
                     String s = ingredient.getName();
 
                     ingredientNames.add(s);
-                    allIngredients.add(ingredient);
+                    Ingredient.addIngredientToList(ingredient);
                 }
                 pcs.firePropertyChange("IngredientNames", null, ingredientNames);
             }

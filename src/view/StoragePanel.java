@@ -378,7 +378,7 @@ public class StoragePanel extends JPanel {
                     if (e.getSource() == btnOk) {
                         try {
                             boolean proceed = true;
-                            if (txfProductName.getText().toLowerCase().contains("Produkt:".toLowerCase()) ||
+                            if (    txfProductName.getText().toLowerCase().contains("Produkt:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("Kostnad:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("Nuvarande mängd:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("Minsta mängd:".toLowerCase()) ||

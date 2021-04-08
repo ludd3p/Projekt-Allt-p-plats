@@ -126,12 +126,9 @@ public class Ingredient {
      * Adds an ingredient to the list of ingredients.
      *
      * @param ingredient Ingredient-object.
-     * @param key        Unique-key for the ingredient from the database.
      */
-    public static void addIngredientToList(Ingredient ingredient, String key) {
-        if (!checkIfIngredientExists(key)) {
-            Ingredient ingredientToAdd = ingredient;
-            ingredientToAdd.setKey(key);
+    public static void addIngredientToList(Ingredient ingredient) {
+        if (!checkIfIngredientExists(ingredient.getKey())) {
             StorageController.allIngredients.add(ingredient);
         }
     }
@@ -196,6 +193,10 @@ public class Ingredient {
      * @return
      */
     public static boolean checkIfIngredientExists(String key) {
+        for (Ingredient ingredient : StorageController.allIngredients) {
+            System.out.println(ingredient.toString());
+        }
+
         for (Ingredient ingredient : StorageController.allIngredients) {
             if (ingredient.getKey().equals(key)) {
                 return true;
