@@ -10,9 +10,7 @@ import model.order.OrderStatus;
 import view.OrderPanel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Panel used to keep track of order history and current orders.
@@ -35,6 +33,7 @@ public class OrderController {
         this.controller = controller;
         this.orderHistoryList = new ArrayList<>();
         this.currentOrder = new Order();
+        this.currentPreview = currentOrder;
         getOrdersFromFirebase();
     }
 
@@ -65,9 +64,13 @@ public class OrderController {
      */
     public void addOrderToHistory(Order order) {
         this.panel.getOrderHistoryList().add(order);
-        Order[] val = new Order[this.panel.getOrderHistoryList().size()];
-        this.panel.getOrderHistoryList().toArray(val);
-        this.panel.getOrderHistoryJList().setListData(val);
+        updateOrderHistory();
+    }
+
+    public void updateOrderHistory() {
+        orderHistoryList.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
+
+        this.panel.getOrderHistoryJList().setListData(orderHistoryList.toArray(new Order[0]));
     }
 
     /**
@@ -88,17 +91,22 @@ public class OrderController {
      * @param order
      */
     public void orderHasArrived(Order order) {
+        if (order == currentOrder) {
+            newOrder();
+        }
         order.setStatus(OrderStatus.DELIVERED);
     }
 
     public void removeOrder(Order order) {
+        if (order == currentOrder) {
+            currentOrder.getOrderItems().clear();
+            orderPreview(order);
+            return;
+        }
         orderPreview(null);
         this.panel.getOrderHistoryList().remove(order);
-        Order[] val = new Order[this.panel.getOrderHistoryList().size()];
-        this.panel.getOrderHistoryList().toArray(val);
-        this.panel.getOrderHistoryJList().setListData(val);
-        orderPreview(null);
         Controller.databaseReference.child("orders").child(order.getId() + "").setValueAsync(null);
+        updateOrderHistory();
 
     }
 
@@ -116,6 +124,13 @@ public class OrderController {
         saveOrderToFirebase(currentOrder);
     }
 
+    public void newOrder() {
+        Order order = new Order();
+        addOrderToHistory(order);
+        this.currentOrder = order;
+
+    }
+
     public void removeOrderItemFromCurrentOrder(OrderItem item) {
         currentOrder.getOrderItems().remove(item);
         orderPreview(currentOrder);
@@ -125,15 +140,14 @@ public class OrderController {
     public void getOrdersFromFirebase() {
 
         Controller.getDatabaseReference().child("orders").addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String, Object>> ingredientMap = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
-
-                for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
-                    Map.Entry mapElement = stringHashMapEntry;
-                    Order order = (dataSnapshot.child((String) mapElement.getKey()).getValue(Order.class));
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Order order = d.getValue(Order.class);
                     orderHistoryList.add(order);
                 }
+                orderHistoryList.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
             }
 
             @Override

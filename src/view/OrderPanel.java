@@ -4,11 +4,11 @@ import controller.OrderController;
 import model.ingredient.Ingredient;
 import model.order.Order;
 import model.order.OrderItem;
+import model.order.OrderStatus;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.util.Collections;
 import java.util.List;
 
 import static controller.StorageController.allIngredients;
@@ -80,8 +80,9 @@ public class OrderPanel extends JPanel {
     }
 
     public void setUpLeftPanel() {
-        orderHistoryJList = new JList<>();
+        orderHistoryJList = new JList(orderHistoryList.toArray(new Order[0]));
         JScrollPane jScrollPane = new JScrollPane(orderHistoryJList);
+        jScrollPane.setPreferredSize(new Dimension(280, 500));
         jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setBorder(null);
@@ -97,8 +98,8 @@ public class OrderPanel extends JPanel {
         orderControlPanel.setBorder(new TitledBorder("Order control"));
         orderControlPanel.setBackground(Color.white);
 
-        this.showOrder = new JButton("Show order");
-        this.showOrder.setToolTipText("Shows items in selected order");
+        this.showOrder = new JButton("Visa order");
+        this.showOrder.setToolTipText("Visar varor i ordern");
         showOrder.setBounds(25, 30, 300, 65);
         showOrder.addActionListener(l -> {
             if (orderHistoryJList.getSelectedValue() == null) {
@@ -108,9 +109,22 @@ public class OrderPanel extends JPanel {
             controller.orderPreview(orderHistoryJList.getSelectedValue());
         });
 
-        this.hasArrived = new JButton("Has arrived");
-        this.hasArrived.setToolTipText("Marks an order as arrived");
+        this.hasArrived = new JButton("Har kommit");
+        this.hasArrived.setToolTipText("Markera en order som kommit");
         this.hasArrived.setBounds(25, 110, 300, 65);
+        this.hasArrived.addActionListener(a -> {
+            Order order = this.getOrderHistoryJList().getSelectedValue();
+            if (order == null) {
+                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                return;
+            }
+            if (order.getStatus() == OrderStatus.DELIVERED) {
+                JOptionPane.showConfirmDialog(null, "Denna ordern har redan kommit!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                return;
+            }
+
+            controller.orderHasArrived(order);
+        });
 
         this.remove = new JButton("Delete");
         this.remove.setToolTipText("Removes an order from history");

@@ -8,16 +8,17 @@ public class Supplier {
     private String countrty;
     private String email;
     private String phonenumber;
+    private WeekDay dayOfDelivery;
 
 
-
-    public Supplier(String name, String address, String city, String countrty, String email, String phonenumber) {
+    public Supplier(String name, String address, String city, String countrty, String email, String phonenumber, WeekDay day) {
         this.name = name;
         this.address = address;
         this.city = city;
         this.countrty = countrty;
         this.email = email;
         this.phonenumber = phonenumber;
+        this.dayOfDelivery = day;
     }
 
     public String getName() {
@@ -69,7 +70,15 @@ public class Supplier {
     }
 
 
-    public String toString(){
-        return String.format("Supplier: %s \n Address: %s \n City; %s \n Country: %s \n Email: %s \n Phone number: %s", name, address, city, countrty, email, phonenumber);
+    public WeekDay getDayOfDelivery() {
+        return dayOfDelivery;
+    }
+
+    public void setDayOfDelivery(WeekDay dayOfDelivery) {
+        this.dayOfDelivery = dayOfDelivery;
+    }
+
+    public String toString() {
+        return this.getName();
     }
 }

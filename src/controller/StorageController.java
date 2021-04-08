@@ -82,6 +82,7 @@ public class StorageController {
      * Gets ingredients from the database.
      */
     public void getIngredientsFromDatabase() {
+        allIngredients.clear();
         Controller.getDatabaseReference().child("Ingredient").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -97,7 +98,7 @@ public class StorageController {
                     Ingredient.addIngredientToList(ingredient);
                 }
 
-                Controller.getMainView().getStoragePanel().updateList(Ingredient.getIngredientStringsForStorage());
+                controller.getMainView().getStoragePanel().updateList(Ingredient.getIngredientStringsForStorage());
             }
 
             @Override

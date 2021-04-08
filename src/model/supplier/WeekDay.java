@@ -1,6 +1,6 @@
 package model.supplier;
 
-public enum WeekDays {
+public enum WeekDay {
 
     Monday,
     Tuesday,

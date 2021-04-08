@@ -8,7 +8,6 @@ import com.google.firebase.database.*;
 import model.Unit;
 import model.daily.DailyEvent;
 import model.ingredient.Ingredient;
-import model.supplier.WeekDays;
 import view.MainView;
 
 import java.io.FileInputStream;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class Controller {
     public static DatabaseReference databaseReference;
     private static FirebaseDatabase database;
-    private static MainView mainView;
+    private MainView mainView;
     private OrderController orderController;
     private StorageController storageController;
     private RecipeController recipeController;
@@ -74,12 +73,12 @@ public class Controller {
         Controller.databaseReference = databaseReference;
     }
 
-    public static MainView getMainView() {
+    public MainView getMainView() {
         return mainView;
     }
 
-    public static void setMainView(MainView mainView) {
-        Controller.mainView = mainView;
+    public void setMainView(MainView mainView) {
+        this.mainView = mainView;
     }
 
     public String[] getUnitsPrefixArray() {
@@ -172,4 +171,6 @@ public class Controller {
     public void setHomeController(HomeController homeController) {
         this.homeController = homeController;
     }
+
+
 }

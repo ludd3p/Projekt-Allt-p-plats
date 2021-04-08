@@ -2,9 +2,9 @@ package view;
 
 /**
  * Panel to handle and manage the notes and notifications in the homepage
+ *
  * @author Qassem Aburas
  * @version 1.1
- *
  */
 
 
