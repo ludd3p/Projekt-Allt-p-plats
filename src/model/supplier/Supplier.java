@@ -10,6 +10,7 @@ public class Supplier {
     private String phonenumber;
     private WeekDay dayOfDelivery;
 
+    public Supplier(){}
 
     public Supplier(String name, String address, String city, String countrty, String email, String phonenumber, WeekDay day) {
         this.name = name;

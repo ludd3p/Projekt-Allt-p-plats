@@ -1,6 +1,7 @@
 package view;
 
 import controller.StorageController;
+import controller.SupplierController;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -119,11 +120,12 @@ public class StoragePanel extends JPanel {
                         String selected = (String) productList.getSelectedValue();
                         JFrame productWindow = new ProductWindow(
                                 selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1),
-                                selected.substring(selected.indexOf("Kostnad: ") + "Kostnad: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Nuvarande mängd") - 2)),
+                                selected.substring(selected.indexOf("Kostnad: ") + "Kostnad: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Leverantör:") - 2)),
                                 selected.substring(selected.indexOf("<br>Nuvarande mängd: ") + "<br>Nuvarande mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("Minsta mängd:") - 2)),
                                 selected.substring(selected.indexOf("Minsta mängd: ") + "Minsta mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("Rekommenderad mängd: ") - 2)),
                                 selected.substring(selected.indexOf("Rekommenderad mängd: ") + "Rekommenderad mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("<!---") - 2)),
-                                selected.substring(selected.indexOf("sek/") + "sek/".length(), selected.indexOf("<br>Nuvarande") - 1));
+                                selected.substring(selected.indexOf("sek/") + "sek/".length(), selected.indexOf("<br>Nuvarande") - 1),
+                                selected.substring(selected.indexOf("<br>Leverantör: ") + "<br>Leverantör: ".length(), selected.indexOf("<br>Nuvarande mängd:") - 1));
                     } else {
                         JOptionPane.showMessageDialog(null, "Välj en produkt att ändra.");
                     }
@@ -262,6 +264,9 @@ public class StoragePanel extends JPanel {
         private JLabel lblUnit;
         private JComboBox cbxUnit;
 
+        private JLabel lblSupplier;
+        private JComboBox cbxSupplier;
+
         private JButton btnOk;
         private JButton btnCancel;
 
@@ -285,7 +290,7 @@ public class StoragePanel extends JPanel {
          * @param minAmount
          * @param maxAmount
          */
-        public ProductWindow(String productName, String cost, String currentAmount, String minAmount, String maxAmount, String unit) {
+        public ProductWindow(String productName, String cost, String currentAmount, String minAmount, String maxAmount, String unit, String supplier) {
             addOrChange = false;
             setTitle("Ändra produkten");
             setupProductWindow();
@@ -296,6 +301,7 @@ public class StoragePanel extends JPanel {
             txfMinAmount.setText(minAmount);
             txfMaxAmount.setText(maxAmount);
             cbxUnit.setSelectedItem(unit);
+            cbxSupplier.setSelectedItem(supplier);
         }
 
         /**
@@ -322,7 +328,7 @@ public class StoragePanel extends JPanel {
         private void setupProductWindowCenterPanel() {
             pnlProductWindowCenter = new JPanel();
             pnlProductWindowCenter.setBorder(BorderFactory.createEtchedBorder(0));
-            pnlProductWindowCenter.setLayout(new GridLayout(6, 2, 10, 1));
+            pnlProductWindowCenter.setLayout(new GridLayout(7, 2, 10, 1));
 
             lblProductName = new JLabel(" Produkt: ");
             pnlProductWindowCenter.add(lblProductName);
@@ -361,6 +367,12 @@ public class StoragePanel extends JPanel {
             cbxUnit.setToolTipText("Välj enhet för produkten.");
             pnlProductWindowCenter.add(cbxUnit);
 
+            lblSupplier = new JLabel(" Leverantör:");
+            pnlProductWindowCenter.add(lblSupplier);
+            cbxSupplier = new JComboBox(storageController.getSupplierNames());
+            cbxUnit.setToolTipText("Välj leverantör för produkten.");
+            pnlProductWindowCenter.add(cbxSupplier);
+
             pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);
         }
 
@@ -380,6 +392,7 @@ public class StoragePanel extends JPanel {
                             boolean proceed = true;
                             if (    txfProductName.getText().toLowerCase().contains("Produkt:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("Kostnad:".toLowerCase()) ||
+                                    txfProductName.getText().toLowerCase().contains("Leverantör:".toLowerCase())||
                                     txfProductName.getText().toLowerCase().contains("Nuvarande mängd:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("Minsta mängd:".toLowerCase()) ||
                                     txfProductName.getText().toLowerCase().contains("Rekommenderad mängd:".toLowerCase()) ||
@@ -403,7 +416,8 @@ public class StoragePanel extends JPanel {
                                             Double.parseDouble(txfCurrentAmount.getText()),
                                             Double.parseDouble(txfMinAmount.getText()),
                                             Double.parseDouble(txfMaxAmount.getText()),
-                                            (String) cbxUnit.getSelectedItem());
+                                            (String) cbxUnit.getSelectedItem(),
+                                            (String) cbxSupplier.getSelectedItem());
                                 } else if(!addOrChange){
                                     String selected = (String) productList.getSelectedValue();
                                     String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
@@ -414,7 +428,8 @@ public class StoragePanel extends JPanel {
                                             Double.parseDouble(txfCurrentAmount.getText()),
                                             Double.parseDouble(txfMinAmount.getText()),
                                             Double.parseDouble(txfMaxAmount.getText()),
-                                            (String) cbxUnit.getSelectedItem());
+                                            (String) cbxUnit.getSelectedItem(),
+                                            (String) cbxSupplier.getSelectedItem());
                                 }
                                 storageController.getIngredientsFromDatabase();
                                 dispose();

@@ -6,10 +6,7 @@ import com.google.firebase.database.ValueEventListener;
 import model.Unit;
 import model.ingredient.Ingredient;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class StorageController {
     private Controller controller;
@@ -35,8 +32,15 @@ public class StorageController {
      * @param recommendedAmount
      * @param unitPrefix
      */
-    public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix) {
-        Ingredient ingredientToAddToDatabase = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
+    public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
+        Ingredient ingredientToAddToDatabase = new Ingredient(name,
+                                                              cost,
+                                                              currentAmount,
+                                                              criticalAmount,
+                                                              recommendedAmount,
+                                                              Unit.getUnitBasedOnPrefix(unitPrefix),
+                                                              controller.getSupplierController().getSupplierFromName(supplierName));
+
         Controller.getDatabaseReference().child("Ingredient").push().setValueAsync(ingredientToAddToDatabase);
     }
 
@@ -51,9 +55,15 @@ public class StorageController {
      * @param recommendedAmount to update the ingredient with
      * @param unitPrefix        to update the ingredient with
      */
-    public void updateIngredient(String key, String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix) {
+    public void updateIngredient(String key, String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
         Controller.getDatabaseReference().child("Ingredient").child(key).setValueAsync(
-                Ingredient.updateIngredient(key, new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix))));
+                Ingredient.updateIngredient(key, new Ingredient(name,
+                                                                cost,
+                                                                currentAmount,
+                                                                criticalAmount,
+                                                                recommendedAmount,
+                                                                Unit.getUnitBasedOnPrefix(unitPrefix),
+                                                                controller.getSupplierController().getSupplierFromName(supplierName))));
     }
 
     /**
@@ -97,7 +107,6 @@ public class StorageController {
                     ingredient.setKey((String) mapElement.getKey());
                     Ingredient.addIngredientToList(ingredient);
                 }
-
                 controller.getMainView().getStoragePanel().updateList(Ingredient.getIngredientStringsForStorage());
             }
 
@@ -106,6 +115,10 @@ public class StorageController {
                 System.out.println(databaseError.toString());
             }
         });
+    }
+
+    public String[] getSupplierNames(){
+        return controller.getSupplierController().getSupplierNames();
     }
 
 }

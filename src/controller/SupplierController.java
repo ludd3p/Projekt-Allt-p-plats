@@ -77,4 +77,23 @@ public class SupplierController {
         return WeekDay.values();
     }
 
+    public String[] getSupplierNames(){
+        String[] supplierNames = new String[supplierList.size()];
+
+        for(int i = 0; i < supplierNames.length; i++){
+            System.out.println(supplierList.get(i).getName());
+            supplierNames[i] = supplierList.get(i).getName();
+        }
+
+        return supplierNames;
+    }
+
+    public Supplier getSupplierFromName(String supplierName){
+        for(Supplier supplier : supplierList){
+            if(supplier.getName().equals(supplierName)){
+                return supplier;
+            }
+        }
+        return null;
+    }
 }

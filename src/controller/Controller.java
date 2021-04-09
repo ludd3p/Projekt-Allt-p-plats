@@ -81,48 +81,6 @@ public class Controller {
         this.mainView = mainView;
     }
 
-    public String[] getUnitsPrefixArray() {
-        return Unit.getPrefixArray();
-    }
-
-    public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix) {
-        Ingredient ingredientToAddToDatabase = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
-        databaseReference.child("Ingredient").push().setValueAsync(ingredientToAddToDatabase);
-    }
-
-    public void changeProductInDatabase(String key, String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix) {
-        Ingredient changedIngredient = new Ingredient(name, cost, currentAmount, criticalAmount, recommendedAmount, Unit.getUnitBasedOnPrefix(unitPrefix));
-        databaseReference.child("Ingredient").child(key).setValueAsync(changedIngredient);
-    }
-
-    public void removeIngredientFromDatabase(String key) {
-        databaseReference.child("Ingredient").child(key).removeValueAsync();
-    }
-
-    public void getIngredientsFromDatabase() {
-        ArrayList<String> ingredientValueList = new ArrayList<>();
-
-        databaseReference.child("Ingredient").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String, Object>> ingredientMap = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
-                for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
-                    Map.Entry mapElement = stringHashMapEntry;
-
-
-                    //ingredientValueList.add(dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class).toString((String) mapElement.getKey()));
-                }
-
-                mainView.getStoragePanel().updateList(ingredientValueList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println(databaseError.toString());
-            }
-        });
-    }
-
     public RecipeController getRecipeController() {
         return recipeController;
     }

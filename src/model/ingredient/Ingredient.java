@@ -5,12 +5,12 @@ package model.ingredient;
 import com.google.firebase.database.Exclude;
 import controller.StorageController;
 import model.Unit;
+import model.supplier.Supplier;
 
 import java.util.ArrayList;
 
 
 public class Ingredient {
-
     private String key;
     private String name;
     private double cost;
@@ -18,6 +18,7 @@ public class Ingredient {
     private double criticalAmount;
     private double recommendedAmount;
     private Unit unit;
+    private Supplier supplier;
 
     public Ingredient() {
     }
@@ -28,17 +29,19 @@ public class Ingredient {
      * @param name              of ingredient
      * @param cost              of ingredient. cost/unit
      * @param currentAmount     of ingredient in storage
-     * @param criticalAmount
+     * @param criticalAmount    of ingredient for warning
      * @param recommendedAmount of ingredient in storage
-     * @param unit
+     * @param unit              of the ingredient
+     * @param supplier          of the ingredient
      */
-    public Ingredient(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, Unit unit) {
+    public Ingredient(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, Unit unit, Supplier supplier) {
         this.name = name;
         this.cost = cost;
         this.currentAmount = currentAmount;
         this.criticalAmount = criticalAmount;
         this.recommendedAmount = recommendedAmount;
         this.unit = unit;
+        this.supplier = supplier;
     }
 
     public Ingredient(String name, Unit unit) {
@@ -103,16 +106,25 @@ public class Ingredient {
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
     //</editor-fold>
 
     /**
      * @return a string with info about the ingredient.
      */
     public String toString() {
-        return String.format("%s %s %s %s %s %s %s",
+        return String.format("%s %s %s %s %s %s %s %s",
                 "<html>",
                 "Produkt: " + name,
                 "<br>Kostnad: " + cost + " " + "sek/" + unit.getPrefix(),
+                "<br>Leverantör: " + supplier.getName(),
                 "<br>Nuvarande mängd: " + currentAmount + " " + unit.getPrefix(),
                 "Minsta mängd: " + criticalAmount + " " + unit.getPrefix(),
                 "Rekommenderad mängd: " + recommendedAmount + " " + unit.getPrefix(),
@@ -159,6 +171,7 @@ public class Ingredient {
                 ingredient.setCriticalAmount(ingredientNewValues.getCriticalAmount());
                 ingredient.setRecommendedAmount(ingredientNewValues.getRecommendedAmount());
                 ingredient.setUnit(ingredientNewValues.getUnit());
+                ingredient.setSupplier(ingredientNewValues.getSupplier());
                 updatedIngredient = ingredient;
             }
         }
