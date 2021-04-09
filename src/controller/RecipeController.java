@@ -94,7 +94,12 @@ public class RecipeController {
                     String s = ingredient.getName();
 
                     ingredientNames.add(s);
-                    Ingredient.addIngredientToList(ingredient);
+
+                    if(!Ingredient.checkIfIngredientExists(ingredient.getKey())) {
+                        allIngredients.add(ingredient);
+                    }else {
+                        Ingredient.updateIngredient(ingredient.getKey(), ingredient);
+                    }
                 }
                 pcs.firePropertyChange("IngredientNames", null, ingredientNames);
             }

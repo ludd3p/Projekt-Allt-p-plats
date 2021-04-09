@@ -92,7 +92,6 @@ public class StorageController {
      * Gets ingredients from the database.
      */
     public void getIngredientsFromDatabase() {
-        allIngredients.clear();
         Controller.getDatabaseReference().child("Ingredient").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -100,12 +99,16 @@ public class StorageController {
                 int counter = 0;
                 for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
                     counter++;
-                    System.out.println(counter);
                     Map.Entry mapElement = stringHashMapEntry;
 
                     Ingredient ingredient = (dataSnapshot.child((String) mapElement.getKey()).getValue(Ingredient.class));
                     ingredient.setKey((String) mapElement.getKey());
-                    Ingredient.addIngredientToList(ingredient);
+
+                    if(!Ingredient.checkIfIngredientExists(ingredient.getKey())) {
+                        allIngredients.add(ingredient);
+                    }else {
+                        Ingredient.updateIngredient(ingredient.getKey(), ingredient);
+                    }
                 }
                 controller.getMainView().getStoragePanel().updateList(Ingredient.getIngredientStringsForStorage());
             }

@@ -140,9 +140,7 @@ public class Ingredient {
      * @param ingredient Ingredient-object.
      */
     public static void addIngredientToList(Ingredient ingredient) {
-        if (!checkIfIngredientExists(ingredient.getKey())) {
-            StorageController.allIngredients.add(ingredient);
-        }
+        StorageController.allIngredients.add(ingredient);
     }
 
     /**
@@ -206,10 +204,6 @@ public class Ingredient {
      * @return
      */
     public static boolean checkIfIngredientExists(String key) {
-        for (Ingredient ingredient : StorageController.allIngredients) {
-            System.out.println(ingredient.toString());
-        }
-
         for (Ingredient ingredient : StorageController.allIngredients) {
             if (ingredient.getKey().equals(key)) {
                 return true;
