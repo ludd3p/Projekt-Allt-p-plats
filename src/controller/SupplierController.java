@@ -81,7 +81,6 @@ public class SupplierController {
         String[] supplierNames = new String[supplierList.size()];
 
         for(int i = 0; i < supplierNames.length; i++){
-            System.out.println(supplierList.get(i).getName());
             supplierNames[i] = supplierList.get(i).getName();
         }
 

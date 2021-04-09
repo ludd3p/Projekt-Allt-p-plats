@@ -69,7 +69,6 @@ public class StoragePanel extends JPanel {
      */
     private void setupNorthPanel() {
         pnlNorth = new JPanel();
-        //pnlNorth.setLayout(new BorderLayout());
         pnlNorth.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
         addComponentsNorthPanel();
@@ -141,6 +140,7 @@ public class StoragePanel extends JPanel {
                     if (answer == 0) {
                         String selected = (String) productList.getSelectedValue();
                         String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
+                        model.removeElement(productList.getSelectedValue());
                         storageController.removeIngredientFromDatabase(key);
                         storageController.getIngredientsFromDatabase();
                     }
