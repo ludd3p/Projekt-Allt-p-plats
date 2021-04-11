@@ -317,7 +317,7 @@ public class SupplierPanel extends JPanel {
                 addressLabel.setText("Adress: " + tempSup.getAddress());
                 cityLabel.setText("Stad: " + tempSup.getCity());
                 countryLabel.setText("Land: " + tempSup.getCountrty());
-                dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name().toLowerCase());
+                dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name());
             }
         }
     }
@@ -333,16 +333,19 @@ public class SupplierPanel extends JPanel {
             }
             if (e.getSource() == removeSupplier) {
                 if (supplierJList.getSelectedValue() != null) {
-                    supController.removeSupplier(supplierJList.getSelectedValue());
+                    int confirmation = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort denna leverantör?", "Varning", JOptionPane.OK_CANCEL_OPTION);
+                    if (confirmation == JOptionPane.OK_OPTION) {
+                        supController.removeSupplier(supplierJList.getSelectedValue());
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Please select a supplier");
                 }
             }
             if (e.getSource() == updateSupplier) {
                 if (supplierJList.getSelectedValue() != null) {
-                    Supplier s = supplierJList.getSelectedValue();
-                    supController.removeSupplier(s);
-                    addSupplier(s);
+                        Supplier s = supplierJList.getSelectedValue();
+                        supController.removeSupplier(s);
+                        addSupplier(s);
                 } else {
                     JOptionPane.showMessageDialog(null, "Please select a supplier");
                 }
