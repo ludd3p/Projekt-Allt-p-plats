@@ -27,11 +27,6 @@ public class SupplierController {
         this.panel = panel;
     }
 
-    private void updateSupplier(Supplier old, Supplier newSup) {
-        removeSupplier(old);
-        createNewSupplier(newSup);
-    }
-
     public void removeSupplier(Supplier supplier) {
         databaseReference.child("Suppliers").child(supplier.getName()).setValueAsync(null);
         supplierList.remove(supplier);
@@ -77,22 +72,54 @@ public class SupplierController {
         return WeekDay.values();
     }
 
-    public String[] getSupplierNames(){
+    public String[] getSupplierNames() {
         String[] supplierNames = new String[supplierList.size()];
 
-        for(int i = 0; i < supplierNames.length; i++){
+        for (int i = 0; i < supplierNames.length; i++) {
             supplierNames[i] = supplierList.get(i).getName();
         }
 
         return supplierNames;
     }
 
-    public Supplier getSupplierFromName(String supplierName){
-        for(Supplier supplier : supplierList){
-            if(supplier.getName().equals(supplierName)){
+    public Supplier getSupplierFromName(String supplierName) {
+        for (Supplier supplier : supplierList) {
+            if (supplier.getName().equals(supplierName)) {
                 return supplier;
             }
         }
         return null;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public SupplierPanel getPanel() {
+        return panel;
+    }
+
+    public void setPanel(SupplierPanel panel) {
+        this.panel = panel;
+    }
+
+    public DatabaseReference getDatabaseReference() {
+        return databaseReference;
+    }
+
+    public void setDatabaseReference(DatabaseReference databaseReference) {
+        this.databaseReference = databaseReference;
+    }
+
+    public ArrayList<Supplier> getSupplierList() {
+        return supplierList;
+    }
+
+    public void setSupplierList(ArrayList<Supplier> supplierList) {
+        this.supplierList = supplierList;
     }
 }

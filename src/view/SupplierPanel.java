@@ -60,7 +60,7 @@ public class SupplierPanel extends JPanel {
         northPanel.add(removeSupplier);
         northPanel.add(updateSupplier);
         westPanel.setBorder(new TitledBorder("Suppliers"));
-        supplierJList = new JList<>();
+        supplierJList = new JList<>(supController.getSupplierList().toArray(new Supplier[0]));
         supplierJList.setPreferredSize(new Dimension(200, 550));
         supplierJList.setEnabled(true);
         supplierJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -324,7 +324,7 @@ public class SupplierPanel extends JPanel {
             }
             if (e.getSource() == removeSupplier) {
                 if (supplierJList.getSelectedValue() != null) {
-
+                    supController.removeSupplier(supplierJList.getSelectedValue());
                 } else {
                     JOptionPane.showMessageDialog(null, "Please select a supplier");
                 }
