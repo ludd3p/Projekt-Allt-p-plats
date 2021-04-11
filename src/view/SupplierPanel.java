@@ -50,38 +50,47 @@ public class SupplierPanel extends JPanel {
         centerPanel = new JPanel();
         westPanel = new JPanel();
 
-        addSupplier = new JButton("Add supplier");
-        removeSupplier = new JButton("Remove supplier");
-        updateSupplier = new JButton("Update supplier");
-        addSupplier.setSize(new Dimension(100, 30));
+        addSupplier = new JButton("Lägg till leverantör");
+        removeSupplier = new JButton("Ta bort leverantör");
+        updateSupplier = new JButton("Uppdatera leverantör");
+        addSupplier.setSize(new Dimension(120, 30));
         removeSupplier.setSize(new Dimension(100, 30));
         updateSupplier.setSize(new Dimension(100, 30));
         northPanel.add(addSupplier);
         northPanel.add(removeSupplier);
         northPanel.add(updateSupplier);
+
         westPanel.setBorder(new TitledBorder("Suppliers"));
         supplierJList = new JList<>(supController.getSupplierList().toArray(new Supplier[0]));
         supplierJList.setPreferredSize(new Dimension(200, 550));
         supplierJList.setEnabled(true);
         supplierJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         westPanel.add(supplierJList);
+
         centerPanel.setBorder(new TitledBorder("Info"));
+        Font font = new Font("Times New Roman", Font.BOLD, 18);
         supplierInfoArea = new JPanel(null);
         nameLabel = new JLabel("");
-        nameLabel.setBounds(300, 20, 300, 40);
+        nameLabel.setBounds(20, 20, 300, 40);
         nameLabel.setFont(new Font("Time New Roman", Font.BOLD, 20));
         phoneLabel = new JLabel("");
-        phoneLabel.setBounds(10, 70, 300, 40);
+        phoneLabel.setBounds(20, 70, 300, 40);
+        phoneLabel.setFont(font);
         emailLabel = new JLabel("");
-        emailLabel.setBounds(680, 70, 300, 40);
+        emailLabel.setBounds(20, 120, 300, 40);
+        emailLabel.setFont(font);
         addressLabel = new JLabel("");
-        addressLabel.setBounds(10, 170, 300, 40);
+        addressLabel.setBounds(20, 170, 300, 40);
+        addressLabel.setFont(font);
         cityLabel = new JLabel("");
-        cityLabel.setBounds(300, 170, 300, 40);
+        cityLabel.setBounds(20, 220, 300, 40);
+        cityLabel.setFont(font);
         countryLabel = new JLabel("");
-        countryLabel.setBounds(700, 170, 300, 40);
+        countryLabel.setBounds(20, 270, 300, 40);
+        countryLabel.setFont(font);
         dodLabel = new JLabel("");
-        dodLabel.setBounds(10, 320, 300, 40);
+        dodLabel.setBounds(20, 320, 300, 40);
+        dodLabel.setFont(font);
         supplierInfoArea.add(nameLabel);
         supplierInfoArea.add(phoneLabel);
         supplierInfoArea.add(emailLabel);
@@ -125,26 +134,26 @@ public class SupplierPanel extends JPanel {
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(7, 2, 2, 2));
-        panel.add(new JLabel("Supplier name:"));
+        panel.add(new JLabel("Namn: "));
         panel.add(supName);
-        panel.add(new JLabel("Supplier phone:"));
+        panel.add(new JLabel("Telefonnummer: "));
         panel.add(supPhone);
-        panel.add(new JLabel("Supplier email;"));
+        panel.add(new JLabel("Emailadress: "));
         panel.add(supEmail);
-        panel.add(new JLabel("Supplier address:"));
+        panel.add(new JLabel("Adress: "));
         panel.add(supAddress);
-        panel.add(new JLabel("Supplier city:"));
+        panel.add(new JLabel("Stad: "));
         panel.add(supCity);
-        panel.add(new JLabel("Supplier country:"));
+        panel.add(new JLabel("Land: "));
         panel.add(supCountry);
-        panel.add(new JLabel("Day of delivery"));
+        panel.add(new JLabel("Leveransdag: "));
         panel.add(cmbWeekDays);
 
         int result = JOptionPane.showConfirmDialog(null, panel,
-                "Add supplier", JOptionPane.OK_CANCEL_OPTION);
+                "Lägg till leverantör", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supCountry.getText().isBlank())) {
-                JOptionPane.showMessageDialog(null, "Input missing");
+                JOptionPane.showMessageDialog(null, "Info saknas");
             } else {
                 try {
                     String name = (supName.getText().toUpperCase());
@@ -197,8 +206,8 @@ public class SupplierPanel extends JPanel {
         return supplierJList;
     }
 
-    public void setSupplierJList(JList<Supplier> supplierJList) {
-        this.supplierJList = supplierJList;
+    public void setSupplierJList(Supplier[] supplierJList) {
+        this.supplierJList.setListData(supplierJList);
     }
 
 
@@ -249,26 +258,26 @@ public class SupplierPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(320, 133));
         panel.setLayout(new GridLayout(7, 2, 2, 2));
-        panel.add(new JLabel("Supplier name:"));
+        panel.add(new JLabel("Leverantör: "));
         panel.add(supName);
-        panel.add(new JLabel("Supplier phone:"));
+        panel.add(new JLabel("Telefonnummer: "));
         panel.add(supPhone);
-        panel.add(new JLabel("Supplier email;"));
+        panel.add(new JLabel("Emailadress: "));
         panel.add(supEmail);
-        panel.add(new JLabel("Supplier address:"));
+        panel.add(new JLabel("Adress: "));
         panel.add(supAddress);
-        panel.add(new JLabel("Supplier city:"));
+        panel.add(new JLabel("Stad: "));
         panel.add(supCity);
-        panel.add(new JLabel("Supplier country:"));
+        panel.add(new JLabel("Land: "));
         panel.add(supCountry);
-        panel.add(new JLabel("Day of delivery"));
+        panel.add(new JLabel("Leveransdag: "));
         panel.add(cmbWeekDays);
 
         int result = JOptionPane.showConfirmDialog(null, panel,
-                "Update supplier", JOptionPane.OK_CANCEL_OPTION);
+                "Uppdatera leverantör", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supCountry.getText().isBlank())) {
-                JOptionPane.showMessageDialog(null, "Input missing");
+                JOptionPane.showMessageDialog(null, "Info saknas");
             } else {
                 try {
                     String name = (supName.getText().toUpperCase());
@@ -302,13 +311,13 @@ public class SupplierPanel extends JPanel {
         if (!supplierJList.getValueIsAdjusting()) {
             if (supplierJList.getSelectedIndex() >= 0) {
                 Supplier tempSup = supplierJList.getSelectedValue();
-                nameLabel.setText(tempSup.getName());
-                phoneLabel.setText(tempSup.getPhonenumber());
-                emailLabel.setText(tempSup.getEmail());
-                addressLabel.setText(tempSup.getAddress());
-                cityLabel.setText(tempSup.getCity());
-                countryLabel.setText(tempSup.getCountrty());
-                dodLabel.setText("Day of delivery: " + tempSup.getDayOfDelivery().name().toLowerCase());
+                nameLabel.setText(tempSup.getName() + " kontaktuppgifter:");
+                phoneLabel.setText("Telefon: " + tempSup.getPhonenumber());
+                emailLabel.setText("Email: " + tempSup.getEmail());
+                addressLabel.setText("Adress: " + tempSup.getAddress());
+                cityLabel.setText("Stad: " + tempSup.getCity());
+                countryLabel.setText("Land: " + tempSup.getCountrty());
+                dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name().toLowerCase());
             }
         }
     }

@@ -50,6 +50,10 @@ public class SupplierController {
         panel.getSupplierJList().setListData(this.supplierList.toArray(new Supplier[0]));
     }
 
+    public void updateSupplierListGUI(){
+        panel.setSupplierJList((Supplier[]) supplierList.toArray());
+    }
+
     public void getSuppliersFromDatabase() {
         databaseReference.child("Suppliers").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -58,6 +62,7 @@ public class SupplierController {
                 for (DataSnapshot supplier : dataSnapshot.getChildren()) {
                     Supplier newSupplier = supplier.getValue(Supplier.class);
                     supplierList.add(newSupplier);
+                    updateSupplierListGUI();
                 }
             }
 
