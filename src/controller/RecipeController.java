@@ -95,9 +95,9 @@ public class RecipeController {
 
                     ingredientNames.add(s);
 
-                    if(!Ingredient.checkIfIngredientExists(ingredient.getKey())) {
+                    if (!Ingredient.checkIfIngredientExists(ingredient.getKey())) {
                         allIngredients.add(ingredient);
-                    }else {
+                    } else {
                         Ingredient.updateIngredient(ingredient.getKey(), ingredient);
                     }
                 }
