@@ -60,7 +60,7 @@ public class SupplierPanel extends JPanel {
         northPanel.add(removeSupplier);
         northPanel.add(updateSupplier);
 
-        westPanel.setBorder(new TitledBorder("Suppliers"));
+        westPanel.setBorder(new TitledBorder("Leverantörer"));
         supplierJList = new JList<>(supController.getSupplierList().toArray(new Supplier[0]));
         supplierJList.setPreferredSize(new Dimension(200, 550));
         supplierJList.setEnabled(true);
