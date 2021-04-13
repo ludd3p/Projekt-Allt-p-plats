@@ -1,4 +1,7 @@
 package model.home;
+
+import java.util.Date;
+
 /**
  * @author Qassem Aburas
  * @version 1.0
@@ -6,15 +9,15 @@ package model.home;
 
 public class Holiday {
     private String name;
-    private String description;
+    private Date date;
     private int id;
 
     public Holiday(){
 
     }
-    public Holiday(String name, String description, int id) {
+    public Holiday(String name, Date date, int id) {
         this.name = name;
-        this.description = description;
+        this.date = date;
         this.id = id;
     }
 
@@ -26,12 +29,12 @@ public class Holiday {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public int getId() {

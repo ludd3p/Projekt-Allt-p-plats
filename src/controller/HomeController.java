@@ -1,3 +1,7 @@
+/**
+ * @Author Qassem Aburas
+ * @Version 1.1
+ */
 package controller;
 
 import com.google.firebase.database.DataSnapshot;
@@ -94,8 +98,8 @@ public class HomeController {
 
     public void addNote(Note note) {
         noteList.add(note); // adds to list
-        updateNoteViewer();
         Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // adds to the database
+        updateNoteViewer();
     }
 
     /**
@@ -114,8 +118,8 @@ public class HomeController {
      */
     public void addHoliday(Holiday holiday) {
         holidayList.add(holiday); //add to the list
-        updateHolidayViewer();
         Controller.databaseReference.child("Holidays").child(holidayList.size() + "").setValueAsync(holiday); //add to the database
+        updateHolidayViewer();
     }
 
     /**
@@ -134,8 +138,8 @@ public class HomeController {
      */
     public void addNotification(Notifications notifications) {
         notificationslist.add(notifications);// add to the list
-        updateNotificationsViewer();
         Controller.databaseReference.child("Notifications").child(notificationslist.size() + "").setValueAsync(notifications); //add to the database
+        updateNotificationsViewer();
     }
 
     /**

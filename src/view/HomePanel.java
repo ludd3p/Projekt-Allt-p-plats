@@ -13,12 +13,18 @@ import controller.HomeController;
 import model.home.Holiday;
 import model.home.Note;
 import model.home.Notifications;
+import org.jdesktop.swingx.JXDatePicker;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 public class HomePanel extends JPanel implements ActionListener {
     private JPanel leftPanel;
@@ -52,8 +58,8 @@ public class HomePanel extends JPanel implements ActionListener {
      */
     public void createPanels() {
         leftPanel = new JPanel();
-        rightPanel = new JPanel();
         centerPanel = new JPanel();
+        rightPanel = new JPanel();
 
         //left panel
         leftPanel = new JPanel(new BorderLayout());
@@ -74,7 +80,7 @@ public class HomePanel extends JPanel implements ActionListener {
         centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBorder(BorderFactory.createTitledBorder("Högtider"));
 
-        holidaysJList = new JList<>();
+        holidaysJList = new JList<>(homeController.getHolidayList().toArray(new Holiday[0]));
         holidaysJList.setPreferredSize(new Dimension(300, 600));
         holidaysJList.setFont(new Font("Times New Roman", Font.BOLD, 30));
 
@@ -229,13 +235,13 @@ public class HomePanel extends JPanel implements ActionListener {
             JFrame noteFrame = new JFrame();
             JPanel panel = new JPanel();
 
-            noteFrame.setTitle("Edit | Show Note: " + noteToShow.getTitle());
+            noteFrame.setTitle("Ändra | Visa anteckningen: " + noteToShow.getTitle());
 
             noteFrame.setSize(new Dimension(500, 500));
             panel.setLayout(new BorderLayout(10, 10));
 
             JPanel noteArea = new JPanel();
-            noteArea.setBorder(new TitledBorder("Your note"));
+            noteArea.setBorder(new TitledBorder("Dina anteckningar"));
             JTextArea note = new JTextArea(noteToShow.getDescription());
             note.setPreferredSize(new Dimension(480, 300));
             note.setEditable(true);
@@ -249,17 +255,17 @@ public class HomePanel extends JPanel implements ActionListener {
             JTextField title = new JTextField(noteToShow.getTitle());
             title.setPreferredSize(new Dimension(340, 80));
             title.setFont(new Font("Arial", Font.BOLD, 20));
-            title.setBorder(new TitledBorder("Title"));
+            title.setBorder(new TitledBorder("Titel"));
 
-            JButton button = new JButton("Save");
+            JButton button = new JButton("Spara");
             button.setPreferredSize(new Dimension(120, 80));
             button.addActionListener(e -> {
                 if (note.getText() == null || note.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva en något i notes!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Du måste skriva något i anteckningar!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
                 if (title.getText() == null || title.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva en title!!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Du måste skriva en title till den anteckningar !!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
                 homeController.getNoteList().remove(noteToShow);
@@ -284,44 +290,42 @@ public class HomePanel extends JPanel implements ActionListener {
             JFrame HolidayFrame = new JFrame();
             JPanel panel = new JPanel();
 
-            HolidayFrame.setTitle("Lägg ny högtid");
+            HolidayFrame.setTitle("Ny högtid");
 
-            HolidayFrame.setSize(new Dimension(500, 500));
+            HolidayFrame.setSize(new Dimension(300, 200));
             panel.setLayout(new BorderLayout(10, 10));
-
+// title
             JPanel HolidayArea = new JPanel();
-            HolidayArea.setBorder(new TitledBorder("Högtider"));
-            JTextArea holiday = new JTextArea();
-            holiday.setPreferredSize(new Dimension(480, 300));
-            holiday.setEditable(true);
-            holiday.setFont(new Font("Arial", Font.BOLD, 15));
+            HolidayArea.setBorder(new TitledBorder("Titel"));
+            JTextArea title = new JTextArea();
+            title.setPreferredSize(new Dimension(287, 65));
+            title.setEditable(true);
+            title.setFont(new Font("Arial", Font.BOLD, 15));
 
-            HolidayArea.add(holiday);
+            HolidayArea.add(title);
 
             JPanel controllArea = new JPanel();
-            controllArea.setBorder(new TitledBorder("Control panel"));
+            controllArea.setBorder(new TitledBorder("Välj start datum"));
 
-            JTextField title = new JTextField();
-            title.setPreferredSize(new Dimension(340, 80));
-            title.setFont(new Font("Arial", Font.BOLD, 20));
-            title.setBorder(new TitledBorder("namn och datum"));
+            JXDatePicker picker = new JXDatePicker();
+            picker.setDate(Calendar.getInstance().getTime());
+            picker.setPreferredSize(new Dimension(120, 35));
+            picker.setFormats(new SimpleDateFormat("dd.MM.yyyy"));
+
 
             JButton button = new JButton("Spara");
-            button.setPreferredSize(new Dimension(120, 80));
+            button.setPreferredSize(new Dimension(90, 35));
             button.addActionListener(e -> {
-                if (holiday.getText() == null || holiday.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva om en högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
                 if (title.getText() == null || title.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva ett namn och datum!!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Du måste skriva en titel!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), homeController.getHolidayList().size() + 1);
-                homeController.addHoliday(holiday1);
+                Holiday title1 = new Holiday(title.getText(), picker.getDate(), homeController.getHolidayList().size() + 1);
+
+                homeController.addHoliday(title1);
                 HolidayFrame.setVisible(false);
             });
-            controllArea.add(title);
+            controllArea.add(picker);
             controllArea.add(button);
             panel.add(HolidayArea, BorderLayout.NORTH);
             panel.add(controllArea, BorderLayout.SOUTH);
@@ -333,55 +337,51 @@ public class HomePanel extends JPanel implements ActionListener {
 
 
         public NewHolidayJFrame(Holiday showHoliday) {
-            JFrame holidayFrame = new JFrame();
+            JFrame titleFrame = new JFrame();
             JPanel panel = new JPanel();
 
-            holidayFrame.setTitle("Ändra | Visa högtiden: " + showHoliday.getName());
+            titleFrame.setTitle("Ändra | Visa högtiden: " + showHoliday.getName());
 
-            holidayFrame.setSize(new Dimension(500, 500));
+            titleFrame.setSize(new Dimension(300, 200));
             panel.setLayout(new BorderLayout(10, 10));
 
-            JPanel holidayArea = new JPanel();
-            holidayArea.setBorder(new TitledBorder("Högtider"));
-            JTextArea holiday = new JTextArea(showHoliday.getDescription());
-            holiday.setPreferredSize(new Dimension(480, 300));
-            holiday.setEditable(true);
-            holiday.setFont(new Font("Arial", Font.BOLD, 15));
+            JPanel titleArea = new JPanel();
+            titleArea.setBorder(new TitledBorder("Högtider"));
+            JTextArea title = new JTextArea(showHoliday.getName());
+            title.setPreferredSize(new Dimension(287, 65));
+            title.setEditable(true);
+            title.setFont(new Font("Arial", Font.BOLD, 15));
 
-            holidayArea.add(holiday);
+            titleArea.add(title);
 
             JPanel controllArea = new JPanel();
             controllArea.setBorder(new TitledBorder("Control panel"));
 
-            JTextField title = new JTextField(showHoliday.getName());
-            title.setPreferredSize(new Dimension(340, 80));
-            title.setFont(new Font("Arial", Font.BOLD, 20));
-            title.setBorder(new TitledBorder("Namn"));
+            JXDatePicker datePicker = new JXDatePicker(showHoliday.getDate());
+            datePicker.setPreferredSize(new Dimension(165, 55));
+            datePicker.setFont(new Font("Arial", Font.BOLD, 16));
+            datePicker.setBorder(new TitledBorder("Datum"));
 
             JButton button = new JButton("Spara");
-            button.setPreferredSize(new Dimension(120, 80));
+            button.setPreferredSize(new Dimension(90, 35));
             button.addActionListener(e -> {
-                if (holiday.getText() == null || holiday.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva någon högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
-                if (title.getText() == null || title.getText().equals("")) {
+                if (title.getText() == null || title.getText().equals("") || datePicker.getDate()== null) {
                     JOptionPane.showMessageDialog(null, "Högtiden måste ha ett namn!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                homeController.getNoteList().remove(showHoliday);
-                Holiday holiday1 = new Holiday(title.getText(), holiday.getText(), homeController.getHolidayList().size() + 1);
-                homeController.addHoliday(holiday1);
-                holidayFrame.setVisible(false);
+                homeController.getHolidayList().remove(showHoliday);
+                Holiday title1 = new Holiday(title.getText(), datePicker.getDate(), homeController.getHolidayList().size() + 1);
+                homeController.addHoliday(title1);
+                titleFrame.setVisible(false);
             });
-            controllArea.add(title);
+            controllArea.add(datePicker);
             controllArea.add(button);
-            panel.add(holidayArea, BorderLayout.NORTH);
+            panel.add(titleArea, BorderLayout.NORTH);
             panel.add(controllArea, BorderLayout.SOUTH);
 
-            holidayFrame.setContentPane(panel);
-            holidayFrame.setResizable(false);
-            holidayFrame.setVisible(true);
+            titleFrame.setContentPane(panel);
+            titleFrame.setResizable(false);
+            titleFrame.setVisible(true);
         }
     }
 
