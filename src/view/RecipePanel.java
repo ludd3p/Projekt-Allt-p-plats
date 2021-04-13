@@ -39,8 +39,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
     private JButton addRecipe; // Lägga till recept
     private JButton removeRecipe; // Ta bort ett recept
     private JButton modifyRecipe; // Ändra i ett recept
-
-    private String[] menu = {"Recept1", "Recept2", "Recept3", "Recept4"}; //Bara test för meny
+    
 
     /**
      * Constructor for the panel
