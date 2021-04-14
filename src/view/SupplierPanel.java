@@ -338,7 +338,7 @@ public class SupplierPanel extends JPanel {
                         supController.removeSupplier(supplierJList.getSelectedValue());
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Please select a supplier");
+                    JOptionPane.showMessageDialog(null, "Vänligen välj en leverantör från listan");
                 }
             }
             if (e.getSource() == updateSupplier) {
@@ -347,7 +347,7 @@ public class SupplierPanel extends JPanel {
                         supController.removeSupplier(s);
                         addSupplier(s);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Please select a supplier");
+                    JOptionPane.showMessageDialog(null, "Vänligen välj en leverantör från listan");
                 }
             }
         }
