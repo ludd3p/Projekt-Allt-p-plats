@@ -50,6 +50,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         recipeController.registerPropertyChangeListener(this);
         setLayout(new BorderLayout());
         setupPanels();
+        fetchRecipeNames();
     }
 
     /**
@@ -71,6 +72,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         spinner = new JSpinner(spinnerModel);
         spinner.addChangeListener(this::stateChanged);
         northPanel.add(spinner);
+
 
         recipes = new JComboBox<String>();
         recipes.setPreferredSize(new Dimension(200, 25));
@@ -116,6 +118,13 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     }
 
+    public void fetchRecipeNames(){
+        ArrayList<String> recNames = recipeController.getAllRecipeNames();
+        for (String s : recNames) {
+            recipes.addItem(s);
+        }
+    }
+
 
     /**
      * Listener for the buttons
@@ -140,8 +149,12 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                 ingredientsModel.addElement(s);
             }
             if (recInstructions != null) {
+                int i = 1;
+                String formatted;
                 for (String s : recInstructions) {
-                    instructionsModel.addElement(s);
+                    formatted = i + ". " + s;
+                    instructionsModel.addElement(formatted);
+                    i++;
                 }
             }
 
@@ -163,12 +176,13 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         }
 
         if (e.getSource() == modifyRecipe) {
-            if (JOptionPane.showConfirmDialog(null, "Vill du ändra i " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ändra recept", JOptionPane.YES_NO_OPTION) == 0) {
+            if (recipes.getItemAt(recipes.getSelectedIndex()) != null && JOptionPane.showConfirmDialog(null, "Vill du ändra i " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ändra recept", JOptionPane.YES_NO_OPTION) == 0) {
                 if (newRecipeWindow != null) {
                     newRecipeWindow.dispose();
                 }
                 newRecipeWindow = new NewRecipeWindow(recipes.getItemAt(recipes.getSelectedIndex()));
             }
+            JOptionPane.showMessageDialog(null, "Inget recept valt", "Meddelande", JOptionPane.PLAIN_MESSAGE);
         }
 
     }
@@ -197,7 +211,13 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("RecipeNames")) {
             ArrayList<String> recNames = (ArrayList<String>) evt.getNewValue();
-            recipes.removeAllItems();
+
+            try {   //Needed try/catch because for some reason removeAllElements produces IndexOutOfBoundsException
+                recipes.removeAllItems();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
             for (String s : recNames) {
                 recipes.addItem(s);
             }
@@ -411,7 +431,8 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             }
 
             if (e.getSource() == saveRecipe) {
-                if (!ingredientsListModel.isEmpty()) { // Kan lägga till en JOptionpane för att bekräfta
+                if (!ingredientsListModel.isEmpty() &&
+                        JOptionPane.showConfirmDialog(null, "Vill du spara receptet " + recipeName.getText() + "?", "Spara", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     if (!recipeController.checkDuplicateRecipe(recipeName.getText())) {
                         recipeController.addRecipeToDatabase(recipeName.getText(), instructionsArray);
                     } else {
@@ -420,6 +441,8 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                 } else {
                     JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
                 }
+                JOptionPane.showMessageDialog(null, "Receptet är sparat", "Sparat", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
             }
             if (e.getSource() == ingredientsMenu) {
 

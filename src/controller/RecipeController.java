@@ -67,6 +67,7 @@ public class RecipeController {
                     Recipe rec = recept.getValue(Recipe.class);
                     allRecipes.add(rec);
                     allRecipeNames.add(rec.getName());
+                    System.out.println(rec.getName());
                 }
                 pcs.firePropertyChange("RecipeNames", null, allRecipeNames);
             }
@@ -241,7 +242,7 @@ public class RecipeController {
     }
 
     /**
-     * Gets the instructions for a spoecified recipe.
+     * Gets the instructions for a specified recipe.
      *
      * @param i Index of selected recipe.
      * @return String list of instructions.
