@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Panel for managing recipes
  *
  * @Author Ludvig Wedin Pettersson
- * @Version 1.1
+ * @Version 1.2
  */
 
 public class RecipePanel extends JPanel implements PropertyChangeListener {
@@ -118,6 +118,9 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     }
 
+    /**
+     * Used initially when panel is constructed, fetches all recipe names.
+     */
     public void fetchRecipeNames(){
         ArrayList<String> recNames = recipeController.getAllRecipeNames();
         for (String s : recNames) {
@@ -203,7 +206,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * Handles PropertyChange
+     * Handles PropertyChange.
      *
      * @param evt incoming message with the changed property
      */
