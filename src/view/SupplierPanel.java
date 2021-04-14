@@ -133,7 +133,9 @@ public class SupplierPanel extends JPanel {
         }
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(7, 2, 2, 2));
+        panel.setLayout(new GridLayout(8, 2, 2, 2));
+        panel.add(new JLabel("Alla fält är obligatioriska"));
+        panel.add(new JLabel(""));
         panel.add(new JLabel("Namn: "));
         panel.add(supName);
         panel.add(new JLabel("Telefonnummer: "));
@@ -152,7 +154,7 @@ public class SupplierPanel extends JPanel {
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Lägg till leverantör", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supCountry.getText().isBlank())) {
+            if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supEmail.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supCountry.getText().isBlank())) {
                 JOptionPane.showMessageDialog(null, "Info saknas");
             } else {
                 try {
