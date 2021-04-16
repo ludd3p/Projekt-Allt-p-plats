@@ -8,7 +8,6 @@ package view;
  */
 
 
-import controller.Controller;
 import controller.HomeController;
 import model.home.Holiday;
 import model.home.Note;
@@ -148,9 +147,9 @@ public class HomePanel extends JPanel implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == submit) {
+        if (e.getSource() == submit)
             new NewNoteJFrame();
-        }
+
         if (e.getSource() == showSavedNotes) {
             if (notesJList.getSelectedValue() == null) {
                 JOptionPane.showMessageDialog(null, "Du måste först välja en anteckning!!", "Error", JOptionPane.PLAIN_MESSAGE);
@@ -158,15 +157,26 @@ public class HomePanel extends JPanel implements ActionListener {
             }
             new NewNoteJFrame(notesJList.getSelectedValue());
         }
-        if (e.getSource() == deleteNote) {
+        if (e.getSource() == deleteNote){
+            if (notesJList.getSelectedValue() == null) {
+                JOptionPane.showMessageDialog(null, "Du måste först välja en anteckning!!", "Error", JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
             homeController.removeNote(notesJList.getSelectedValue());
         }
-        if (e.getSource() == addNewHoliday) {
+
+        if (e.getSource() == addNewHoliday)
             new NewHolidayJFrame();
-        }
-        if (e.getSource() == deleteHoliday) {
+
+        if (e.getSource() == deleteHoliday){
+            if (notesJList.getSelectedValue() == null) {
+                JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!!", "Error", JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
             homeController.removeHoliday(holidaysJList.getSelectedValue());
         }
+
+
         if (e.getSource() == showSavedHolidays) {
             if (holidaysJList.getSelectedValue() == null) {
                 JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
@@ -365,7 +375,7 @@ public class HomePanel extends JPanel implements ActionListener {
             JButton button = new JButton("Spara");
             button.setPreferredSize(new Dimension(90, 35));
             button.addActionListener(e -> {
-                if (title.getText() == null || title.getText().equals("") || datePicker.getDate()== null) {
+                if (title.getText() == null || title.getText().equals("") || datePicker.getDate() == null) {
                     JOptionPane.showMessageDialog(null, "Högtiden måste ha ett namn!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
