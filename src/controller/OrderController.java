@@ -4,9 +4,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import model.order.Order;
 import model.order.OrderItem;
-import model.order.OrderStatus;
+import model.order.SupplierOrder;
+import model.supplier.Supplier;
 import view.OrderPanel;
 
 import java.util.ArrayList;
@@ -20,10 +20,9 @@ import java.util.List;
 
 public class OrderController {
     private Controller controller;
-    private Order currentOrder;
+    private SupplierOrder currentSelectedSupplierOrder;
     private OrderPanel panel;
-    private Order currentPreview;
-    private List<Order> orderHistoryList;
+    private List<SupplierOrder> supplierOrderHistoryList;
 
 
     /**
@@ -31,123 +30,100 @@ public class OrderController {
      */
     public OrderController(Controller controller) {
         this.controller = controller;
-        this.orderHistoryList = new ArrayList<>();
-        this.currentOrder = new Order();
-        this.currentPreview = currentOrder;
-        getOrdersFromFirebase();
+        this.supplierOrderHistoryList = new ArrayList<>();
+        getSupplierOrders();
+
     }
 
     public void setup(OrderPanel panel) {
         this.panel = panel;
-        controller.getDailyEvent().addAction(this::saveCurrentOrder);
-        addOrderToHistory(currentOrder);
+        for (Supplier supplier : controller.getSupplierController().getSupplierList()) {
+            supplierOrderHistoryList.add(new SupplierOrder(supplier));
+
+        }
     }
 
-    /**
-     * Saves current order to firebase and creates a new order.
-     */
-    public void saveCurrentOrder() {
-        saveOrderToFirebase(currentOrder);
-        currentOrder.setStatus(OrderStatus.ORDERED);
-        currentOrder = new Order();
-    }
 
-    public void saveOrderToFirebase(Order order) {
+    public void saveOrderToFirebase(SupplierOrder supplierOrder) {
         DatabaseReference ref = Controller.getDatabaseReference().child("orders");
-        ref.child(order.getId() + "").setValueAsync(currentOrder);
+        ref.child(supplierOrder.getSupplier().getName()).setValueAsync(currentSelectedSupplierOrder);
     }
 
     /**
-     * adds order to history.
+     * adds supplier to the list
      *
-     * @param order which order to add
+     * @param supplierOrder which order to add
      */
-    public void addOrderToHistory(Order order) {
-        this.panel.getOrderHistoryList().add(order);
-        updateOrderHistory();
+    public void addSupplierToList(SupplierOrder supplierOrder) {
+        this.panel.getOrderHistoryList().add(supplierOrder);
+        updateSupplierList();
     }
 
-    public void updateOrderHistory() {
-        orderHistoryList.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
-
-        this.panel.getOrderHistoryJList().setListData(orderHistoryList.toArray(new Order[0]));
+    public void updateSupplierList() {
+        this.panel.getSupplierJList().setListData(supplierOrderHistoryList.toArray(new SupplierOrder[0]));
     }
 
     /**
      * previews and order
      *
-     * @param order Which order to preview
+     * @param supplierOrder Which order to preview
      */
-    public void orderPreview(Order order) {
-        if (order == null)
-            order = new Order();
-        OrderItem[] items = new OrderItem[order.getOrderItems().size()];
-        order.getOrderItems().toArray(items);
-        this.panel.getCurrentOrderList().setListData(items);
-        this.currentPreview = order;
+    public void previewSupplierOrder(SupplierOrder supplierOrder) {
+        if (supplierOrder == null) {
+            getPanel().getCurrentSupplier().setListData(new OrderItem[0]);
+            return;
+        }
+        this.currentSelectedSupplierOrder = supplierOrder;
+        getPanel().getCurrentSupplier().setListData(supplierOrder.getOrderItems().toArray(new OrderItem[0]));
     }
 
     /**
-     * @param order
+     * @param supplierOrder
      */
-    public void orderHasArrived(Order order) {
-        if (order == currentOrder) {
-            newOrder();
-        }
-        order.setStatus(OrderStatus.DELIVERED);
+    public void orderHasArrived(SupplierOrder supplierOrder) {
+        //TODO måste fixa
     }
 
-    public void removeOrder(Order order) {
-        if (order == currentOrder) {
-            currentOrder.getOrderItems().clear();
-            orderPreview(order);
-            return;
-        }
-        orderPreview(null);
-        this.panel.getOrderHistoryList().remove(order);
-        Controller.databaseReference.child("orders").child(order.getId() + "").setValueAsync(null);
-        updateOrderHistory();
-
+    public void removeOrder() {
+        currentSelectedSupplierOrder.getOrderItems().clear();
+        previewSupplierOrder(currentSelectedSupplierOrder);
     }
 
-    public void addOrderItemToCurrentOrder(OrderItem item) {
-        for (OrderItem orderItem : currentOrder.getOrderItems()) {
+    public void addOrderItemToSelectedOrder(OrderItem item) {
+        for (OrderItem orderItem : currentSelectedSupplierOrder.getOrderItems()) {
             if (orderItem.getIngredient() == item.getIngredient()) {
                 orderItem.setQuantity(orderItem.getQuantity() + item.getQuantity());
-                orderPreview(currentOrder);
-                saveOrderToFirebase(currentOrder);
+                previewSupplierOrder(currentSelectedSupplierOrder);
+                saveOrderToFirebase(currentSelectedSupplierOrder);
                 return;
             }
         }
-        currentOrder.getOrderItems().add(item);
-        orderPreview(currentOrder);
-        saveOrderToFirebase(currentOrder);
-    }
-
-    public void newOrder() {
-        Order order = new Order();
-        addOrderToHistory(order);
-        this.currentOrder = order;
-
+        currentSelectedSupplierOrder.getOrderItems().add(item);
+        previewSupplierOrder(currentSelectedSupplierOrder);
+        saveOrderToFirebase(currentSelectedSupplierOrder);
     }
 
     public void removeOrderItemFromCurrentOrder(OrderItem item) {
-        currentOrder.getOrderItems().remove(item);
-        orderPreview(currentOrder);
-        saveOrderToFirebase(currentOrder);
+        currentSelectedSupplierOrder.getOrderItems().remove(item);
+        previewSupplierOrder(currentSelectedSupplierOrder);
+        saveOrderToFirebase(currentSelectedSupplierOrder);
     }
 
-    public void getOrdersFromFirebase() {
-
+    public void getSupplierOrders() {
+        System.out.println("HERE");
         Controller.getDatabaseReference().child("orders").addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("NOW");
+
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Order order = d.getValue(Order.class);
-                    orderHistoryList.add(order);
+                    SupplierOrder supplierOrder = d.getValue(SupplierOrder.class);
+                    System.out.println(supplierOrder);
+
+                    getSupplierOrder(supplierOrder.getSupplier().getName()).setOrderItems(supplierOrder.getOrderItems());
+
                 }
-                orderHistoryList.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
+
             }
 
             @Override
@@ -155,6 +131,17 @@ public class OrderController {
                 System.out.println(databaseError.toString());
             }
         });
+    }
+
+    public SupplierOrder getSupplierOrder(String name) {
+        for (SupplierOrder supplierOrder : supplierOrderHistoryList) {
+            if (supplierOrder.getSupplier().getName().equals(name))
+                return supplierOrder;
+        }
+
+        SupplierOrder supplierOrder = new SupplierOrder(controller.getSupplierController().getSupplierFromName(name));
+        supplierOrderHistoryList.add(supplierOrder);
+        return supplierOrder;
     }
 
     /**
@@ -185,31 +172,42 @@ public class OrderController {
         this.panel = panel;
     }
 
-    public Order getCurrentOrder() {
-        return currentOrder;
+    public SupplierOrder getCurrentOrder() {
+        return currentSelectedSupplierOrder;
     }
 
-    public void setCurrentOrder(Order currentOrder) {
-        this.currentOrder = currentOrder;
+    public void setCurrentOrder(SupplierOrder currentSupplierOrder) {
+        this.currentSelectedSupplierOrder = currentSupplierOrder;
+        panel.getCurrentSupplier().setListData(currentSupplierOrder.getOrderItems().toArray(new OrderItem[0]));
+
     }
 
     public OrderPanel getPanel() {
         return panel;
     }
 
-    public Order getCurrentPreview() {
-        return currentPreview;
+    public List<SupplierOrder> getOrderHistoryList() {
+        return supplierOrderHistoryList;
     }
 
-    public void setCurrentPreview(Order currentPreview) {
-        this.currentPreview = currentPreview;
+    public void setOrderHistoryList(List<SupplierOrder> supplierOrderHistoryList) {
+        this.supplierOrderHistoryList = supplierOrderHistoryList;
     }
 
-    public List<Order> getOrderHistoryList() {
-        return orderHistoryList;
+    public SupplierOrder getCurrentSelectedSupplierOrder() {
+        return currentSelectedSupplierOrder;
     }
 
-    public void setOrderHistoryList(List<Order> orderHistoryList) {
-        this.orderHistoryList = orderHistoryList;
+    public void setCurrentSelectedSupplierOrder(SupplierOrder currentSelectedSupplierOrder) {
+        this.currentSelectedSupplierOrder = currentSelectedSupplierOrder;
     }
+
+    public List<SupplierOrder> getSupplierOrderHistoryList() {
+        return supplierOrderHistoryList;
+    }
+
+    public void setSupplierOrderHistoryList(List<SupplierOrder> supplierOrderHistoryList) {
+        this.supplierOrderHistoryList = supplierOrderHistoryList;
+    }
+
 }

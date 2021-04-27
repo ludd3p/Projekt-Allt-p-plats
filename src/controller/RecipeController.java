@@ -302,5 +302,34 @@ public class RecipeController {
     public void setRecPanel(RecipePanel recPanel) {
         this.recPanel = recPanel;
     }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public RecipePanel getRecPanel() {
+        return recPanel;
+    }
+
+    public DatabaseReference getDatabaseReference() {
+        return databaseReference;
+    }
+
+    public void setDatabaseReference(DatabaseReference databaseReference) {
+        this.databaseReference = databaseReference;
+    }
+
+    public PropertyChangeSupport getPcs() {
+        return pcs;
+    }
+
+    public void setPcs(PropertyChangeSupport pcs) {
+        this.pcs = pcs;
+    }
+
     //</editor-fold>
 }

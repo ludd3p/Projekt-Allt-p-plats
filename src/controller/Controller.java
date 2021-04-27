@@ -27,13 +27,13 @@ public class Controller {
     public Controller() throws IOException, InterruptedException {
         connectToFirebase();
         dailyEvent = new DailyEvent();
+        supplierController = new SupplierController(this, databaseReference);
         recipeController = new RecipeController(this, databaseReference);
         storageController = new StorageController(this);
-        orderController = new OrderController(this);
-        supplierController = new SupplierController(this, databaseReference);
         homeController = new HomeController(this);
+        orderController = new OrderController(this);
+
         System.out.println("Hämtar data från firebase!");
-        Thread.sleep(5000);
         System.out.println("Data hämtad!");
         mainView = new MainView(this);
     }

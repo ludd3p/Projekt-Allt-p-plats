@@ -42,6 +42,7 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.30</version>
         </dependency>
+
         <dependency>
             <groupId>no.tornado.databinding</groupId>
             <artifactId>jxdatepicker-support</artifactId>

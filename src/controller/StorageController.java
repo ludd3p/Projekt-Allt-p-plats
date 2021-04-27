@@ -176,4 +176,5 @@ public class StorageController {
     public void setPanel(StoragePanel panel) {
         this.panel = panel;
     }
+
 }

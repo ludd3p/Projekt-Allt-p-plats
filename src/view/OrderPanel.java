@@ -2,9 +2,8 @@ package view;
 
 import controller.OrderController;
 import model.ingredient.Ingredient;
-import model.order.Order;
 import model.order.OrderItem;
-import model.order.OrderStatus;
+import model.order.SupplierOrder;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -24,10 +23,10 @@ public class OrderPanel extends JPanel {
     private JPanel rightPanel; // höger panelen
     private JPanel centerPanel;
 
-    private JList<Order> orderHistoryJList; // Order history jlist
-    private List<Order> orderHistoryList; // Order history list
+    private JList<SupplierOrder> supplierJList; // Order history jlist
+    private List<SupplierOrder> supplierList; // Order history list
 
-    private JList<OrderItem> currentOrderList; // Info om vald order
+    private JList<OrderItem> currentSupplier; // Info om vald supplier
 
     private JButton showOrder; // Visa info om vald order
     private JButton hasArrived; // Klicka när en order har kommit in
@@ -48,10 +47,9 @@ public class OrderPanel extends JPanel {
     public OrderPanel(OrderController controller) {
         this.controller = controller;
         setLayout(null);
-        orderHistoryList = controller.getOrderHistoryList();
-        controller.setPanel(this);
-        setupPanels();
+        supplierList = controller.getOrderHistoryList();
         controller.setup(this);
+        setupPanels();
     }
 
     /**
@@ -80,8 +78,8 @@ public class OrderPanel extends JPanel {
     }
 
     public void setUpLeftPanel() {
-        orderHistoryJList = new JList(orderHistoryList.toArray(new Order[0]));
-        JScrollPane jScrollPane = new JScrollPane(orderHistoryJList);
+        supplierJList = new JList(supplierList.toArray(new SupplierOrder[0]));
+        JScrollPane jScrollPane = new JScrollPane(supplierJList);
         jScrollPane.setPreferredSize(new Dimension(280, 500));
         jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -102,39 +100,36 @@ public class OrderPanel extends JPanel {
         this.showOrder.setToolTipText("Visar varor i ordern");
         showOrder.setBounds(25, 30, 300, 65);
         showOrder.addActionListener(l -> {
-            if (orderHistoryJList.getSelectedValue() == null) {
+            if (supplierJList.getSelectedValue() == null) {
                 JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
-            controller.orderPreview(orderHistoryJList.getSelectedValue());
+            System.out.println(supplierJList.getSelectedValue().getOrderItems().size());
+            controller.previewSupplierOrder(supplierJList.getSelectedValue());
         });
 
         this.hasArrived = new JButton("Har kommit");
         this.hasArrived.setToolTipText("Markera en order som kommit");
         this.hasArrived.setBounds(25, 110, 300, 65);
         this.hasArrived.addActionListener(a -> {
-            Order order = this.getOrderHistoryJList().getSelectedValue();
-            if (order == null) {
+            SupplierOrder supplierOrder = this.getSupplierJList().getSelectedValue();
+            if (supplierOrder == null) {
                 JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
-            if (order.getStatus() == OrderStatus.DELIVERED) {
-                JOptionPane.showConfirmDialog(null, "Denna ordern har redan kommit!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
-                return;
-            }
 
-            controller.orderHasArrived(order);
+            controller.orderHasArrived(supplierOrder);
         });
 
         this.remove = new JButton("Delete");
         this.remove.setToolTipText("Removes an order from history");
         this.remove.setBounds(25, 190, 300, 65);
         this.remove.addActionListener(l -> {
-            if (controller.getCurrentPreview() == null) {
+            if (controller.getCurrentSelectedSupplierOrder() == null) {
                 JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
-            controller.removeOrder(controller.getCurrentPreview());
+            controller.removeOrder();
         });
 
         orderControlPanel.add(showOrder);
@@ -167,25 +162,25 @@ public class OrderPanel extends JPanel {
         addOrderItem = new JButton("Add item");
         addOrderItem.setBounds(10, 160, 150, 50);
         addOrderItem.addActionListener(e -> {
-            if (controller.getCurrentPreview() == null) {
+            if (controller.getCurrentSelectedSupplierOrder() == null) {
                 JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
             Ingredient ingredient = getIngredientFromString((String) ingredientToAdd.getSelectedItem());
             int amount = (int) quantitySelector.getValue();
             OrderItem orderItem = new OrderItem(ingredient, amount);
-            controller.addOrderItemToCurrentOrder(orderItem);
+            controller.addOrderItemToSelectedOrder(orderItem);
         });
 
 
         removeOrderItem = new JButton("Remove item");
         removeOrderItem.setBounds(190, 160, 150, 50);
         removeOrderItem.addActionListener(p -> {
-            if (controller.getCurrentPreview() == null || this.getCurrentOrderList().getSelectedValue() == null) {
+            if (controller.getCurrentSelectedSupplierOrder() == null || this.getCurrentSupplier().getSelectedValue() == null) {
                 JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
-            controller.removeOrderItemFromCurrentOrder(this.getCurrentOrderList().getSelectedValue());
+            controller.removeOrderItemFromCurrentOrder(this.getCurrentSupplier().getSelectedValue());
         });
 
         addItemToOrderPanel.add(ingredientLabel);
@@ -200,8 +195,8 @@ public class OrderPanel extends JPanel {
     }
 
     public void setUpRightPanel() {
-        currentOrderList = new JList<>();
-        JScrollPane jScrollPane = new JScrollPane(currentOrderList);
+        currentSupplier = new JList<>();
+        JScrollPane jScrollPane = new JScrollPane(currentSupplier);
         jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setBorder(null);
@@ -260,42 +255,42 @@ public class OrderPanel extends JPanel {
     /**
      * @return returns the current orderhistory as a JList
      */
-    public JList<Order> getOrderHistoryJList() {
-        return orderHistoryJList;
+    public JList<SupplierOrder> getSupplierJList() {
+        return supplierJList;
     }
 
     /**
-     * @param orderHistoryJList replaces the current order history
+     * @param supplierJList replaces the current order history
      */
-    public void setOrderHistoryJList(JList<Order> orderHistoryJList) {
-        this.orderHistoryJList = orderHistoryJList;
+    public void setSupplierJList(JList<SupplierOrder> supplierJList) {
+        this.supplierJList = supplierJList;
     }
 
     /**
      * @return orderHistoryList returns the current order history as an arraylist
      */
-    public List<Order> getOrderHistoryList() {
-        return orderHistoryList;
+    public List<SupplierOrder> getOrderHistoryList() {
+        return supplierList;
     }
 
     /**
-     * @param orderHistoryList replaces the arraylist
+     * @param supplierOrderHistoryList replaces the arraylist
      */
-    public void setOrderHistoryList(List<Order> orderHistoryList) {
-        this.orderHistoryList = orderHistoryList;
+    public void setOrderHistoryList(List<SupplierOrder> supplierOrderHistoryList) {
+        this.supplierList = supplierOrderHistoryList;
     }
 
     /**
      * @return current order view list
      */
-    public JList<OrderItem> getCurrentOrderList() {
-        return currentOrderList;
+    public JList<OrderItem> getCurrentSupplier() {
+        return currentSupplier;
     }
 
     /**
-     * @param currentOrderList replace the current order view list
+     * @param currentSupplier replace the current order view list
      */
-    public void setCurrentOrderList(JList<OrderItem> currentOrderList) {
-        this.currentOrderList = currentOrderList;
+    public void setCurrentSupplier(JList<OrderItem> currentSupplier) {
+        this.currentSupplier = currentSupplier;
     }
 }

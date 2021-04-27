@@ -244,4 +244,11 @@ public class HomeController {
         updateNotificationsViewer();// and then update the list
     }
 
+    public List<Notifications> getNotificationslist() {
+        return notificationslist;
+    }
+
+    public void setNotificationslist(List<Notifications> notificationslist) {
+        this.notificationslist = notificationslist;
+    }
 }
