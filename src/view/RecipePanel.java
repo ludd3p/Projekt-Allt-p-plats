@@ -46,7 +46,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
      */
     public RecipePanel(RecipeController recipeController) {
         this.recipeController = recipeController;
-        recipeController.setRecPanel(this);
         recipeController.registerPropertyChangeListener(this);
         setLayout(new BorderLayout());
         setupPanels();
@@ -137,7 +136,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == done) {
             if (JOptionPane.showConfirmDialog(null, "Är du säker på att du tillaggat receptet? Lagersaldo kommer att dras av", "asd", JOptionPane.YES_NO_OPTION) == 0) {
-                // Recept tillagat och saldo ska dras av
+                recipeController.updateAmountsIngredient(recipes.getSelectedIndex(), (int)spinner.getValue());
             } else {
                 JOptionPane.showMessageDialog(null, "Inga varor dras av", "Meddelande", JOptionPane.PLAIN_MESSAGE);
             }

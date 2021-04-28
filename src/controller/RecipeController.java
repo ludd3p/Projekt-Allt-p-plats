@@ -7,7 +7,6 @@ import com.google.firebase.database.ValueEventListener;
 import model.ingredient.Ingredient;
 import model.recipe.Recipe;
 import model.recipe.RecipeIngredient;
-import view.RecipePanel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -18,11 +17,9 @@ import java.util.Set;
  * Controller class for handling everything related to recipes
  *
  * @Author Ludvig Wedin Pettersson
- * @Version 1.0
+ * @Version 1.1
  */
 public class RecipeController {
-    private Controller controller;
-    private RecipePanel recPanel;
     private DatabaseReference databaseReference;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -39,7 +36,6 @@ public class RecipeController {
      * @param databaseReference Reference to use database
      */
     public RecipeController(Controller controller, DatabaseReference databaseReference) {
-        this.controller = controller;
         this.databaseReference = databaseReference;
         getRecipesFromDatabase();
         getIngredientsFromDatabase();
@@ -67,7 +63,6 @@ public class RecipeController {
                     Recipe rec = recept.getValue(Recipe.class);
                     allRecipes.add(rec);
                     allRecipeNames.add(rec.getName());
-                    System.out.println(rec.getName());
                 }
                 pcs.firePropertyChange("RecipeNames", null, allRecipeNames);
             }
@@ -110,6 +105,26 @@ public class RecipeController {
                 System.out.println(databaseError.toString());
             }
         });
+    }
+
+
+    /**
+     * Used when user is finished with a recipe and will deduct the correct amounts of each ingredient from the storage automatically.
+     * Goes through all the ingredients in the specified recipe.
+     * @param selectedItem Specifies which recipe was used.
+     * @param batches Specifies how many batches the user has made of the selected recipe and will multiply the amounts from the recipe.
+     */
+    public void updateAmountsIngredient(int selectedItem, int batches){
+        Recipe rec = allRecipes.get(selectedItem);
+        for (RecipeIngredient ri : rec.getIngredients()){
+            for (Ingredient i : allIngredients){
+                if (ri.getIngredient().getName().equals(i.getName())){
+                    i.setCurrentAmount(i.getCurrentAmount() - (ri.getAmount() * batches));
+                    databaseReference.child("Ingredient").child(i.getKey()).setValueAsync(i);
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -297,22 +312,6 @@ public class RecipeController {
 
     public void setAllRecipeNames(ArrayList<String> allRecipeNames) {
         this.allRecipeNames = allRecipeNames;
-    }
-
-    public void setRecPanel(RecipePanel recPanel) {
-        this.recPanel = recPanel;
-    }
-
-    public Controller getController() {
-        return controller;
-    }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
-
-    public RecipePanel getRecPanel() {
-        return recPanel;
     }
 
     public DatabaseReference getDatabaseReference() {
