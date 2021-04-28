@@ -157,18 +157,23 @@ public class HomePanel extends JPanel implements ActionListener {
             }
             new NewNoteJFrame(notesJList.getSelectedValue());
         }
-        if (e.getSource() == deleteNote){
+
+        if (e.getSource() == deleteNote) {
             if (notesJList.getSelectedValue() == null) {
                 JOptionPane.showMessageDialog(null, "Du måste först välja en anteckning!!", "Error", JOptionPane.PLAIN_MESSAGE);
                 return;
             }
-            homeController.removeNote(notesJList.getSelectedValue());
+            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort den anteckning?", "Bekräfta borttagningen",
+                    JOptionPane.YES_NO_OPTION) == 0)
+                homeController.removeNote(notesJList.getSelectedValue());
+            else
+                JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
         }
 
         if (e.getSource() == addNewHoliday)
             new NewHolidayJFrame();
 
-        if (e.getSource() == deleteHoliday){
+        if (e.getSource() == deleteHoliday) {
             if (notesJList.getSelectedValue() == null) {
                 JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!!", "Error", JOptionPane.PLAIN_MESSAGE);
                 return;
@@ -220,7 +225,7 @@ public class HomePanel extends JPanel implements ActionListener {
             button.setPreferredSize(new Dimension(120, 80));
             button.addActionListener(e -> {
                 if (note.getText() == null || note.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva en något i notes!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Du måste skriva något i anteckningar!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
                 if (title.getText() == null || title.getText().equals("")) {
@@ -275,7 +280,7 @@ public class HomePanel extends JPanel implements ActionListener {
                     return;
                 }
                 if (title.getText() == null || title.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Du måste skriva en title till den anteckningar !!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Du måste skriva en title till den anteckning !!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
                 homeController.getNoteList().remove(noteToShow);
