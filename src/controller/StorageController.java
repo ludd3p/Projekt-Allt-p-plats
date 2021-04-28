@@ -7,6 +7,7 @@ import model.Unit;
 import model.ingredient.Ingredient;
 import view.StoragePanel;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -129,7 +130,6 @@ public class StorageController {
                     }
                     if (panel != null)
                         updatePanel();
-
                 }
 
             }
@@ -144,8 +144,8 @@ public class StorageController {
     public void updatePanel() {
         if (panel == null)
             return;
-        getPanel().getProductList().setListData(allIngredients.toArray(new Ingredient[0]));
-
+        ((DefaultListModel)getPanel().getProductList().getModel()).clear();
+        ((DefaultListModel<Ingredient>)getPanel().getProductList().getModel()).addAll(allIngredients);
     }
 
     public String[] getSupplierNames() {

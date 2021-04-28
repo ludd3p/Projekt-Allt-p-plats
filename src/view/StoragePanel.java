@@ -24,6 +24,7 @@ public class StoragePanel extends JPanel {
     private JPanel pnlCenter;
 
     private JList productList;
+    private DefaultListModel<Ingredient> model;
     private JScrollPane scrollPane;
 
     private ArrayList<String> values = new ArrayList<>();
@@ -40,7 +41,6 @@ public class StoragePanel extends JPanel {
         this.storageController = storageController;
         setupMainPanel();
         storageController.setUp(this);
-
     }
 
 
@@ -72,8 +72,10 @@ public class StoragePanel extends JPanel {
         pnlCenter = new JPanel();
         pnlCenter.setLayout(new BorderLayout());
         pnlCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        productList = new JList(StorageController.getAllIngredients().toArray(new Ingredient[0]));
+        productList = new JList();
         productList.setCellRenderer(new CellRenderer());
+        model = new DefaultListModel<>();
+        productList.setModel(model);
         scrollPane = new JScrollPane(productList);
         pnlCenter.add(scrollPane);
         add(pnlCenter, BorderLayout.CENTER);
@@ -86,7 +88,12 @@ public class StoragePanel extends JPanel {
      * @param filter text in txfFilter
      */
     private void filterModel(DefaultListModel<Ingredient> model, String filter) {
-        //s.substring(s.indexOf("Produkt: ") + "Produkt: ".length(), s.indexOf("<br>Nuvarande mängd:") - 1).toLowerCase().startsWith(filter.toLowerCase())
+        model.clear();
+
+        for(Ingredient ingredient : StorageController.allIngredients) {
+            if(ingredient.getName().toLowerCase().startsWith(filter.toLowerCase()))
+                model.addElement(ingredient);
+        }
 
     }
 
@@ -99,7 +106,7 @@ public class StoragePanel extends JPanel {
                 JFrame productWindow = new ProductWindow();
             } else if (e.getSource() == btnChangeProduct) {
                 if (productList.getSelectedValue() != null) {
-                    String selected = (String) productList.getSelectedValue();
+                    String selected = productList.getSelectedValue().toString();
                     JFrame productWindow = new ProductWindow(
                             selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1),
                             selected.substring(selected.indexOf("Kostnad: ") + "Kostnad: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Leverantör:") - 2)),
@@ -122,6 +129,7 @@ public class StoragePanel extends JPanel {
 
                 if (answer == 0) {
                     Ingredient selected = (Ingredient) productList.getSelectedValue();
+                    model.removeElement(selected);
                     storageController.removeIngredientFromDatabase(selected);
                 }
             } else if (e.getSource() == btnUpdateList) {
@@ -142,7 +150,7 @@ public class StoragePanel extends JPanel {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                //filterModel((, txfFilter.getText());
+                filterModel(model, txfFilter.getText());
             }
         };
 
@@ -195,7 +203,6 @@ public class StoragePanel extends JPanel {
     private class CellRenderer extends DefaultListCellRenderer {
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             setText(value.toString());
-
 
             if (index % 2 == 0) {
                 setBackground(Color.WHITE);
@@ -397,7 +404,7 @@ public class StoragePanel extends JPanel {
                                         (String) cbxSupplier.getSelectedItem());
                                 System.out.println("HERE");
                             } else if (!addOrChange) {
-                                String selected = (String) productList.getSelectedValue();
+                                String selected = productList.getSelectedValue().toString();
                                 String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
                                 storageController.updateIngredient(
                                         key,
