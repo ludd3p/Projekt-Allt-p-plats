@@ -25,15 +25,23 @@ public class Controller {
 
 
     public Controller() throws IOException, InterruptedException {
+        Controller controller = this;
         connectToFirebase();
         dailyEvent = new DailyEvent();
-        supplierController = new SupplierController(this, databaseReference);
-        recipeController = new RecipeController(this, databaseReference);
-        storageController = new StorageController(this);
-        homeController = new HomeController(this);
-        orderController = new OrderController(this);
-
         System.out.println("Hämtar data från firebase!");
+        Thread loader = new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                supplierController = new SupplierController(controller, databaseReference);
+                storageController = new StorageController(controller);
+                recipeController = new RecipeController(controller, databaseReference);
+                homeController = new HomeController(controller);
+                orderController = new OrderController(controller);
+            }
+        };
+        loader.start();
+        Thread.sleep(5000);
         System.out.println("Data hämtad!");
         mainView = new MainView(this);
     }

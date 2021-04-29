@@ -24,6 +24,13 @@ public class SupplierOrder {
         this.supplier = supplier;
     }
 
+    public SupplierOrder(List<OrderItem> orderItems, Supplier supplier) {
+        this.orderItems = orderItems;
+        this.supplier = supplier;
+    }
+
+    public SupplierOrder() {
+    }
 
     /**
      * @return all items in the order

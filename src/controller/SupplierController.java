@@ -63,6 +63,7 @@ public class SupplierController {
                 for (DataSnapshot supplier : dataSnapshot.getChildren()) {
                     Supplier newSupplier = supplier.getValue(Supplier.class);
                     supplierList.add(newSupplier);
+
                 }
             }
 

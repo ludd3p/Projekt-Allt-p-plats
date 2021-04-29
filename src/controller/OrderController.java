@@ -11,6 +11,7 @@ import view.OrderPanel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Panel used to keep track of order history and current orders.
@@ -22,7 +23,7 @@ public class OrderController {
     private Controller controller;
     private SupplierOrder currentSelectedSupplierOrder;
     private OrderPanel panel;
-    private List<SupplierOrder> supplierOrderHistoryList;
+    private List<SupplierOrder> supplierOrderList;
 
 
     /**
@@ -30,17 +31,15 @@ public class OrderController {
      */
     public OrderController(Controller controller) {
         this.controller = controller;
-        this.supplierOrderHistoryList = new ArrayList<>();
-        getSupplierOrders();
+        this.supplierOrderList = new ArrayList<>();
+
 
     }
 
     public void setup(OrderPanel panel) {
         this.panel = panel;
-        for (Supplier supplier : controller.getSupplierController().getSupplierList()) {
-            supplierOrderHistoryList.add(new SupplierOrder(supplier));
+        getSupplierOrders();
 
-        }
     }
 
 
@@ -60,7 +59,7 @@ public class OrderController {
     }
 
     public void updateSupplierList() {
-        this.panel.getSupplierJList().setListData(supplierOrderHistoryList.toArray(new SupplierOrder[0]));
+        this.panel.getSupplierJList().setListData(supplierOrderList.toArray(new SupplierOrder[0]));
     }
 
     /**
@@ -110,37 +109,38 @@ public class OrderController {
     }
 
     public void getSupplierOrders() {
-        System.out.println("HERE");
+        for (Supplier supplier : controller.getSupplierController().getSupplierList()) {
+            supplierOrderList.add(new SupplierOrder(supplier));
+        }
         Controller.getDatabaseReference().child("orders").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("NOW");
-
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    SupplierOrder supplierOrder = d.getValue(SupplierOrder.class);
-                    System.out.println(supplierOrder);
-
-                    getSupplierOrder(supplierOrder.getSupplier().getName()).setOrderItems(supplierOrder.getOrderItems());
-
+                    SupplierOrder newOrder = d.getValue(SupplierOrder.class);
+                    getSupplierOrder(newOrder.getSupplier().getName()).setOrderItems(newOrder.getOrderItems());
                 }
-
+                //updateSupplierList();
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
             }
         });
+        //updateSupplierList();
+
     }
 
     public SupplierOrder getSupplierOrder(String name) {
-        for (SupplierOrder supplierOrder : supplierOrderHistoryList) {
+        System.out.println(name);
+
+        for (SupplierOrder supplierOrder : supplierOrderList) {
             if (supplierOrder.getSupplier().getName().equals(name))
                 return supplierOrder;
         }
-
         SupplierOrder supplierOrder = new SupplierOrder(controller.getSupplierController().getSupplierFromName(name));
-        supplierOrderHistoryList.add(supplierOrder);
+        supplierOrderList.add(supplierOrder);
         return supplierOrder;
     }
 
@@ -187,11 +187,11 @@ public class OrderController {
     }
 
     public List<SupplierOrder> getOrderHistoryList() {
-        return supplierOrderHistoryList;
+        return supplierOrderList;
     }
 
     public void setOrderHistoryList(List<SupplierOrder> supplierOrderHistoryList) {
-        this.supplierOrderHistoryList = supplierOrderHistoryList;
+        this.supplierOrderList = supplierOrderHistoryList;
     }
 
     public SupplierOrder getCurrentSelectedSupplierOrder() {
@@ -202,12 +202,12 @@ public class OrderController {
         this.currentSelectedSupplierOrder = currentSelectedSupplierOrder;
     }
 
-    public List<SupplierOrder> getSupplierOrderHistoryList() {
-        return supplierOrderHistoryList;
+    public List<SupplierOrder> getSupplierOrderList() {
+        return supplierOrderList;
     }
 
-    public void setSupplierOrderHistoryList(List<SupplierOrder> supplierOrderHistoryList) {
-        this.supplierOrderHistoryList = supplierOrderHistoryList;
+    public void setSupplierOrderList(List<SupplierOrder> supplierOrderList) {
+        this.supplierOrderList = supplierOrderList;
     }
 
 }
