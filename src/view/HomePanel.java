@@ -178,7 +178,11 @@ public class HomePanel extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!!", "Error", JOptionPane.PLAIN_MESSAGE);
                 return;
             }
-            homeController.removeHoliday(holidaysJList.getSelectedValue());
+            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort den Högtiden?", "Bekräfta borttagningen",
+                    JOptionPane.YES_NO_OPTION) == 0)
+                homeController.removeHoliday(holidaysJList.getSelectedValue());
+            else
+                JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
         }
 
 
@@ -189,10 +193,7 @@ public class HomePanel extends JPanel implements ActionListener {
             }
             new NewHolidayJFrame(holidaysJList.getSelectedValue());
         }
-
-        // buttons for notifications???
     }
-
 
     class NewNoteJFrame {
         public NewNoteJFrame() {
@@ -309,7 +310,7 @@ public class HomePanel extends JPanel implements ActionListener {
 
             HolidayFrame.setSize(new Dimension(300, 200));
             panel.setLayout(new BorderLayout(10, 10));
-// title
+
             JPanel HolidayArea = new JPanel();
             HolidayArea.setBorder(new TitledBorder("Titel"));
             JTextArea title = new JTextArea();
