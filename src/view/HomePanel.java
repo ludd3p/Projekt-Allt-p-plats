@@ -174,7 +174,7 @@ public class HomePanel extends JPanel implements ActionListener {
             new NewHolidayJFrame();
 
         if (e.getSource() == deleteHoliday) {
-            if (notesJList.getSelectedValue() == null) {
+            if (holidaysJList.getSelectedValue() == null) {
                 JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!!", "Error", JOptionPane.PLAIN_MESSAGE);
                 return;
             }
