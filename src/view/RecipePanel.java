@@ -406,7 +406,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Listener for buttons
-         *
          * @param e source of call
          */
         public void actionPerformed(ActionEvent e) {
@@ -503,7 +502,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Handles PropertyChangeListener
-         *
          * @param evt Incoming message with new object
          */
         @Override
