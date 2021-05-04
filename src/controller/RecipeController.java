@@ -208,13 +208,15 @@ public class RecipeController {
 
     /**
      * Used when trying to save an edited recipe.
-     *
+     * Removes old recipe from database using old recipe name
+     * Adds the edited recipe to the database.
      * @param name         Name of recipe.
      * @param instructions List of instructions for recipe.
+     * @param recName      Old recipe name
      */
-    public void updateRecipeDatabase(String name, ArrayList<String> instructions) {
+    public void updateRecipeDatabase(String name, ArrayList<String> instructions, String recName) {
         Recipe updatedRecipe = new Recipe(name, recipeIngredient, instructions);
-        databaseReference.child("Recipes").child(name).removeValueAsync();
+        databaseReference.child("Recipes").child(recName).removeValueAsync();
         databaseReference.child("Recipes").child(name).setValueAsync(updatedRecipe);
     }
 
@@ -248,12 +250,14 @@ public class RecipeController {
      * @return String list with ingredients and their amounts.
      */
     public ArrayList<String> populateRecipeIngredients(int i, int multi) {
-        Recipe rec = allRecipes.get(i);
-        ArrayList<String> al = new ArrayList<>();
-        for (RecipeIngredient ri : rec.getIngredients()) {
-            al.add(ri.toString2(multi));
-        }
-        return al;
+            Recipe rec = allRecipes.get(i);
+            ArrayList<String> al = new ArrayList<>();
+            recipeIngredient.clear();
+            for (RecipeIngredient ri : rec.getIngredients()) {
+                recipeIngredient.add(ri);
+                al.add(ri.toString2(multi));
+            }
+            return al;
     }
 
     /**
