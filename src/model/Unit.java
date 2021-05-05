@@ -6,6 +6,7 @@ package model;
 public enum Unit {
     MILLILITRE("mL"),
     DECILITRE("dL"),
+    CENTILITRE("cl"),
     LITRE("L"),
     MILLIGRAM("mg"),
     GRAM("g"),

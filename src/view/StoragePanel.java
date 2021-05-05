@@ -28,6 +28,7 @@ public class StoragePanel extends JPanel {
     private JScrollPane scrollPane;
 
     private ArrayList<String> values = new ArrayList<>();
+    private JLabel lblFilter;
     private JTextField txfFilter;
     private JButton btnUpdateList;
     private JButton btnAddProduct;
@@ -154,28 +155,17 @@ public class StoragePanel extends JPanel {
             }
         };
 
-        FocusListener focusListener = new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                txfFilter.selectAll();
-            }
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (txfFilter.getText().equals("")) {
-                    txfFilter.setText("Sök");
-                }
-            }
-        };
+        lblFilter = new JLabel("Sök:");
+        pnlNorth.add(lblFilter);
 
-        txfFilter = new JTextField("Sök");
+        txfFilter = new JTextField();
         txfFilter.setToolTipText("Skriv in namnet på den produkt du söker efter.");
         txfFilter.setPreferredSize(new Dimension(100, 27));
-        txfFilter.addFocusListener(focusListener);
         txfFilter.addKeyListener(keyListener);
         pnlNorth.add(txfFilter);
 
-        btnAddProduct = new JButton("Lägg till");
+        btnAddProduct = new JButton("Ny produkt");
         btnAddProduct.setToolTipText("Klicka för att lägga till  en ny produkt.");
         btnAddProduct.addActionListener(actionListener);
 
@@ -187,7 +177,7 @@ public class StoragePanel extends JPanel {
         btnRemoveProduct.setToolTipText("Klicka för att ta bort den valda produkten.");
         btnRemoveProduct.addActionListener(actionListener);
 
-        btnUpdateList = new JButton("Uppdatera");
+        btnUpdateList = new JButton("Uppdatera listan");
         btnUpdateList.setToolTipText("Klicka för att uppdatera listan av produkter.");
         btnUpdateList.addActionListener(actionListener);
 
@@ -357,6 +347,7 @@ public class StoragePanel extends JPanel {
             pnlProductWindowCenter.add(lblSupplier);
             cbxSupplier = new JComboBox(storageController.getSupplierNames());
             cbxUnit.setToolTipText("Välj leverantör för produkten.");
+            cbxSupplier.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(cbxSupplier);
 
             pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);
@@ -402,7 +393,6 @@ public class StoragePanel extends JPanel {
                                         Double.parseDouble(txfMaxAmount.getText()),
                                         (String) cbxUnit.getSelectedItem(),
                                         (String) cbxSupplier.getSelectedItem());
-                                System.out.println("HERE");
                             } else if (!addOrChange) {
                                 String selected = productList.getSelectedValue().toString();
                                 String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
@@ -415,8 +405,6 @@ public class StoragePanel extends JPanel {
                                         Double.parseDouble(txfMaxAmount.getText()),
                                         (String) cbxUnit.getSelectedItem(),
                                         (String) cbxSupplier.getSelectedItem());
-                                System.out.println("12312");
-
                             }
                             storageController.getIngredientsFromDatabase();
                             dispose();
@@ -435,7 +423,7 @@ public class StoragePanel extends JPanel {
                 btnOk.setText("Lägg till");
                 btnOk.setToolTipText("Lägg till produkten i lagret.");
             } else if (!addOrChange) {
-                btnOk.setText("Ändra");
+                btnOk.setText("Spara");
                 btnOk.setToolTipText("Slutför ändringarna för den valda produkten.");
             }
             pnlProductWindowSouth.add(btnOk);
