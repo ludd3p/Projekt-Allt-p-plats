@@ -418,6 +418,10 @@ public class StoragePanel extends JPanel {
             pnlProductWindowMainPanel.add(pnlProductWindowSouth, BorderLayout.SOUTH);
         }
 
+        /**
+         * Checks for input related errors when adding or changing a product.
+         * @return false if there's any errors, otherwise true.
+         */
         private boolean inputErrorCheck(){
             if(txfProductName.getText().toLowerCase().contains("Produkt:".toLowerCase()) ||
                     txfProductName.getText().toLowerCase().contains("Kostnad:".toLowerCase()) ||
