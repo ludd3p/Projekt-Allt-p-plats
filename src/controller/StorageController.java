@@ -29,6 +29,10 @@ public class StorageController {
         updatePanel();
     }
 
+    /**
+     * Gets and array of units.
+     * @return array of units.
+     */
     public String[] getUnitsPrefixArray() {
         return Unit.getPrefixArray();
     }
@@ -36,12 +40,13 @@ public class StorageController {
     /**
      * Adds an ingredient to the database.
      *
-     * @param name
-     * @param cost
-     * @param currentAmount
-     * @param criticalAmount
-     * @param recommendedAmount
-     * @param unitPrefix
+     * @param name of the ingredient.
+     * @param cost of the ingredient.
+     * @param currentAmount of the ingredient in storage.
+     * @param criticalAmount amount at which there should be a warning about the volume of the ingredient in the storage
+     *                       is low.
+     * @param recommendedAmount of the ingredient in the storage.
+     * @param unitPrefix unit related to the ingredient.
      */
     public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
         Ingredient ingredientToAddToDatabase = new Ingredient(name,
@@ -93,7 +98,7 @@ public class StorageController {
     /**
      * Removes an ingredient.
      *
-     * @param key
+     * @param key of the ingredient to remove.
      */
     public void removeIngredientFromDatabase(String key) {
         Ingredient.removeIngredientFromList(key);
@@ -102,6 +107,11 @@ public class StorageController {
 
     }
 
+    /**
+     * Removes an ingredient.
+     *
+     * @param ingredient to remove.
+     */
     public void removeIngredientFromDatabase(Ingredient ingredient) {
         allIngredients.remove(ingredient);
         Controller.getDatabaseReference().child("Ingredient").child(ingredient.getKey()).removeValueAsync();
@@ -141,6 +151,9 @@ public class StorageController {
         });
     }
 
+    /**
+     * Updates the product list in the storage panel.
+     */
     public void updatePanel() {
         if (panel == null)
             return;

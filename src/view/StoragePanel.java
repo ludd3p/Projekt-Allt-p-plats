@@ -363,54 +363,32 @@ public class StoragePanel extends JPanel {
 
             ActionListener listener = e -> {
                 if (e.getSource() == btnOk) {
-                    try {
-                        boolean proceed = true;
-                        if (txfProductName.getText().toLowerCase().contains("Produkt:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Kostnad:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Leverantör:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Nuvarande mängd:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Minsta mängd:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("Rekommenderad mängd:".toLowerCase()) ||
-                                txfProductName.getText().toLowerCase().contains("<!---")) {
-                            JOptionPane.showMessageDialog(null, "Error: Otillåtet produktnamn.", "Felaktig inmatning", JOptionPane.PLAIN_MESSAGE);
-                            proceed = false;
+                    boolean proceed = inputErrorCheck();
+                    if (proceed) {
+                        if (addOrChange) {
+                            storageController.addIngredientToDatabase(
+                                    txfProductName.getText(),
+                                    Double.parseDouble(txfCost.getText()),
+                                    Double.parseDouble(txfCurrentAmount.getText()),
+                                    Double.parseDouble(txfMinAmount.getText()),
+                                    Double.parseDouble(txfMaxAmount.getText()),
+                                    (String) cbxUnit.getSelectedItem(),
+                                    (String) cbxSupplier.getSelectedItem());
+                        } else {
+                            String selected = productList.getSelectedValue().toString();
+                            String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
+                            storageController.updateIngredient(
+                                    key,
+                                    txfProductName.getText(),
+                                    Double.parseDouble(txfCost.getText()),
+                                    Double.parseDouble(txfCurrentAmount.getText()),
+                                    Double.parseDouble(txfMinAmount.getText()),
+                                    Double.parseDouble(txfMaxAmount.getText()),
+                                    (String) cbxUnit.getSelectedItem(),
+                                    (String) cbxSupplier.getSelectedItem());
                         }
-                        if (addOrChange && proceed) {
-                            for (String value : values) {
-                                if (value.substring(value.indexOf("Produkt: ") + "Produkt: ".length(), value.indexOf("<br>Kostnad") - 1).toLowerCase().equals(txfProductName.getText().toLowerCase())) {
-                                    JOptionPane.showMessageDialog(null, "Denna produkt finns redan.", "Produkten finns redan", JOptionPane.PLAIN_MESSAGE);
-                                    proceed = false;
-                                }
-                            }
-                        }
-                        if (proceed) {
-                            if (addOrChange) {
-                                storageController.addIngredientToDatabase(
-                                        txfProductName.getText(),
-                                        Double.parseDouble(txfCost.getText()),
-                                        Double.parseDouble(txfCurrentAmount.getText()),
-                                        Double.parseDouble(txfMinAmount.getText()),
-                                        Double.parseDouble(txfMaxAmount.getText()),
-                                        (String) cbxUnit.getSelectedItem(),
-                                        (String) cbxSupplier.getSelectedItem());
-                            } else if (!addOrChange) {
-                                String selected = productList.getSelectedValue().toString();
-                                String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
-                                storageController.updateIngredient(
-                                        key,
-                                        txfProductName.getText(),
-                                        Double.parseDouble(txfCost.getText()),
-                                        Double.parseDouble(txfCurrentAmount.getText()),
-                                        Double.parseDouble(txfMinAmount.getText()),
-                                        Double.parseDouble(txfMaxAmount.getText()),
-                                        (String) cbxUnit.getSelectedItem(),
-                                        (String) cbxSupplier.getSelectedItem());
-                            }
-                            storageController.getIngredientsFromDatabase();
-                            dispose();
-                        }
-                    } catch (NumberFormatException nfe) {
-                        JOptionPane.showMessageDialog(null, "Error: Felaktig inmatning.");
+                        storageController.getIngredientsFromDatabase();
+                        dispose();
                     }
                 } else if (e.getSource() == btnCancel) {
                     dispose();
@@ -438,6 +416,86 @@ public class StoragePanel extends JPanel {
             pnlProductWindowSouth.add(btnCancel);
 
             pnlProductWindowMainPanel.add(pnlProductWindowSouth, BorderLayout.SOUTH);
+        }
+
+        private boolean inputErrorCheck(){
+            if(txfProductName.getText().toLowerCase().contains("Produkt:".toLowerCase()) ||
+                    txfProductName.getText().toLowerCase().contains("Kostnad:".toLowerCase()) ||
+                    txfProductName.getText().toLowerCase().contains("Leverantör:".toLowerCase()) ||
+                    txfProductName.getText().toLowerCase().contains("Nuvarande mängd:".toLowerCase()) ||
+                    txfProductName.getText().toLowerCase().contains("Minsta mängd:".toLowerCase()) ||
+                    txfProductName.getText().toLowerCase().contains("Rekommenderad mängd:".toLowerCase()) ||
+                    txfProductName.getText().toLowerCase().contains("<!---")) {
+                JOptionPane.showMessageDialog(null, "Otillåtet produktnamn. \nVälj ett annat produktnamn", "Otillåtet produktnamn", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            if(txfProductName.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Produktnamn saknas. \nFyll i ett produktnamn till höger om \"Produkt:\"", "Produktnamn", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else {
+                for (Ingredient ingredient : StorageController.allIngredients) {
+                    if (ingredient.getName().toLowerCase().equals(txfProductName.getText().toLowerCase())) {
+                        JOptionPane.showMessageDialog(null, "Denna produkt finns redan.", "Produkten finns redan", JOptionPane.ERROR_MESSAGE);
+                        return false;
+                    }
+                }
+            }
+            if(txfCost.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Kostnad saknas. \nFyll i produktens kostnad per enhet till höger om \"Kostnad:\".", "Kostnad saknas.", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else{
+                try{
+                    Double.parseDouble(txfCost.getText());
+                }catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(null, "Kostnad kan endast vara ett numeriskt värde.",
+                            "Kostnad", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+            if(txfCurrentAmount.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Nuvarande mängd saknas. \nFyll i den mängd av produkten som finns i lagret till höger om \"Nuvarande mängd:\".",
+                        "Nuvarande mängd", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else{
+                try{
+                    Double.parseDouble(txfCurrentAmount.getText());
+                }catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(null, "Nuvarande mängd kan endast vara ett numeriskt värde.",
+                            "Nuvarande mängd", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+            if(txfMinAmount.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Minsta mängd saknas. \nFyll i den minsta mängden av produkten som ska finnas i lagret till höger om \"Minsta mängd:\".",
+                        "Minsta mängd saknas", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else{
+                try{
+                    Double.parseDouble(txfMinAmount.getText());
+                }catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(null, "Minsta mängd kan endast vara ett numeriskt värde.",
+                            "Minsta mängd", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+            if(txfMaxAmount.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Rekommenderad mängd saknas. \nFyll i den rekommenderade mängden av produkten som ska finnas i lagret till höger om \"Rekommenderad mängd:\".", "Rekommenderad mängd saknas.", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else{
+                try{
+                    Double.parseDouble(txfMaxAmount.getText());
+                }catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(null, "Rekommenderad mängd kan endast vara ett numeriskt värde.",
+                            "Rekommenderad mängd", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+            return true;
         }
 
     }

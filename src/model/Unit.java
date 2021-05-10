@@ -4,10 +4,10 @@ package model;
 // Exemepl en order på mjöl läggs följade: 500 gram mjöl meddans
 // en order på mjölk räknas i 5 st mjölk packet.
 public enum Unit {
-    MILLILITRE("mL"),
-    DECILITRE("dL"),
+    MILLILITRE("ml"),
+    DECILITRE("dl"),
     CENTILITRE("cl"),
-    LITRE("L"),
+    LITRE("l"),
     MILLIGRAM("mg"),
     GRAM("g"),
     KILOGRAM("kg"),
