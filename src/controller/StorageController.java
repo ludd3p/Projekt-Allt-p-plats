@@ -89,6 +89,8 @@ public class StorageController {
     public void updateQuantityOfIngredient(Ingredient ingredient, double quantityToAdd) {
         Controller.getDatabaseReference().child("Ingredient").child(ingredient.getName()).setValueAsync(
                 Ingredient.updateIngredientCurrentQuantity(ingredient.getName(), quantityToAdd));
+
+        updatePanel();
     }
 
     /**
@@ -144,6 +146,7 @@ public class StorageController {
     public void updatePanel() {
         if (panel == null)
             return;
+
         ((DefaultListModel) getPanel().getProductList().getModel()).clear();
         ((DefaultListModel<Ingredient>) getPanel().getProductList().getModel()).addAll(allIngredients);
     }

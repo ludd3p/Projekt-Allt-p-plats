@@ -208,6 +208,9 @@ public class RecipeController {
      * @param instructions List of instructions for recipe.
      */
     public void addRecipeToDatabase(String name, ArrayList<String> instructions) {
+        if (name == null || name.equalsIgnoreCase("")) {
+            return;
+        }
         Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
         databaseReference.child("Recipes").child(name).setValueAsync(recipeToAddToDatabase);
     }

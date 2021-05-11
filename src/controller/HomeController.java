@@ -11,6 +11,7 @@ import model.home.Holiday;
 import model.home.Note;
 import model.home.Notifications;
 import view.HomePanel;
+
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class HomeController {
                     getHolidayList().add(holiday);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
@@ -83,6 +85,7 @@ public class HomeController {
                     getNotificationsList().add(notifications);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
@@ -95,8 +98,9 @@ public class HomeController {
      *
      * @param note
      */
-
     public void addNote(Note note) {
+        if (note == null)
+            return;
         noteList.add(note); // adds to list
         Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // adds to the database
         updateNoteViewer();
@@ -106,9 +110,7 @@ public class HomeController {
      * Updates the notes in the database and UI
      */
     public void updateNoteViewer() {
-        Note[] newVal = new Note[noteList.size()];
-        noteList.toArray(newVal);
-        homePanel.getNotesJList().setListData(newVal);
+        homePanel.getNotesJList().setListData(noteList.toArray(noteList.toArray(new Note[0])));
     }
 
     /**

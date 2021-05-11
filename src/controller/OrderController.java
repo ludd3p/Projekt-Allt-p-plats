@@ -39,7 +39,6 @@ public class OrderController {
     public void setup(OrderPanel panel) {
         this.panel = panel;
         getSupplierOrders();
-
     }
 
 
@@ -107,6 +106,14 @@ public class OrderController {
         previewSupplierOrder(currentSelectedSupplierOrder);
         saveOrderToFirebase(currentSelectedSupplierOrder);
     }
+    public void addOrderItemToSupplierOrder(Ingredient ingredient, int quantity) {
+        if (quantity <= 0)
+            quantity = (int) ingredient.getRecommendedAmount();
+        getSupplierOrder(ingredient.getSupplier().getName()).getOrderItems().add(new OrderItem(ingredient, quantity));
+        saveOrderToFirebase(getSupplierOrder(ingredient.getSupplier().getName()));
+        updateSupplierList();
+    }
+
 
     public void removeOrderItemFromCurrentOrder(OrderItem item) {
         currentSelectedSupplierOrder.getOrderItems().remove(item);
@@ -179,13 +186,6 @@ public class OrderController {
         this.panel = panel;
     }
 
-    public void addOrderItemToSupplierOrder(Ingredient ingredient, int quantity) {
-        if (quantity <= 0)
-            quantity = (int) ingredient.getRecommendedAmount();
-        getSupplierOrder(ingredient.getSupplier().getName()).getOrderItems().add(new OrderItem(ingredient, quantity));
-        saveOrderToFirebase(getSupplierOrder(ingredient.getSupplier().getName()));
-        updateSupplierList();
-    }
 
     public SupplierOrder getCurrentOrder() {
         return currentSelectedSupplierOrder;
