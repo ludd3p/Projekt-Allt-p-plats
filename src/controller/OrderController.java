@@ -4,6 +4,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import model.ingredient.Ingredient;
 import model.order.OrderItem;
 import model.order.SupplierOrder;
 import model.supplier.Supplier;
@@ -11,7 +12,6 @@ import view.OrderPanel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Panel used to keep track of order history and current orders.
@@ -45,7 +45,7 @@ public class OrderController {
 
     public void saveOrderToFirebase(SupplierOrder supplierOrder) {
         DatabaseReference ref = Controller.getDatabaseReference().child("orders");
-        ref.child(supplierOrder.getSupplier().getName()).setValueAsync(currentSelectedSupplierOrder);
+        ref.child(supplierOrder.getSupplier().getName()).setValueAsync(supplierOrder);
     }
 
     /**
@@ -80,7 +80,13 @@ public class OrderController {
      * @param supplierOrder
      */
     public void orderHasArrived(SupplierOrder supplierOrder) {
-        //TODO måste fixa
+        for (OrderItem orderItem : supplierOrder.getOrderItems()) {
+            controller.getStorageController().updateQuantityOfIngredient(orderItem.getIngredient(), orderItem.getQuantity());
+        }
+        supplierOrder.getOrderItems().clear();
+        updateSupplierList();
+        saveOrderToFirebase(supplierOrder);
+        previewSupplierOrder(supplierOrder);
     }
 
     public void removeOrder() {
@@ -116,8 +122,12 @@ public class OrderController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    System.out.println(d);
                     SupplierOrder newOrder = d.getValue(SupplierOrder.class);
-                    getSupplierOrder(newOrder.getSupplier().getName()).setOrderItems(newOrder.getOrderItems());
+
+                    SupplierOrder supplierOrder = getSupplierOrder(newOrder.getSupplier().getName());
+                    if (supplierOrder != null)
+                        supplierOrder.setOrderItems(newOrder.getOrderItems());
                 }
                 //updateSupplierList();
             }
@@ -133,15 +143,12 @@ public class OrderController {
     }
 
     public SupplierOrder getSupplierOrder(String name) {
-        System.out.println(name);
-
         for (SupplierOrder supplierOrder : supplierOrderList) {
             if (supplierOrder.getSupplier().getName().equals(name))
                 return supplierOrder;
         }
-        SupplierOrder supplierOrder = new SupplierOrder(controller.getSupplierController().getSupplierFromName(name));
-        supplierOrderList.add(supplierOrder);
-        return supplierOrder;
+
+        return null;
     }
 
     /**
@@ -170,6 +177,14 @@ public class OrderController {
      */
     public void setPanel(OrderPanel panel) {
         this.panel = panel;
+    }
+
+    public void addOrderItemToSupplierOrder(Ingredient ingredient, int quantity) {
+        if (quantity <= 0)
+            quantity = (int) ingredient.getRecommendedAmount();
+        getSupplierOrder(ingredient.getSupplier().getName()).getOrderItems().add(new OrderItem(ingredient, quantity));
+        saveOrderToFirebase(getSupplierOrder(ingredient.getSupplier().getName()));
+        updateSupplierList();
     }
 
     public SupplierOrder getCurrentOrder() {

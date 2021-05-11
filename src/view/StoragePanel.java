@@ -23,7 +23,7 @@ public class StoragePanel extends JPanel {
     private JPanel pnlNorth;
     private JPanel pnlCenter;
 
-    private JList productList;
+    private JList<Ingredient> productList;
     private DefaultListModel<Ingredient> model;
     private JScrollPane scrollPane;
 
@@ -73,7 +73,7 @@ public class StoragePanel extends JPanel {
         pnlCenter = new JPanel();
         pnlCenter.setLayout(new BorderLayout());
         pnlCenter.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        productList = new JList();
+        productList = new JList<>();
         productList.setCellRenderer(new CellRenderer());
         model = new DefaultListModel<>();
         productList.setModel(model);
@@ -129,7 +129,7 @@ public class StoragePanel extends JPanel {
                 }
 
                 if (answer == 0) {
-                    Ingredient selected = (Ingredient) productList.getSelectedValue();
+                    Ingredient selected = productList.getSelectedValue();
                     model.removeElement(selected);
                     storageController.removeIngredientFromDatabase(selected);
                 }
@@ -238,10 +238,10 @@ public class StoragePanel extends JPanel {
         private JTextField txfMaxAmount;
 
         private JLabel lblUnit;
-        private JComboBox cbxUnit;
+        private JComboBox<String> cbxUnit;
 
         private JLabel lblSupplier;
-        private JComboBox cbxSupplier;
+        private JComboBox<String> cbxSupplier;
 
         private JButton btnOk;
         private JButton btnCancel;
@@ -339,13 +339,13 @@ public class StoragePanel extends JPanel {
 
             lblUnit = new JLabel(" Enhet:");
             pnlProductWindowCenter.add(lblUnit);
-            cbxUnit = new JComboBox(storageController.getUnitsPrefixArray());
+            cbxUnit = new JComboBox<>(storageController.getUnitsPrefixArray());
             cbxUnit.setToolTipText("Välj enhet för produkten.");
             pnlProductWindowCenter.add(cbxUnit);
 
             lblSupplier = new JLabel(" Leverantör:");
             pnlProductWindowCenter.add(lblSupplier);
-            cbxSupplier = new JComboBox(storageController.getSupplierNames());
+            cbxSupplier = new JComboBox<>(storageController.getSupplierNames());
             cbxUnit.setToolTipText("Välj leverantör för produkten.");
             cbxSupplier.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(cbxSupplier);
@@ -528,11 +528,11 @@ public class StoragePanel extends JPanel {
         this.pnlCenter = pnlCenter;
     }
 
-    public JList getProductList() {
+    public JList<Ingredient> getProductList() {
         return productList;
     }
 
-    public void setProductList(JList productList) {
+    public void setProductList(JList<Ingredient> productList) {
         this.productList = productList;
     }
 

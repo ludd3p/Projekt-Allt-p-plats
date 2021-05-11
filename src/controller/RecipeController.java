@@ -22,6 +22,7 @@ import java.util.Set;
 public class RecipeController {
     private DatabaseReference databaseReference;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private Controller controller;
 
     private ArrayList<Recipe> allRecipes = new ArrayList<>();
     private ArrayList<String> allRecipeNames = new ArrayList<>();
@@ -39,6 +40,7 @@ public class RecipeController {
         this.databaseReference = databaseReference;
         getRecipesFromDatabase();
         getIngredientsFromDatabase();
+        this.controller = controller;
     }
 
     /**
@@ -86,15 +88,14 @@ public class RecipeController {
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Ingredient ingredient = d.getValue(Ingredient.class);
-                    ingredient.setKey(d.getKey());
                     String s = ingredient.getName();
 
                     ingredientNames.add(s);
 
-                    if (!Ingredient.checkIfIngredientExists(ingredient.getKey())) {
+                    if (!Ingredient.checkIfIngredientExists(ingredient.getName())) {
                         allIngredients.add(ingredient);
                     } else {
-                        Ingredient.updateIngredient(ingredient.getKey(), ingredient);
+                        Ingredient.updateIngredient(ingredient.getName(), ingredient);
                     }
                 }
                 pcs.firePropertyChange("IngredientNames", null, ingredientNames);
@@ -111,16 +112,21 @@ public class RecipeController {
     /**
      * Used when user is finished with a recipe and will deduct the correct amounts of each ingredient from the storage automatically.
      * Goes through all the ingredients in the specified recipe.
-     * @param selectedItem  Specifies which recipe was used.
-     * @param batches       Specifies how many batches the user has made of the selected recipe and will multiply the amounts from the recipe.
+     *
+     * @param selectedItem Specifies which recipe was used.
+     * @param batches      Specifies how many batches the user has made of the selected recipe and will multiply the amounts from the recipe.
      */
-    public void updateAmountsIngredient(int selectedItem, int batches){
+    public void updateAmountsIngredient(int selectedItem, int batches) {
         Recipe rec = allRecipes.get(selectedItem);
-        for (RecipeIngredient ri : rec.getIngredients()){
-            for (Ingredient i : allIngredients){
-                if (ri.getIngredient().getName().equals(i.getName())){
+        for (RecipeIngredient ri : rec.getIngredients()) {
+            for (Ingredient i : allIngredients) {
+                if (ri.getIngredient().getName().equals(i.getName())) {
                     i.setCurrentAmount(i.getCurrentAmount() - (ri.getAmount() * batches));
-                    databaseReference.child("Ingredient").child(i.getKey()).setValueAsync(i);
+                    databaseReference.child("Ingredient").child(i.getName()).setValueAsync(i);
+
+                    if (i.getCurrentAmount() < i.getCriticalAmount()) {
+                        controller.getOrderController().addOrderItemToSupplierOrder(i, (int) i.getRecommendedAmount());
+                    }
                     break;
                 }
             }
@@ -170,6 +176,7 @@ public class RecipeController {
 
     /**
      * Sets list with ingredient names.
+     *
      * @param ingredientNames
      */
     public void setIngredientNames(ArrayList<String> ingredientNames) {
@@ -178,8 +185,9 @@ public class RecipeController {
 
     /**
      * Gets the unit type of a specific ingredient.
-     * @param name  Name of the ingredient.
-     * @return      Returns the unit.
+     *
+     * @param name Name of the ingredient.
+     * @return Returns the unit.
      */
     public String getIngredientPrefix(String name) {
         String prefix = "";
@@ -195,6 +203,7 @@ public class RecipeController {
 
     /**
      * Creates a new Recipe and saves it in the database
+     *
      * @param name         Name of the recipe
      * @param instructions List of instructions for recipe.
      */
@@ -207,6 +216,7 @@ public class RecipeController {
      * Used when trying to save an edited recipe.
      * Removes old recipe from database using old recipe name
      * Adds the edited recipe to the database.
+     *
      * @param name         Name of recipe.
      * @param instructions List of instructions for recipe.
      * @param recName      Old recipe name
@@ -219,6 +229,7 @@ public class RecipeController {
 
     /**
      * Removes a specified recipe from the database
+     *
      * @param name Name of the recipe.
      */
     public void removeRecipeFromDatabase(String name) {
@@ -227,6 +238,7 @@ public class RecipeController {
 
     /**
      * Called by GUI when a new RecipeIngredient is created, creates a list of String containing ingredient names, and amounts.
+     *
      * @return String list.
      */
     public ArrayList<String> populateNewRecipeIngredients() {
@@ -239,23 +251,25 @@ public class RecipeController {
 
     /**
      * Called by GUI when user selects a recipe to view.
+     *
      * @param i     Index of selected recipe.
      * @param multi Int used to multiply ingredients amount when making bigger batches.
-     * @return      String list with ingredients and their amounts.
+     * @return String list with ingredients and their amounts.
      */
     public ArrayList<String> populateRecipeIngredients(int i, int multi) {
-            Recipe rec = allRecipes.get(i);
-            ArrayList<String> al = new ArrayList<>();
-            recipeIngredient.clear();
-            for (RecipeIngredient ri : rec.getIngredients()) {
-                recipeIngredient.add(ri);
-                al.add(ri.toString2(multi));
-            }
-            return al;
+        Recipe rec = allRecipes.get(i);
+        ArrayList<String> al = new ArrayList<>();
+        recipeIngredient.clear();
+        for (RecipeIngredient ri : rec.getIngredients()) {
+            recipeIngredient.add(ri);
+            al.add(ri.toString2(multi));
+        }
+        return al;
     }
 
     /**
      * Gets the instructions for a specified recipe.
+     *
      * @param i Index of selected recipe.
      * @return String list of instructions.
      */
@@ -265,8 +279,9 @@ public class RecipeController {
 
     /**
      * Used when trying to save a recipe, checks if recipe already exists.
-     * @param   recName Name of recipe that should be checked.
-     * @return  Boolean, true if duplicate.
+     *
+     * @param recName Name of recipe that should be checked.
+     * @return Boolean, true if duplicate.
      */
     public Boolean checkDuplicateRecipe(String recName) {
         for (Recipe r : allRecipes) {

@@ -8,9 +8,7 @@ import model.ingredient.Ingredient;
 import view.StoragePanel;
 
 import javax.swing.*;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class StorageController {
@@ -57,7 +55,7 @@ public class StorageController {
                 Unit.getUnitBasedOnPrefix(unitPrefix),
                 controller.getSupplierController().getSupplierFromName(supplierName));
 
-        Controller.getDatabaseReference().child("Ingredient").push().setValueAsync(ingredientToAddToDatabase);
+        Controller.getDatabaseReference().child("Ingredient").child(ingredientToAddToDatabase.getName()).setValueAsync(ingredientToAddToDatabase);
     }
 
     /**
@@ -80,7 +78,6 @@ public class StorageController {
                         recommendedAmount,
                         Unit.getUnitBasedOnPrefix(unitPrefix),
                         controller.getSupplierController().getSupplierFromName(supplierName))));
-
     }
 
     /**
@@ -90,9 +87,8 @@ public class StorageController {
      * @param quantityToAdd
      */
     public void updateQuantityOfIngredient(Ingredient ingredient, double quantityToAdd) {
-        Controller.getDatabaseReference().child("Ingredient").child(ingredient.getKey()).setValueAsync(
-                Ingredient.updateIngredientCurrentQuantity(ingredient.getKey(), quantityToAdd));
-        getIngredientsFromDatabase();
+        Controller.getDatabaseReference().child("Ingredient").child(ingredient.getName()).setValueAsync(
+                Ingredient.updateIngredientCurrentQuantity(ingredient.getName(), quantityToAdd));
     }
 
     /**
@@ -114,7 +110,7 @@ public class StorageController {
      */
     public void removeIngredientFromDatabase(Ingredient ingredient) {
         allIngredients.remove(ingredient);
-        Controller.getDatabaseReference().child("Ingredient").child(ingredient.getKey()).removeValueAsync();
+        Controller.getDatabaseReference().child("Ingredient").child(ingredient.getName()).removeValueAsync();
 
     }
 
@@ -125,23 +121,14 @@ public class StorageController {
         Controller.getDatabaseReference().child("Ingredient").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String, Object>> ingredientMap = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
-                int counter = 0;
-                for (Map.Entry<String, HashMap<String, Object>> stringHashMapEntry : ingredientMap.entrySet()) {
-                    counter++;
-                    Map.Entry<String, HashMap<String, Object>> mapElement = stringHashMapEntry;
-                    Ingredient ingredient = (dataSnapshot.child(mapElement.getKey()).getValue(Ingredient.class));
-                    ingredient.setKey(mapElement.getKey());
-
-                    if (!Ingredient.checkIfIngredientExists(ingredient.getKey())) {
-                        allIngredients.add(ingredient);
-                    } else {
-                        Ingredient.updateIngredient(ingredient.getKey(), ingredient);
-                    }
-                    if (panel != null)
-                        updatePanel();
+                allIngredients.clear();
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Ingredient ingredient = d.getValue(Ingredient.class);
+                    allIngredients.add(ingredient);
                 }
 
+                if (panel != null)
+                    updatePanel();
             }
 
             @Override
@@ -157,8 +144,8 @@ public class StorageController {
     public void updatePanel() {
         if (panel == null)
             return;
-        ((DefaultListModel)getPanel().getProductList().getModel()).clear();
-        ((DefaultListModel<Ingredient>)getPanel().getProductList().getModel()).addAll(allIngredients);
+        ((DefaultListModel) getPanel().getProductList().getModel()).clear();
+        ((DefaultListModel<Ingredient>) getPanel().getProductList().getModel()).addAll(allIngredients);
     }
 
     public String[] getSupplierNames() {

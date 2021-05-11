@@ -121,7 +121,7 @@ public class OrderPanel extends JPanel {
             controller.orderHasArrived(supplierOrder);
         });
 
-        this.remove = new JButton("Delete");
+        this.remove = new JButton("Ta bort");
         this.remove.setToolTipText("Removes an order from history");
         this.remove.setBounds(25, 190, 300, 65);
         this.remove.addActionListener(l -> {
@@ -159,7 +159,7 @@ public class OrderPanel extends JPanel {
         spinnerNumberModel.setMinimum(1);
         quantitySelector.setModel(spinnerNumberModel);
 
-        addOrderItem = new JButton("Add item");
+        addOrderItem = new JButton("Lägg till ingredient");
         addOrderItem.setBounds(10, 160, 150, 50);
         addOrderItem.addActionListener(e -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
@@ -173,7 +173,7 @@ public class OrderPanel extends JPanel {
         });
 
 
-        removeOrderItem = new JButton("Remove item");
+        removeOrderItem = new JButton("Ta bort ingredient");
         removeOrderItem.setBounds(190, 160, 150, 50);
         removeOrderItem.addActionListener(p -> {
             if (controller.getCurrentSelectedSupplierOrder() == null || this.getCurrentSupplier().getSelectedValue() == null) {

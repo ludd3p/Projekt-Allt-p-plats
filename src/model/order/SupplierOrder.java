@@ -30,6 +30,8 @@ public class SupplierOrder {
     }
 
     public SupplierOrder() {
+        this.orderItems = new ArrayList<>();
+
     }
 
     /**

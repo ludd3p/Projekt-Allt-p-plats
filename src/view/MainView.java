@@ -44,7 +44,7 @@ public class MainView extends JFrame {
         tp.add("Startsida", new HomePanel(controller.getHomeController()));
         tp.add("Recept", recipePanel);
         tp.add("Lager", storagePanel);
-        tp.add("Order history", new OrderPanel(controller.getOrderController()));
+        tp.add("Order historik", new OrderPanel(controller.getOrderController()));
         tp.add("Leverantörer", supplierPanel);
 
         add(tp);

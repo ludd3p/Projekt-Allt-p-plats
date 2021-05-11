@@ -2,7 +2,6 @@ package model.ingredient;
 
 // Använd klassen när vi lägger till ingridienser i recepten.
 
-import com.google.firebase.database.Exclude;
 import controller.StorageController;
 import model.Unit;
 import model.supplier.Supplier;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 
 
 public class Ingredient {
-    private String key;
     private String name;
     private double cost;
     private double currentAmount;
@@ -49,15 +47,9 @@ public class Ingredient {
         this.unit = unit;
     }
 
-    //<editor-fold desc = "Setters and getters">
-    @Exclude
-    public String getKey() {
-        return key;
-    }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+    //<editor-fold desc = "Setters and getters">
+
 
     public String getName() {
         return name;
@@ -81,6 +73,7 @@ public class Ingredient {
 
     public void setCurrentAmount(double currentAmount) {
         this.currentAmount = currentAmount;
+
     }
 
     public double getCriticalAmount() {
@@ -127,8 +120,7 @@ public class Ingredient {
                 "<br>Leverantör: " + supplier.getName(),
                 "<br>Nuvarande mängd: " + currentAmount + " " + unit.getPrefix(),
                 "Minsta mängd: " + criticalAmount + " " + unit.getPrefix(),
-                "Rekommenderad mängd: " + recommendedAmount + " " + unit.getPrefix(),
-                "<!--" + key + "--></html>");
+                "Rekommenderad mängd: " + recommendedAmount + " " + unit.getPrefix(), "</html>");
     }
 
     //<editor-fold desc = "Static methods">
@@ -149,7 +141,7 @@ public class Ingredient {
      * @param key of the ingredient to remove.
      */
     public static void removeIngredientFromList(String key) {
-        StorageController.allIngredients.removeIf(ingredient -> ingredient.getKey().equals(key));
+        StorageController.allIngredients.removeIf(ingredient -> ingredient.getName().equals(key));
     }
 
     /**
@@ -162,7 +154,7 @@ public class Ingredient {
     public static Ingredient updateIngredient(String key, Ingredient ingredientNewValues) {
         Ingredient updatedIngredient = null;
         for (Ingredient ingredient : StorageController.allIngredients) {
-            if (ingredient.getKey().equals(key)) {
+            if (ingredient.getName().equals(key)) {
                 ingredient.setName(ingredientNewValues.getName());
                 ingredient.setCost(ingredientNewValues.getCost());
                 ingredient.setCurrentAmount(ingredientNewValues.getCurrentAmount());
@@ -188,7 +180,7 @@ public class Ingredient {
         Ingredient updatedIngredient = null;
 
         for (Ingredient ingredient : StorageController.allIngredients) {
-            if (ingredient.getKey().equals(key)) {
+            if (ingredient.getName().equals(key)) {
                 ingredient.setCurrentAmount(ingredient.getCurrentAmount() + quantityToAdd);
                 updatedIngredient = ingredient;
             }
@@ -205,7 +197,7 @@ public class Ingredient {
      */
     public static boolean checkIfIngredientExists(String key) {
         for (Ingredient ingredient : StorageController.allIngredients) {
-            if (ingredient.getKey().equals(key)) {
+            if (ingredient.getName().equals(key)) {
                 return true;
             }
         }

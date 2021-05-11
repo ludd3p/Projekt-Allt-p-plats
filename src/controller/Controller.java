@@ -26,10 +26,12 @@ public class Controller {
 
     public Controller() throws IOException, InterruptedException {
         Controller controller = this;
+        System.out.println("Kopplar till firebase!");
         connectToFirebase();
+        System.out.println("Kopplat till firebase!");
         dailyEvent = new DailyEvent();
         System.out.println("Hämtar data från firebase!");
-        Thread loader = new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -39,8 +41,7 @@ public class Controller {
                 homeController = new HomeController(controller);
                 orderController = new OrderController(controller);
             }
-        };
-        loader.start();
+        }.start();
         Thread.sleep(5000);
         System.out.println("Data hämtad!");
         mainView = new MainView(this);
