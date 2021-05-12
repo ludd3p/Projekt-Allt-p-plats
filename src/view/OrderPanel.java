@@ -10,8 +10,6 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.List;
 
-import static controller.StorageController.allIngredients;
-
 /**
  * Panel used to keep track of order history and current orders.
  *
@@ -206,7 +204,7 @@ public class OrderPanel extends JPanel {
     }
 
     public Ingredient getIngredientFromString(String name) {
-        for (Ingredient ingredient : allIngredients) {
+        for (Ingredient ingredient : controller.getController().getStorageController().getAllIngredients()) {
             if (ingredient.getName().equals(name))
                 return ingredient;
         }
@@ -214,9 +212,9 @@ public class OrderPanel extends JPanel {
     }
 
     public String[] ingredientList() {
-        String[] arr = new String[allIngredients.size()];
+        String[] arr = new String[controller.getController().getStorageController().getAllIngredients().size()];
         int x = 0;
-        for (Ingredient ingredient : allIngredients) {
+        for (Ingredient ingredient : controller.getController().getStorageController().getAllIngredients()) {
             arr[x] = ingredient.getName();
             x++;
         }

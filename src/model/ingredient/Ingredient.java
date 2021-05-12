@@ -47,9 +47,21 @@ public class Ingredient {
         this.unit = unit;
     }
 
+    /**
+     * Updates the values of the object with new values.
+     * @param ingredientNewValues
+     */
+    public void updateValues(Ingredient ingredientNewValues){
+        name = ingredientNewValues.getName();
+        cost = ingredientNewValues.getCost();
+        currentAmount = ingredientNewValues.getCurrentAmount();
+        criticalAmount = ingredientNewValues.getCriticalAmount();
+        recommendedAmount = ingredientNewValues.getRecommendedAmount();
+        unit = ingredientNewValues.getUnit();
+        supplier = ingredientNewValues.getSupplier();
+    }
 
     //<editor-fold desc = "Setters and getters">
-
 
     public String getName() {
         return name;
@@ -122,120 +134,4 @@ public class Ingredient {
                 "Minsta mängd: " + criticalAmount + " " + unit.getPrefix(),
                 "Rekommenderad mängd: " + recommendedAmount + " " + unit.getPrefix(), "</html>");
     }
-
-    //<editor-fold desc = "Static methods">
-
-
-    /**
-     * Adds an ingredient to the list of ingredients.
-     *
-     * @param ingredient Ingredient-object.
-     */
-    public static void addIngredientToList(Ingredient ingredient) {
-        StorageController.allIngredients.add(ingredient);
-    }
-
-    /**
-     * Removes an ingredient form the list.
-     *
-     * @param key of the ingredient to remove.
-     */
-    public static void removeIngredientFromList(String key) {
-        StorageController.allIngredients.removeIf(ingredient -> ingredient.getName().equals(key));
-    }
-
-    /**
-     * Updates an ingredient in the ingredientList
-     *
-     * @param key
-     * @param ingredientNewValues Ingredient-object with updated values.
-     * @return
-     */
-    public static Ingredient updateIngredient(String key, Ingredient ingredientNewValues) {
-        Ingredient updatedIngredient = null;
-        for (Ingredient ingredient : StorageController.allIngredients) {
-            if (ingredient.getName().equals(key)) {
-                ingredient.setName(ingredientNewValues.getName());
-                ingredient.setCost(ingredientNewValues.getCost());
-                ingredient.setCurrentAmount(ingredientNewValues.getCurrentAmount());
-                ingredient.setCriticalAmount(ingredientNewValues.getCriticalAmount());
-                ingredient.setRecommendedAmount(ingredientNewValues.getRecommendedAmount());
-                ingredient.setUnit(ingredientNewValues.getUnit());
-                ingredient.setSupplier(ingredientNewValues.getSupplier());
-                updatedIngredient = ingredient;
-            }
-        }
-
-        return updatedIngredient;
-    }
-
-    /**
-     * Adds a specified quantity to the current quantity of an object.
-     *
-     * @param key           of ingredient to change.
-     * @param quantityToAdd
-     * @return the updated Ingredient-object.
-     */
-    public static Ingredient updateIngredientCurrentQuantity(String key, double quantityToAdd) {
-        Ingredient updatedIngredient = null;
-
-        for (Ingredient ingredient : StorageController.allIngredients) {
-            if (ingredient.getName().equals(key)) {
-                ingredient.setCurrentAmount(ingredient.getCurrentAmount() + quantityToAdd);
-                updatedIngredient = ingredient;
-            }
-        }
-
-        return updatedIngredient;
-    }
-
-    /**
-     * Checks if an ingredient already exists in the list.
-     *
-     * @param key
-     * @return
-     */
-    public static boolean checkIfIngredientExists(String key) {
-        for (Ingredient ingredient : StorageController.allIngredients) {
-            if (ingredient.getName().equals(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the amount of any of the ingredients are below the critical amount.
-     *
-     * @return an ArrayList containing all ingredients below the critical amount.
-     */
-    public static ArrayList<Ingredient> checkIfIngredientsBelowCriticalAmount() {
-        ArrayList<Ingredient> ingredientsBelowCriticalAmount = new ArrayList<>();
-
-        for (Ingredient ingredient : StorageController.allIngredients) {
-            if (ingredient.getCurrentAmount() < ingredient.getCriticalAmount()) {
-                ingredientsBelowCriticalAmount.add(ingredient);
-            }
-        }
-
-        return ingredientsBelowCriticalAmount;
-    }
-
-    /**
-     * Returns an ArrayList with strings for the storage panel.
-     *
-     * @return ArrayList containing strings with info about the ingredients.
-     */
-    public static ArrayList<String> getIngredientStringsForStorage() {
-        ArrayList<String> stringsForStorage = new ArrayList<>();
-
-        for (Ingredient ingredient : StorageController.allIngredients) {
-            stringsForStorage.add(ingredient.toString());
-        }
-
-        return stringsForStorage;
-    }
-
-
-    //</editor-fold>
 }

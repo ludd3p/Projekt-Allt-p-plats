@@ -11,7 +11,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
- * Panel used to keep track of products.
+ * Panel used to keep track of products in storage.
  *
  * @Author Jonathan Engström
  * @Version 1.0
@@ -27,7 +27,6 @@ public class StoragePanel extends JPanel {
     private DefaultListModel<Ingredient> model;
     private JScrollPane scrollPane;
 
-    private ArrayList<String> values = new ArrayList<>();
     private JLabel lblFilter;
     private JTextField txfFilter;
     private JButton btnUpdateList;
@@ -91,7 +90,7 @@ public class StoragePanel extends JPanel {
     private void filterModel(DefaultListModel<Ingredient> model, String filter) {
         model.clear();
 
-        for(Ingredient ingredient : StorageController.allIngredients) {
+        for(Ingredient ingredient : storageController.getAllIngredients()) {
             if(ingredient.getName().toLowerCase().startsWith(filter.toLowerCase()))
                 model.addElement(ingredient);
         }
@@ -113,8 +112,8 @@ public class StoragePanel extends JPanel {
                             selected.substring(selected.indexOf("Kostnad: ") + "Kostnad: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Leverantör:") - 2)),
                             selected.substring(selected.indexOf("<br>Nuvarande mängd: ") + "<br>Nuvarande mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("Minsta mängd:") - 2)),
                             selected.substring(selected.indexOf("Minsta mängd: ") + "Minsta mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("Rekommenderad mängd: ") - 2)),
-                            selected.substring(selected.indexOf("Rekommenderad mängd: ") + "Rekommenderad mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("<!---") - 2)),
-                            selected.substring(selected.indexOf("sek/") + "sek/".length(), selected.indexOf("<br>Nuvarande") - 1),
+                            selected.substring(selected.indexOf("Rekommenderad mängd: ") + "Rekommenderad mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)),
+                            selected.substring(selected.indexOf("sek/") + "sek/".length(), selected.indexOf("<br>Leverantör") - 1),
                             selected.substring(selected.indexOf("<br>Leverantör: ") + "<br>Leverantör: ".length(), selected.indexOf("<br>Nuvarande mängd:") - 1));
                 } else {
                     JOptionPane.showMessageDialog(null, "Välj en produkt att ändra.");
@@ -123,15 +122,15 @@ public class StoragePanel extends JPanel {
                 int answer = -1;
 
                 if (productList.getSelectedValue() != null) {
-                    answer = JOptionPane.showConfirmDialog(null, "Är du säker?", "Ta bort produkt", JOptionPane.YES_NO_OPTION);
+                    answer = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort produkten?", "Ta bort produkt", JOptionPane.YES_NO_OPTION);
                 } else {
                     JOptionPane.showMessageDialog(null, "Välj en produkt att ta bort först.");
                 }
 
                 if (answer == 0) {
-                    Ingredient selected = productList.getSelectedValue();
-                    model.removeElement(selected);
-                    storageController.removeIngredientFromDatabase(selected);
+                    String selected = productList.getSelectedValue().toString();
+                    model.removeElement(productList.getSelectedIndex());
+                    storageController.removeIngredient(selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1));
                 }
             } else if (e.getSource() == btnUpdateList) {
                 storageController.getIngredientsFromDatabase();
@@ -155,15 +154,12 @@ public class StoragePanel extends JPanel {
             }
         };
 
-
         lblFilter = new JLabel("Sök:");
-        pnlNorth.add(lblFilter);
 
         txfFilter = new JTextField();
         txfFilter.setToolTipText("Skriv in namnet på den produkt du söker efter.");
         txfFilter.setPreferredSize(new Dimension(100, 27));
         txfFilter.addKeyListener(keyListener);
-        pnlNorth.add(txfFilter);
 
         btnAddProduct = new JButton("Ny produkt");
         btnAddProduct.setToolTipText("Klicka för att lägga till  en ny produkt.");
@@ -181,6 +177,8 @@ public class StoragePanel extends JPanel {
         btnUpdateList.setToolTipText("Klicka för att uppdatera listan av produkter.");
         btnUpdateList.addActionListener(actionListener);
 
+        pnlNorth.add(lblFilter);
+        pnlNorth.add(txfFilter);
         pnlNorth.add(btnAddProduct);
         pnlNorth.add(btnChangeProduct);
         pnlNorth.add(btnRemoveProduct);
@@ -291,10 +289,10 @@ public class StoragePanel extends JPanel {
             setupProductWindowCenterPanel();
             setupProductWindowSouthPanel();
 
-            setLocation(400, 300);
             setContentPane(pnlProductWindowMainPanel);
             setResizable(false);
             pack();
+            setLocationRelativeTo(productList);
             setVisible(true);
         }
 
@@ -306,14 +304,14 @@ public class StoragePanel extends JPanel {
             pnlProductWindowCenter.setBorder(BorderFactory.createEtchedBorder(0));
             pnlProductWindowCenter.setLayout(new GridLayout(7, 2, 10, 1));
 
-            lblProductName = new JLabel(" Produkt: ");
+            lblProductName = new JLabel(" Produktnamn: ");
             pnlProductWindowCenter.add(lblProductName);
             txfProductName = new JTextField();
             txfProductName.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             txfProductName.setToolTipText("Skriv in namnet på den produkt du vill lägga till.");
             pnlProductWindowCenter.add(txfProductName);
 
-            lblCost = new JLabel(" Kostnad: ");
+            lblCost = new JLabel(" Kostnad per enhet: ");
             pnlProductWindowCenter.add(lblCost);
             txfCost = new JTextField();
             txfCost.setToolTipText("Skriv in kostnaden per vald enhet för produkten.");
@@ -334,7 +332,7 @@ public class StoragePanel extends JPanel {
             lblMaxAmount = new JLabel(" Rekommenderad mängd:");
             pnlProductWindowCenter.add(lblMaxAmount);
             txfMaxAmount = new JTextField();
-            txfMinAmount.setToolTipText("Skriv in den mängd av produkten du vill ha i lagret.");
+            txfMaxAmount.setToolTipText("Skriv in den mängd av produkten du vill ha i lagret.");
             pnlProductWindowCenter.add(txfMaxAmount);
 
             lblUnit = new JLabel(" Enhet:");
@@ -346,7 +344,7 @@ public class StoragePanel extends JPanel {
             lblSupplier = new JLabel(" Leverantör:");
             pnlProductWindowCenter.add(lblSupplier);
             cbxSupplier = new JComboBox<>(storageController.getSupplierNames());
-            cbxUnit.setToolTipText("Välj leverantör för produkten.");
+            cbxSupplier.setToolTipText("Välj leverantör för produkten.");
             cbxSupplier.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(cbxSupplier);
 
@@ -376,16 +374,15 @@ public class StoragePanel extends JPanel {
                                     (String) cbxSupplier.getSelectedItem());
                         } else {
                             String selected = productList.getSelectedValue().toString();
-                            String key = selected.substring(selected.indexOf("<!--") + "<!--".length(), selected.indexOf("-->"));
-                            storageController.updateIngredient(
-                                    key,
-                                    txfProductName.getText(),
-                                    Double.parseDouble(txfCost.getText()),
-                                    Double.parseDouble(txfCurrentAmount.getText()),
-                                    Double.parseDouble(txfMinAmount.getText()),
-                                    Double.parseDouble(txfMaxAmount.getText()),
-                                    (String) cbxUnit.getSelectedItem(),
-                                    (String) cbxSupplier.getSelectedItem());
+                            String oldName = selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1);
+                            storageController.updateIngredient( oldName,
+                                                                txfProductName.getText(),
+                                                                Double.parseDouble(txfCost.getText()),
+                                                                Double.parseDouble(txfCurrentAmount.getText()),
+                                                                Double.parseDouble(txfMinAmount.getText()),
+                                                                Double.parseDouble(txfMaxAmount.getText()),
+                                                                (String) cbxUnit.getSelectedItem(),
+                                                                (String) cbxSupplier.getSelectedItem());
                         }
                         storageController.getIngredientsFromDatabase();
                         dispose();
@@ -438,8 +435,8 @@ public class StoragePanel extends JPanel {
                 return false;
             }
             else {
-                for (Ingredient ingredient : StorageController.allIngredients) {
-                    if (ingredient.getName().toLowerCase().equals(txfProductName.getText().toLowerCase())) {
+                for (Ingredient ingredient : storageController.getAllIngredients()) {
+                    if (addOrChange && ingredient.getName().toLowerCase().equals(txfProductName.getText().toLowerCase())) {
                         JOptionPane.showMessageDialog(null, "Denna produkt finns redan.", "Produkten finns redan", JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
@@ -504,6 +501,7 @@ public class StoragePanel extends JPanel {
 
     }
 
+    //<editor-fold desc = "Setters and getters">
     public StorageController getStorageController() {
         return storageController;
     }
@@ -542,14 +540,6 @@ public class StoragePanel extends JPanel {
 
     public void setScrollPane(JScrollPane scrollPane) {
         this.scrollPane = scrollPane;
-    }
-
-    public ArrayList<String> getValues() {
-        return values;
-    }
-
-    public void setValues(ArrayList<String> values) {
-        this.values = values;
     }
 
     public JTextField getTxfFilter() {
@@ -591,4 +581,6 @@ public class StoragePanel extends JPanel {
     public void setBtnRemoveProduct(JButton btnRemoveProduct) {
         this.btnRemoveProduct = btnRemoveProduct;
     }
+
+    //</editor-fold>
 }
