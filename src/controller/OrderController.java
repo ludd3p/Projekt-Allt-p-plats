@@ -76,6 +76,8 @@ public class OrderController {
     }
 
     /**
+     * Refill the storage with items in the order
+     *
      * @param supplierOrder
      */
     public void orderHasArrived(SupplierOrder supplierOrder) {
@@ -88,11 +90,19 @@ public class OrderController {
         previewSupplierOrder(supplierOrder);
     }
 
+    /**
+     * Clears the order items in the order
+     */
     public void removeOrder() {
         currentSelectedSupplierOrder.getOrderItems().clear();
+        saveOrderToFirebase(currentSelectedSupplierOrder);
         previewSupplierOrder(currentSelectedSupplierOrder);
     }
 
+    /**
+     * Add item to the selected order
+     * @param item The item to add
+     */
     public void addOrderItemToSelectedOrder(OrderItem item) {
         for (OrderItem orderItem : currentSelectedSupplierOrder.getOrderItems()) {
             if (orderItem.getIngredient() == item.getIngredient()) {
@@ -106,6 +116,11 @@ public class OrderController {
         previewSupplierOrder(currentSelectedSupplierOrder);
         saveOrderToFirebase(currentSelectedSupplierOrder);
     }
+    /**
+     * Add item to the selected order
+     * @param ingredient The ingredient to add
+     * @param quantity The quanittiy to add
+     */
     public void addOrderItemToSupplierOrder(Ingredient ingredient, int quantity) {
         if (quantity <= 0)
             quantity = (int) ingredient.getRecommendedAmount();
@@ -114,13 +129,19 @@ public class OrderController {
         updateSupplierList();
     }
 
-
+    /**
+     * Removes item from the selected order
+     * @param item the item to remove
+     */
     public void removeOrderItemFromCurrentOrder(OrderItem item) {
         currentSelectedSupplierOrder.getOrderItems().remove(item);
         previewSupplierOrder(currentSelectedSupplierOrder);
         saveOrderToFirebase(currentSelectedSupplierOrder);
     }
 
+    /**
+     * Returns all the supplier orders
+     */
     public void getSupplierOrders() {
         for (Supplier supplier : controller.getSupplierController().getSupplierList()) {
             supplierOrderList.add(new SupplierOrder(supplier));
@@ -149,6 +170,10 @@ public class OrderController {
 
     }
 
+    /**
+     * @param name The name to locate
+     * @return supplier based by name ( returnes null if none found)
+     */
     public SupplierOrder getSupplierOrder(String name) {
         for (SupplierOrder supplierOrder : supplierOrderList) {
             if (supplierOrder.getSupplier().getName().equals(name))
@@ -158,34 +183,18 @@ public class OrderController {
         return null;
     }
 
-    /**
-     * returns controller
-     *
-     * @return controller
-     */
 
     public Controller getController() {
         return controller;
     }
 
-    /**
-     * Replaces controller
-     *
-     * @param controller new controller
-     */
     public void setController(Controller controller) {
         this.controller = controller;
     }
 
-    /**
-     * replaces the panel
-     *
-     * @param panel new panel
-     */
     public void setPanel(OrderPanel panel) {
         this.panel = panel;
     }
-
 
     public SupplierOrder getCurrentOrder() {
         return currentSelectedSupplierOrder;
