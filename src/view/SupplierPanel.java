@@ -119,6 +119,7 @@ public class SupplierPanel extends JPanel {
         JTextField supEmail = new JTextField(5);
         JTextField supAddress = new JTextField(5);
         JTextField supCity = new JTextField(5);
+        JTextField supZip = new JTextField(5);
         JTextField supCountry = new JTextField(5);
         cmbWeekDays = new JComboBox(supController.getWeekDays());
 
@@ -128,12 +129,13 @@ public class SupplierPanel extends JPanel {
             supEmail.setText(supplier.getEmail());
             supAddress.setText(supplier.getAddress());
             supCity.setText(supplier.getCity());
+            supZip.setText(supplier.getZip());
             supCountry.setText(supplier.getCountrty());
             cmbWeekDays.setSelectedItem(supplier.getDayOfDelivery());
         }
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(8, 2, 2, 2));
+        panel.setLayout(new GridLayout(9, 2, 2, 2));
         panel.add(new JLabel("Alla fält är obligatioriska"));
         panel.add(new JLabel(""));
         panel.add(new JLabel("Namn: "));
@@ -146,6 +148,8 @@ public class SupplierPanel extends JPanel {
         panel.add(supAddress);
         panel.add(new JLabel("Stad: "));
         panel.add(supCity);
+        panel.add(new JLabel("Zip kod: "));
+        panel.add(supZip);
         panel.add(new JLabel("Land: "));
         panel.add(supCountry);
         panel.add(new JLabel("Leveransdag: "));
@@ -163,8 +167,9 @@ public class SupplierPanel extends JPanel {
                     String email = supEmail.getText();
                     String address = supAddress.getText();
                     String city = supCity.getText();
+                    String zip = supZip.getText();
                     String country = supCountry.getText();
-                    supController.createNewSupplier(name, address, city, country, email, phone, (WeekDay) getCmbWeekDays().getSelectedItem()); // När det skall skickas till controller.
+                    supController.createNewSupplier(name, address, city, zip, country, email, phone, (WeekDay) getCmbWeekDays().getSelectedItem()); // När det skall skickas till controller.
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }

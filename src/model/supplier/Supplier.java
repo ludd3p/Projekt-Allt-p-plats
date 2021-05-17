@@ -5,6 +5,7 @@ public class Supplier {
     private String name;
     private String address;
     private String city;
+    private String zip;
     private String countrty;
     private String email;
     private String phonenumber;
@@ -12,11 +13,12 @@ public class Supplier {
 
     public Supplier(){}
 
-    public Supplier(String name, String address, String city, String countrty, String email, String phonenumber, WeekDay day) {
+    public Supplier(String name, String address, String city, String zip, String country, String email, String phonenumber, WeekDay day) {
         this.name = name;
         this.address = address;
         this.city = city;
-        this.countrty = countrty;
+        this.zip = zip;
+        this.countrty = country;
         this.email = email;
         this.phonenumber = phonenumber;
         this.dayOfDelivery = day;
@@ -60,6 +62,14 @@ public class Supplier {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 
     public String getCountrty() {

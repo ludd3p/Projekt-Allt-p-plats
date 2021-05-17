@@ -33,8 +33,8 @@ public class SupplierController {
         updateSupplierList();
     }
 
-    public void createNewSupplier(String name, String address, String city, String countrty, String email, String phonenumber, WeekDay day) {
-        Supplier newSupplier = new Supplier(name, address, city, countrty, email, phonenumber, day);
+    public void createNewSupplier(String name, String address, String city, String zip, String country, String email, String phonenumber, WeekDay day) {
+        Supplier newSupplier = new Supplier(name, address, city, zip, country, email, phonenumber, day);
         supplierList.add(newSupplier);
         databaseReference.child("Suppliers").child(name).setValueAsync(newSupplier);
         updateSupplierList();
