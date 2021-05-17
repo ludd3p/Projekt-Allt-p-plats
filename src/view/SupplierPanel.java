@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
  * Class for the supplier panel
  *
  * @Author Alex Bergenholtz
- * @Version 1.2
+ * @Version 1.4
  */
 
 
@@ -37,7 +37,7 @@ public class SupplierPanel extends JPanel {
      */
     public SupplierPanel(SupplierController controller) {
         supController = controller;
-        supController.setUp(this);
+        supController.setSupplierPanel(this);
         setLayout(new BorderLayout());
         setupPanels();
     }

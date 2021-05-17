@@ -7,8 +7,14 @@ import com.google.firebase.database.ValueEventListener;
 import model.supplier.Supplier;
 import model.supplier.WeekDay;
 import view.SupplierPanel;
-
 import java.util.ArrayList;
+
+/**
+ * Controller class for the Supplier
+ *
+ * @Author Alex Bergenholtz
+ * @Version 1.4
+ */
 
 public class SupplierController {
     private Controller controller;
@@ -16,6 +22,11 @@ public class SupplierController {
     private DatabaseReference databaseReference;
     private ArrayList<Supplier> supplierList;
 
+    /**
+     * Class constructor
+     * @param controller main controller object
+     * @param databaseReference reference to Firebase database
+     */
     public SupplierController(Controller controller, DatabaseReference databaseReference) {
         this.controller = controller;
         this.databaseReference = databaseReference;
@@ -23,16 +34,27 @@ public class SupplierController {
         getSuppliersFromDatabase();
     }
 
-    public void setUp(SupplierPanel panel) {
-        this.panel = panel;
-    }
-
+    /**
+     * Remove supplier from Firebase database
+     * @param supplier The supplier chosen to remove
+     */
     public void removeSupplier(Supplier supplier) {
         databaseReference.child("Suppliers").child(supplier.getName()).setValueAsync(null);
         supplierList.remove(supplier);
         updateSupplierList();
     }
 
+    /**
+     * Create new supplier
+     * @param name of the supplier
+     * @param address of the supplier
+     * @param city of the supplier
+     * @param zip of the supplier
+     * @param country of the supplier
+     * @param email of the supplier
+     * @param phonenumber of the supplier
+     * @param day of delivery from the supplier
+     */
     public void createNewSupplier(String name, String address, String city, String zip, String country, String email, String phonenumber, WeekDay day) {
         Supplier newSupplier = new Supplier(name, address, city, zip, country, email, phonenumber, day);
         supplierList.add(newSupplier);
@@ -40,22 +62,17 @@ public class SupplierController {
         updateSupplierList();
     }
 
-    public void createNewSupplier(Supplier supplier) {
-        supplierList.add(supplier);
-        databaseReference.child("Suppliers").child(supplier.getName()).setValueAsync(supplier);
-        updateSupplierList();
-    }
-
+    /**
+     * Update the supplier list in SupplierPanel
+     */
     public void updateSupplierList() {
         panel.getSupplierJList().setListData(this.supplierList.toArray(new Supplier[0]));
     }
 
-    public void updateSupplierListGUI() {
-        panel.setSupplierJList((Supplier[]) supplierList.toArray());
-    }
-
+    /**
+     * Getting all the suppliers stored in Firebase database
+     */
     public void getSuppliersFromDatabase() {
-
         databaseReference.child("Suppliers").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -63,7 +80,6 @@ public class SupplierController {
                 for (DataSnapshot supplier : dataSnapshot.getChildren()) {
                     Supplier newSupplier = supplier.getValue(Supplier.class);
                     supplierList.add(newSupplier);
-
                 }
             }
 
@@ -80,7 +96,6 @@ public class SupplierController {
 
     public String[] getSupplierNames() {
         String[] supplierNames = new String[supplierList.size()];
-
         for (int i = 0; i < supplierNames.length; i++) {
             supplierNames[i] = supplierList.get(i).getName();
         }
@@ -95,6 +110,10 @@ public class SupplierController {
             }
         }
         return null;
+    }
+
+    public void setSupplierPanel(SupplierPanel panel) {
+        this.panel = panel;
     }
 
     public Controller getController() {
@@ -128,6 +147,4 @@ public class SupplierController {
     public void setSupplierList(ArrayList<Supplier> supplierList) {
         this.supplierList = supplierList;
     }
-
-
 }
