@@ -260,6 +260,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         private JButton addInstruction;
         private JButton removeInstruction;
         private JButton saveRecipe;
+        private JButton editInstruction;
         private DefaultListModel<String> instructionListModel;
         private JList<String> instructionList;
         private ArrayList<String> ingredients;
@@ -382,6 +383,10 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             removeInstruction.addActionListener(this::actionPerformed);
             eastNorth.add(removeInstruction);
 
+            editInstruction = new JButton("Ändra instruktion");
+            editInstruction.addActionListener(this::actionPerformed);
+            eastNorth.add(editInstruction);
+
             instructionListModel = new DefaultListModel<>();
             instructionList = new JList<>(instructionListModel);
             instructionList.setBorder(new TitledBorder("Instruktioner"));
@@ -414,6 +419,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             if (e.getSource() == addInstruction) {
                 instructionsArray.add(instructionInput.getText());
                 updateInstructions();
+                instructionInput.setText("");
             }
 
             if (e.getSource() == removeInstruction) {
@@ -449,6 +455,16 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
             if (e.getSource() == ingredientsMenu) {
                 unit.setText(recipeController.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
+            }
+
+            if (e.getSource() == editInstruction){
+                if (!instructionList.isSelectionEmpty()){
+                    int i = instructionList.getSelectedIndex();
+                    String s = instructionsArray.get(i);
+                    String st = JOptionPane.showInputDialog(null, "Öndra instruktion", s);
+                    instructionsArray.set(i, st);
+                    updateInstructions();
+                }
             }
         }
 
