@@ -99,6 +99,7 @@ public class SupplierPanel extends JPanel {
         supplierInfoArea.add(emailLabel);
         supplierInfoArea.add(addressLabel);
         supplierInfoArea.add(cityLabel);
+        supplierInfoArea.add(zipLabel);
         supplierInfoArea.add(countryLabel);
         supplierInfoArea.add(dodLabel);
         centerPanel.setLayout(new BorderLayout(5, 0));
@@ -326,6 +327,7 @@ public class SupplierPanel extends JPanel {
                 emailLabel.setText("Email: " + tempSup.getEmail());
                 addressLabel.setText("Adress: " + tempSup.getAddress());
                 cityLabel.setText("Stad: " + tempSup.getCity());
+                zipLabel.setText("Zip-kod: " + tempSup.getZip());
                 countryLabel.setText("Land: " + tempSup.getCountrty());
                 dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name());
             }
