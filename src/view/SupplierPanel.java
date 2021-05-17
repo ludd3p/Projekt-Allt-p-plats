@@ -158,7 +158,7 @@ public class SupplierPanel extends JPanel {
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Lägg till leverantör", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supEmail.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supCountry.getText().isBlank())) {
+            if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supEmail.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supZip.getText().isBlank()) || (supCountry.getText().isBlank())) {
                 JOptionPane.showMessageDialog(null, "Info saknas");
             } else {
                 try {
