@@ -63,20 +63,22 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         //North panel
         northPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
-        done = new JButton("Klar");
-        done.addActionListener(this::actionPerformed);
-        northPanel.add(done);
+        recipes = new JComboBox<String>();
+        recipes.setPreferredSize(new Dimension(200, 40));
+        recipes.addActionListener(this::actionPerformed);
+        recipes.setBorder(new TitledBorder("Recept"));
+        northPanel.add(recipes);
 
         spinnerModel = new SpinnerNumberModel(1, 1, 20, 1);
         spinner = new JSpinner(spinnerModel);
         spinner.addChangeListener(this::stateChanged);
+        spinner.setPreferredSize(new Dimension(75, 40));
+        spinner.setBorder(new TitledBorder("Satser"));
         northPanel.add(spinner);
 
-
-        recipes = new JComboBox<String>();
-        recipes.setPreferredSize(new Dimension(200, 25));
-        recipes.addActionListener(this::actionPerformed);
-        northPanel.add(recipes);
+        done = new JButton("Recept tillagat");
+        done.addActionListener(this::actionPerformed);
+        northPanel.add(done);
 
         addRecipe = new JButton("Lägg till nytt recept");
         addRecipe.addActionListener(this::actionPerformed);
@@ -135,7 +137,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
      */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == done) {
-            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du tillaggat receptet? Lagersaldo kommer att dras av", "asd", JOptionPane.YES_NO_OPTION) == 0) {
+            if (JOptionPane.showConfirmDialog(null, "Är du säker? Lagersaldo kommer att dras av", "Recept tillagat", JOptionPane.YES_NO_OPTION) == 0) {
                 recipeController.updateAmountsIngredient(recipes.getSelectedIndex(), (int)spinner.getValue());
             } else {
                 JOptionPane.showMessageDialog(null, "Inga varor dras av", "Meddelande", JOptionPane.PLAIN_MESSAGE);
