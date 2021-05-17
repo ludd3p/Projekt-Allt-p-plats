@@ -14,7 +14,7 @@ import java.util.Set;
 public class StorageController {
     private Controller controller;
 
-    public static Set<Ingredient> allIngredients = new HashSet<>();
+    public  Set<Ingredient> allIngredients = new HashSet<>();
     public StoragePanel panel;
 
     public StorageController(Controller controller) {
@@ -22,6 +22,10 @@ public class StorageController {
         getIngredientsFromDatabase();
     }
 
+    /**
+     * Set-up for the storage-tab main panel.
+     * @param panel storage-tab main panel.
+     */
     public void setUp(StoragePanel panel) {
         this.panel = panel;
         updatePanel();
@@ -38,80 +42,98 @@ public class StorageController {
     /**
      * Adds an ingredient to the database.
      *
-     * @param name of the ingredient.
-     * @param cost of the ingredient.
-     * @param currentAmount of the ingredient in storage.
-     * @param criticalAmount amount at which there should be a warning about the volume of the ingredient in the storage
-     *                       is low.
+     * @param name              of the ingredient.
+     * @param cost              of the ingredient.
+     * @param currentAmount     of the ingredient in storage.
+     * @param criticalAmount    amount at which there should be a warning about the volume of the ingredient in the storage is low.
      * @param recommendedAmount of the ingredient in the storage.
-     * @param unitPrefix unit related to the ingredient.
+     * @param unitPrefix        unit related to the ingredient.
+     * @param supplierName      of the supplier related to the ingredient.
      */
     public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
-        Ingredient ingredientToAddToDatabase = new Ingredient(name,
-                cost,
-                currentAmount,
-                criticalAmount,
-                recommendedAmount,
-                Unit.getUnitBasedOnPrefix(unitPrefix),
-                controller.getSupplierController().getSupplierFromName(supplierName));
-
-        Controller.getDatabaseReference().child("Ingredient").child(ingredientToAddToDatabase.getName()).setValueAsync(ingredientToAddToDatabase);
+        Controller.getDatabaseReference().child("Ingredient").child(name).
+                setValueAsync(new Ingredient(   name,
+                                                cost,
+                                                currentAmount,
+                                                criticalAmount,
+                                                recommendedAmount,
+                                                Unit.getUnitBasedOnPrefix(unitPrefix),
+                                                controller.getSupplierController().getSupplierFromName(supplierName)));
     }
 
     /**
      * Updates an ingredient with new values.
      *
-     * @param key               of the ingredient
-     * @param name              to update the ingredient with
-     * @param cost              to update the ingredient with
-     * @param currentAmount     to update the ingredient with
-     * @param criticalAmount    to update the ingredient with
-     * @param recommendedAmount to update the ingredient with
-     * @param unitPrefix        to update the ingredient with
+     * @param oldName           name of the product to update.
+     * @param newName              to update the ingredient with.
+     * @param cost              to update the ingredient with.
+     * @param currentAmount     to update the ingredient with.
+     * @param criticalAmount    to update the ingredient with.
+     * @param recommendedAmount to update the ingredient with.
+     * @param unitPrefix        to update the ingredient with.
      */
-    public void updateIngredient(String key, String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
-        Controller.getDatabaseReference().child("Ingredient").child(key).setValueAsync(
-                Ingredient.updateIngredient(key, new Ingredient(name,
-                        cost,
-                        currentAmount,
-                        criticalAmount,
-                        recommendedAmount,
-                        Unit.getUnitBasedOnPrefix(unitPrefix),
-                        controller.getSupplierController().getSupplierFromName(supplierName))));
+    public void updateIngredient(String oldName, String newName, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
+        Controller.getDatabaseReference().child("Ingredient").child(newName).setValueAsync(
+                updateIngredient(oldName, new Ingredient(   newName,
+                                                            cost,
+                                                            currentAmount,
+                                                            criticalAmount,
+                                                            recommendedAmount,
+                                                            Unit.getUnitBasedOnPrefix(unitPrefix),
+                                                            controller.getSupplierController().getSupplierFromName(supplierName))));
+
+        if(!oldName.equals(newName))
+            Controller.getDatabaseReference().child("Ingredient").child(oldName).removeValueAsync();
+    }
+
+    /**
+     * Updates an ingredient in the ingredientList with new values.
+     *
+     * @param name of the product
+     * @param ingredientNewValues Ingredient-object with values to be used to update old object.
+     * @return the updated Ingredient-object.
+     */
+    public Ingredient updateIngredient(String name, Ingredient ingredientNewValues) {
+        Ingredient updatedIngredient = null;
+
+        for (Ingredient ingredient : allIngredients) {
+            if (ingredient.getName().equals(name)) {
+                ingredient.updateValues(ingredientNewValues);
+                updatedIngredient = ingredient;
+                break;
+            }
+        }
+
+        return updatedIngredient;
     }
 
     /**
      * Updates the current quantity of an ingredient in both the database and the ingredient list.
      *
-     * @param ingredient    to update the current quantity of.
+     * @param ingredientToUpdate    to update the current quantity of.
      * @param quantityToAdd
      */
-    public void updateQuantityOfIngredient(Ingredient ingredient, double quantityToAdd) {
-        Controller.getDatabaseReference().child("Ingredient").child(ingredient.getName()).setValueAsync(
-                Ingredient.updateIngredientCurrentQuantity(ingredient.getName(), quantityToAdd));
-    }
+    public void updateQuantityOfIngredient(Ingredient ingredientToUpdate, double quantityToAdd) {
+        for (Ingredient ingredient : allIngredients) {
+            if (ingredient.getName().equals(ingredientToUpdate.getName())) {
+                ingredient.setCurrentAmount(ingredient.getCurrentAmount() + quantityToAdd);
+                Controller.getDatabaseReference().child("Ingredient").child(ingredientToUpdate.getName()).setValueAsync(ingredient);
+                break;
+            }
+        }
 
-    /**
-     * Removes an ingredient.
-     *
-     * @param key of the ingredient to remove.
-     */
-    public void removeIngredientFromDatabase(String key) {
-        Ingredient.removeIngredientFromList(key);
-        Controller.getDatabaseReference().child("Ingredient").child(key).removeValueAsync();
         updatePanel();
-
     }
 
     /**
      * Removes an ingredient.
      *
-     * @param ingredient to remove.
+     * @param name of the ingredient to remove.
      */
-    public void removeIngredientFromDatabase(Ingredient ingredient) {
-        allIngredients.remove(ingredient);
-        Controller.getDatabaseReference().child("Ingredient").child(ingredient.getName()).removeValueAsync();
-
+    public void removeIngredient(String name) {
+        allIngredients.removeIf(ingredient -> ingredient.getName().equals(name));
+        Controller.getDatabaseReference().child("Ingredient").child(name).removeValueAsync();
+        updatePanel();
     }
 
     /**
@@ -144,10 +166,27 @@ public class StorageController {
     public void updatePanel() {
         if (panel == null)
             return;
-        ((DefaultListModel) getPanel().getProductList().getModel()).clear();
+
+        ((DefaultListModel<Ingredient>) getPanel().getProductList().getModel()).clear();
         ((DefaultListModel<Ingredient>) getPanel().getProductList().getModel()).addAll(allIngredients);
     }
 
+    /**
+     * Checks if an ingredient already exists in the list.
+     *
+     * @param name
+     * @return
+     */
+    public boolean checkIfIngredientExists(String name) {
+        for (Ingredient ingredient : allIngredients) {
+            if (ingredient.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //<editor-fold desc = "Setters and getters">
     public String[] getSupplierNames() {
         return controller.getSupplierController().getSupplierNames();
     }
@@ -161,12 +200,12 @@ public class StorageController {
         this.controller = controller;
     }
 
-    public static Set<Ingredient> getAllIngredients() {
+    public  Set<Ingredient> getAllIngredients() {
         return allIngredients;
     }
 
-    public static void setAllIngredients(Set<Ingredient> allIngredients) {
-        StorageController.allIngredients = allIngredients;
+    public  void setAllIngredients(Set<Ingredient> allIngredients) {
+        this.allIngredients = allIngredients;
     }
 
     public StoragePanel getPanel() {
@@ -176,5 +215,5 @@ public class StorageController {
     public void setPanel(StoragePanel panel) {
         this.panel = panel;
     }
-
+    //</editor-fold>
 }

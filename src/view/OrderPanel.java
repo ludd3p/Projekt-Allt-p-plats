@@ -10,8 +10,6 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.List;
 
-import static controller.StorageController.allIngredients;
-
 /**
  * Panel used to keep track of order history and current orders.
  *
@@ -77,6 +75,9 @@ public class OrderPanel extends JPanel {
 
     }
 
+    /**
+     * Function to setup left side of the panel
+     */
     public void setUpLeftPanel() {
         supplierJList = new JList(supplierList.toArray(new SupplierOrder[0]));
         JScrollPane jScrollPane = new JScrollPane(supplierJList);
@@ -89,6 +90,9 @@ public class OrderPanel extends JPanel {
         this.add(leftPanel);
     }
 
+    /**
+     * Function to setup center side of the panel
+     */
     public void setUpCenterPanel() {
         JPanel orderControlPanel = new JPanel(null);
         orderControlPanel.setBounds(25, 30, 350, 270);
@@ -193,7 +197,9 @@ public class OrderPanel extends JPanel {
         centerPanel.add(addItemToOrderPanel);
         this.add(centerPanel);
     }
-
+    /**
+     * Function to setup right side of the panel
+     */
     public void setUpRightPanel() {
         currentSupplier = new JList<>();
         JScrollPane jScrollPane = new JScrollPane(currentSupplier);
@@ -206,7 +212,7 @@ public class OrderPanel extends JPanel {
     }
 
     public Ingredient getIngredientFromString(String name) {
-        for (Ingredient ingredient : allIngredients) {
+        for (Ingredient ingredient : controller.getController().getStorageController().getAllIngredients()) {
             if (ingredient.getName().equals(name))
                 return ingredient;
         }
@@ -214,82 +220,56 @@ public class OrderPanel extends JPanel {
     }
 
     public String[] ingredientList() {
-        String[] arr = new String[allIngredients.size()];
+        String[] arr = new String[controller.getController().getStorageController().getAllIngredients().size()];
         int x = 0;
-        for (Ingredient ingredient : allIngredients) {
+        for (Ingredient ingredient : controller.getController().getStorageController().getAllIngredients()) {
             arr[x] = ingredient.getName();
             x++;
         }
         return arr;
     }
 
-    /**
-     * @return panel on the west side (Order history)
-     */
     public JPanel getLeftPanel() {
         return leftPanel;
     }
 
-    /**
-     * @param leftPanel replaces the left panel
-     */
+
     public void setLeftPanel(JPanel leftPanel) {
         this.leftPanel = leftPanel;
     }
 
-    /**
-     * @return the east side of the panel (control panel)
-     */
     public JPanel getRightPanel() {
         return rightPanel;
     }
 
-    /**
-     * @param rightPanel replaces the right panel
-     */
 
     public void setRightPanel(JPanel rightPanel) {
         this.rightPanel = rightPanel;
     }
 
-    /**
-     * @return returns the current orderhistory as a JList
-     */
+
     public JList<SupplierOrder> getSupplierJList() {
         return supplierJList;
     }
 
-    /**
-     * @param supplierJList replaces the current order history
-     */
+
     public void setSupplierJList(JList<SupplierOrder> supplierJList) {
         this.supplierJList = supplierJList;
     }
 
-    /**
-     * @return orderHistoryList returns the current order history as an arraylist
-     */
     public List<SupplierOrder> getOrderHistoryList() {
         return supplierList;
     }
 
-    /**
-     * @param supplierOrderHistoryList replaces the arraylist
-     */
     public void setOrderHistoryList(List<SupplierOrder> supplierOrderHistoryList) {
         this.supplierList = supplierOrderHistoryList;
     }
 
-    /**
-     * @return current order view list
-     */
+
     public JList<OrderItem> getCurrentSupplier() {
         return currentSupplier;
     }
 
-    /**
-     * @param currentSupplier replace the current order view list
-     */
     public void setCurrentSupplier(JList<OrderItem> currentSupplier) {
         this.currentSupplier = currentSupplier;
     }

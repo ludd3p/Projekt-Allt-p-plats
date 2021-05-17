@@ -4,6 +4,7 @@ import model.ingredient.Ingredient;
 
 /**
  * Class used in Recipe to hold the ingredient and amount to be used.
+ *
  * @Author Ludvig Wedin Pettersson
  * @Version 1.0
  */
@@ -14,12 +15,14 @@ public class RecipeIngredient {
     /**
      * Default constructor used when recreating a RecipeIngredient from firebase.
      */
-    public RecipeIngredient(){}
+    public RecipeIngredient() {
+    }
 
     /**
      * Constructor used when creating a new RecipeIngredient.
+     *
      * @param ingredient Ingredient object.
-     * @param amount double representing the amount of Ingredient used in Recipe.
+     * @param amount     double representing the amount of Ingredient used in Recipe.
      */
     public RecipeIngredient(Ingredient ingredient, double amount) {
         this.ingredient = ingredient;
@@ -44,19 +47,21 @@ public class RecipeIngredient {
 
     /**
      * toString used when multiplier for recipe is used in GUI.
+     *
      * @param multi int incoming multiplier.
      * @return String with multiplied amount.
      */
-    public String toString2(int multi){
-        String s = String.format("%s %.2f %s", ingredient.getName(), (amount*multi), ingredient.getUnit());
+    public String toString2(int multi) {
+        String s = String.format("%s %.2f %s", ingredient.getName(), (amount * multi), ingredient.getUnit());
         return s;
     }
 
     /**
      * toString returning the ingredients name, amount to be used, and which unit type.
+     *
      * @return String.
      */
-    public String toString(){
+    public String toString() {
         String s = String.format("%s %.2f %s", ingredient.getName(), amount, ingredient.getUnit());
         return s;
     }

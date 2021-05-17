@@ -23,10 +23,9 @@ public class RecipeController {
     private DatabaseReference databaseReference;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Controller controller;
-
     private ArrayList<Recipe> allRecipes = new ArrayList<>();
     private ArrayList<String> allRecipeNames = new ArrayList<>();
-    private Set<Ingredient> allIngredients = StorageController.allIngredients;
+    private Set<Ingredient> allIngredients;
     private ArrayList<RecipeIngredient> recipeIngredient = new ArrayList<>();
     private ArrayList<String> ingredientNames = new ArrayList<>();
 
@@ -41,6 +40,7 @@ public class RecipeController {
         getRecipesFromDatabase();
         getIngredientsFromDatabase();
         this.controller = controller;
+        allIngredients = controller.getStorageController().getAllIngredients();
     }
 
     /**
@@ -92,10 +92,10 @@ public class RecipeController {
 
                     ingredientNames.add(s);
 
-                    if (!Ingredient.checkIfIngredientExists(ingredient.getName())) {
+                    if (!controller.getStorageController().checkIfIngredientExists(ingredient.getName())) {
                         allIngredients.add(ingredient);
                     } else {
-                        Ingredient.updateIngredient(ingredient.getName(), ingredient);
+                        controller.getStorageController().updateIngredient(ingredient.getName(), ingredient);
                     }
                 }
                 pcs.firePropertyChange("IngredientNames", null, ingredientNames);
@@ -208,6 +208,9 @@ public class RecipeController {
      * @param instructions List of instructions for recipe.
      */
     public void addRecipeToDatabase(String name, ArrayList<String> instructions) {
+        if (name == null || name.equalsIgnoreCase("")) {
+            return;
+        }
         Recipe recipeToAddToDatabase = new Recipe(name, recipeIngredient, instructions);
         databaseReference.child("Recipes").child(name).setValueAsync(recipeToAddToDatabase);
     }

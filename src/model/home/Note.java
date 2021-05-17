@@ -1,6 +1,7 @@
 package model.home;
 
 /**
+ * This class handle the notes that the user write in the system
  * @author Qassem Aburas
  * @version 1.0
  */
@@ -10,6 +11,14 @@ public class Note {
     private String description;
 
     public Note(){}
+
+    /**
+     * constructor the takes title and description and id as parameters
+     * when creating a note (an object of notes)
+     * @param title
+     * @param description
+     * @param id
+     */
     public Note(String title, String description, int id) {
         this.title = title;
         this.description = description;

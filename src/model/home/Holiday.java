@@ -3,6 +3,7 @@ package model.home;
 import java.util.Date;
 
 /**
+ * This class handles the holidays so the user can add the holiday with the specific date.
  * @author Qassem Aburas
  * @version 1.0
  */
@@ -13,8 +14,15 @@ public class Holiday {
     private int id;
 
     public Holiday(){
-
     }
+
+    /**
+     * constructor that take the name of the holiday and the date and id as parameters when
+     * the user adds a new holiday
+     * @param name the name of the holiday
+     * @param date the date of the holiday
+     * @param id for a specific holiday
+     */
     public Holiday(String name, Date date, int id) {
         this.name = name;
         this.date = date;
@@ -49,6 +57,5 @@ public class Holiday {
     public String toString() {
         return name;
     }
-
 
 }

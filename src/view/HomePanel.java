@@ -80,7 +80,7 @@ public class HomePanel extends JPanel implements ActionListener {
         centerPanel.setBorder(BorderFactory.createTitledBorder("Högtider"));
 
         holidaysJList = new JList<>(homeController.getHolidayList().toArray(new Holiday[0]));
-        holidaysJList.setPreferredSize(new Dimension(300, 600));
+        holidaysJList.setPreferredSize(new Dimension(200, 600));
         holidaysJList.setFont(new Font("Times New Roman", Font.BOLD, 30));
 
         listPane = new JScrollPane(holidaysJList);
@@ -94,7 +94,7 @@ public class HomePanel extends JPanel implements ActionListener {
         rightPanel = new JPanel(new BorderLayout());
         notifications = new JTextPane();
         rightPanel.setBorder(BorderFactory.createTitledBorder("Notifikationer"));
-        notifications.setPreferredSize(new Dimension(300, 600));
+        notifications.setPreferredSize(new Dimension(350, 500));
         notifications.setFont(new Font("Courier New", Font.PLAIN, 12));
         notifications.setEditable(false);
 
@@ -113,12 +113,12 @@ public class HomePanel extends JPanel implements ActionListener {
         southPanel.add(submit);
         add(southPanel, BorderLayout.SOUTH);
 
-        showSavedNotes = new JButton("Visa/ändra en anteckning");
+        showSavedNotes = new JButton("Visa/Ändra en anteckning");
         showSavedNotes.addActionListener(this);
         southPanel.add(showSavedNotes);
         add(southPanel, BorderLayout.SOUTH);
 
-        deleteNote = new JButton("ta bort en anteckning");
+        deleteNote = new JButton("Ta bort en anteckning");
         deleteNote.addActionListener(this);
         southPanel.add(deleteNote);
         add(southPanel, BorderLayout.SOUTH);
@@ -128,12 +128,12 @@ public class HomePanel extends JPanel implements ActionListener {
         southPanel.add(addNewHoliday);
         add(southPanel, BorderLayout.SOUTH);
 
-        deleteHoliday = new JButton("ta bort en högtid");
+        deleteHoliday = new JButton("Ta bort en högtid");
         deleteHoliday.addActionListener(this);
         southPanel.add(deleteHoliday);
         add(southPanel, BorderLayout.SOUTH);
 
-        showSavedHolidays = new JButton("visa/ändra högtid");
+        showSavedHolidays = new JButton("Visa/Ändra högtid");
         showSavedHolidays.addActionListener(this);
         southPanel.add(showSavedHolidays);
         add(southPanel, BorderLayout.SOUTH);
@@ -521,6 +521,5 @@ public class HomePanel extends JPanel implements ActionListener {
     public void setNotificationsJList(JList<Notifications> notificationsJList) {
         this.notificationsJList = notificationsJList;
     }
-
 
 }

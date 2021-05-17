@@ -1,7 +1,3 @@
-/**
- * @Author Qassem Aburas
- * @Version 1.1
- */
 package controller;
 
 import com.google.firebase.database.DataSnapshot;
@@ -11,19 +7,28 @@ import model.home.Holiday;
 import model.home.Note;
 import model.home.Notifications;
 import view.HomePanel;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller class for handling everything about the home page like
+ * (creating notes, creating holidays or showing all notifications of the system)
+ * @Author Qassem Aburas
+ * @Version 1.2
+ */
 public class HomeController {
     private Controller controller;
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private HomePanel homePanel;
 
     private List<Note> noteList = new ArrayList<>();
     private List<Holiday> holidayList = new ArrayList<>();
     private List<Notifications> notificationslist = new ArrayList<>();
 
+    /**
+     * constructor the takes a controller object as a parameter and
+     * gets the data from the database whenever the tab opens or the system starts.
+     * @param controller
+     */
     public HomeController(Controller controller) {
         this.controller = controller;
         getNotesFromDatabase();
@@ -51,7 +56,6 @@ public class HomeController {
         });
     }
 
-
     /**
      * reads the data (all the holidays) from the database where its stored
      */
@@ -64,6 +68,7 @@ public class HomeController {
                     getHolidayList().add(holiday);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
@@ -83,6 +88,7 @@ public class HomeController {
                     getNotificationsList().add(notifications);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println(databaseError.toString());
@@ -97,6 +103,8 @@ public class HomeController {
      */
 
     public void addNote(Note note) {
+        if (note == null)
+            return;
         noteList.add(note); // adds to list
         Controller.databaseReference.child("Notes").child(noteList.size() + "").setValueAsync(note); // adds to the database
         updateNoteViewer();
@@ -106,9 +114,7 @@ public class HomeController {
      * Updates the notes in the database and UI
      */
     public void updateNoteViewer() {
-        Note[] newVal = new Note[noteList.size()];
-        noteList.toArray(newVal);
-        homePanel.getNotesJList().setListData(newVal);
+        homePanel.getNotesJList().setListData( noteList.toArray(new Note[0]));
     }
 
     /**
@@ -117,6 +123,8 @@ public class HomeController {
      * @param holiday
      */
     public void addHoliday(Holiday holiday) {
+        if (holiday == null) // to avoid null data
+            return;
         holidayList.add(holiday); //add to the list
         Controller.databaseReference.child("Holidays").child(holidayList.size() + "").setValueAsync(holiday); //add to the database
         updateHolidayViewer();
@@ -126,9 +134,7 @@ public class HomeController {
      * Updates the holidays in the database and the list UI
      */
     public void updateHolidayViewer() {
-        Holiday[] newVal = new Holiday[holidayList.size()];
-        holidayList.toArray(newVal);
-        homePanel.getHolidaysJList().setListData(newVal);
+        homePanel.getHolidaysJList().setListData(holidayList.toArray(new Holiday[0]));
     }
 
     /**
@@ -137,6 +143,8 @@ public class HomeController {
      * @param notifications
      */
     public void addNotification(Notifications notifications) {
+        if (notifications == null)
+            return;
         notificationslist.add(notifications);// add to the list
         Controller.databaseReference.child("Notifications").child(notificationslist.size() + "").setValueAsync(notifications); //add to the database
         updateNotificationsViewer();
@@ -146,70 +154,8 @@ public class HomeController {
      * Updates the notifications in the database and UI
      */
     private void updateNotificationsViewer() {
-        Notifications[] newVal = new Notifications[notificationslist.size()];
-        notificationslist.toArray(newVal);
-        homePanel.getNotificationsJList().setListData(newVal);
+        homePanel.getNotificationsJList().setListData(notificationslist.toArray(new Notifications[0]));
     }
-
-    public void setHomePanel(HomePanel homePanel) {
-        this.homePanel = homePanel;
-    }
-
-    /**
-     * returns the main controller
-     *
-     * @return controller
-     */
-
-    public Controller getController() {
-        return controller;
-    }
-
-    /**
-     * sets a new main controller
-     *
-     * @param controller new controller
-     */
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
-
-    public PropertyChangeSupport getPropertyChangeSupport() {
-        return propertyChangeSupport;
-    }
-
-    public void setPropertyChangeSupport(PropertyChangeSupport propertyChangeSupport) {
-        this.propertyChangeSupport = propertyChangeSupport;
-    }
-
-    public HomePanel getHomePanel() {
-        return homePanel;
-    }
-
-    public List<Note> getNoteList() {
-        return noteList;
-    }
-
-    public void setNoteList(List<Note> noteList) {
-        this.noteList = noteList;
-    }
-
-    public List<Holiday> getHolidayList() {
-        return holidayList;
-    }
-
-    public void setHolidayList(List<Holiday> holidayList) {
-        this.holidayList = holidayList;
-    }
-
-    public List<Notifications> getNotificationsList() {
-        return notificationslist;
-    }
-
-    public void setNotificationsList(List<Notifications> notificationslist) {
-        this.notificationslist = notificationslist;
-    }
-
 
     /**
      * This method is to delete the note from the list and the database
@@ -244,6 +190,57 @@ public class HomeController {
         updateNotificationsViewer();// and then update the list
     }
 
+    public void setHomePanel(HomePanel homePanel) {
+        this.homePanel = homePanel;
+    }
+
+    /**
+     * returns the main controller
+     *
+     * @return controller
+     */
+
+    public Controller getController() {
+        return controller;
+    }
+
+    /**
+     * sets a new main controller
+     *
+     * @param controller new controller
+     */
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public HomePanel getHomePanel() {
+        return homePanel;
+    }
+
+    public List<Note> getNoteList() {
+        return noteList;
+    }
+
+    public void setNoteList(List<Note> noteList) {
+        this.noteList = noteList;
+    }
+
+    public List<Holiday> getHolidayList() {
+        return holidayList;
+    }
+
+    public void setHolidayList(List<Holiday> holidayList) {
+        this.holidayList = holidayList;
+    }
+
+    public List<Notifications> getNotificationsList() {
+        return notificationslist;
+    }
+
+    public void setNotificationsList(List<Notifications> notificationslist) {
+        this.notificationslist = notificationslist;
+    }
+
     public List<Notifications> getNotificationslist() {
         return notificationslist;
     }
@@ -251,4 +248,5 @@ public class HomeController {
     public void setNotificationslist(List<Notifications> notificationslist) {
         this.notificationslist = notificationslist;
     }
+
 }
