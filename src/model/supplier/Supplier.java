@@ -19,7 +19,7 @@ public class Supplier {
     private WeekDay dayOfDelivery;
 
     /**
-     * Empty constructor
+     * Default constructor
      */
     public Supplier(){}
 
