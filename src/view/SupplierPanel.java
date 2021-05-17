@@ -117,7 +117,7 @@ public class SupplierPanel extends JPanel {
     /**
      * A panel which is opened in a JOptionPane for new supplier input
      */
-    public void addSupplier(Supplier supplier) {
+    public int addSupplier(Supplier supplier) {
         JTextField supName = new JTextField(5);
         JTextField supPhone = new JTextField(5);
         JTextField supEmail = new JTextField(5);
@@ -161,9 +161,11 @@ public class SupplierPanel extends JPanel {
 
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Lägg till leverantör", JOptionPane.OK_CANCEL_OPTION);
+        System.out.println(result);
         if (result == JOptionPane.OK_OPTION) {
             if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supEmail.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supZip.getText().isBlank()) || (supCountry.getText().isBlank())) {
                 JOptionPane.showMessageDialog(null, "Info saknas");
+                return 3;
             } else {
                 try {
                     String name = (supName.getText().toUpperCase());
@@ -179,6 +181,7 @@ public class SupplierPanel extends JPanel {
                 }
             }
         }
+        return result;
     }
 
     public SupplierController getSupController() {
@@ -303,8 +306,6 @@ public class SupplierPanel extends JPanel {
                 }
             }
         }
-
-
     }
 
 
@@ -356,8 +357,10 @@ public class SupplierPanel extends JPanel {
             if (e.getSource() == updateSupplier) {
                 if (supplierJList.getSelectedValue() != null) {
                         Supplier s = supplierJList.getSelectedValue();
-                        supController.removeSupplier(s);
-                        addSupplier(s);
+                        int updateSuccess = addSupplier(s);
+                        if (updateSuccess == 0) {
+                            supController.removeSupplier(s);
+                        }
                 } else {
                     JOptionPane.showMessageDialog(null, "Vänligen välj en leverantör från listan");
                 }
