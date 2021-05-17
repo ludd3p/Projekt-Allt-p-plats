@@ -161,7 +161,7 @@ public class SupplierPanel extends JPanel {
 
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Lägg till leverantör", JOptionPane.OK_CANCEL_OPTION);
-        System.out.println(result);
+
         if (result == JOptionPane.OK_OPTION) {
             if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supEmail.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supZip.getText().isBlank()) || (supCountry.getText().isBlank())) {
                 JOptionPane.showMessageDialog(null, "Info saknas");
@@ -182,6 +182,26 @@ public class SupplierPanel extends JPanel {
             }
         }
         return result;
+    }
+
+    /**
+     * Update shown supplier info
+     * @param evt
+     */
+    private void listValueChanged(ListSelectionEvent evt) {
+        if (!supplierJList.getValueIsAdjusting()) {
+            if (supplierJList.getSelectedIndex() >= 0) {
+                Supplier tempSup = supplierJList.getSelectedValue();
+                nameLabel.setText(tempSup.getName() + " kontaktuppgifter:");
+                phoneLabel.setText("Telefon: " + tempSup.getPhonenumber());
+                emailLabel.setText("Email: " + tempSup.getEmail());
+                addressLabel.setText("Adress: " + tempSup.getAddress());
+                cityLabel.setText("Stad: " + tempSup.getCity());
+                zipLabel.setText("Zip-kod: " + tempSup.getZip());
+                countryLabel.setText("Land: " + tempSup.getCountrty());
+                dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name());
+            }
+        }
     }
 
     public SupplierController getSupController() {
@@ -224,7 +244,6 @@ public class SupplierPanel extends JPanel {
         this.supplierJList.setListData(supplierJList);
     }
 
-
     public JButton getAddSupplier() {
         return addSupplier;
     }
@@ -258,58 +277,6 @@ public class SupplierPanel extends JPanel {
     }
 
     /**
-     * A panel which is opened in a JOptionPane to update current supplier
-     */
-    public void updateSupplier() {
-        JTextField supName = new JTextField(supplierJList.getSelectedValue().getName(), 5);
-        JTextField supPhone = new JTextField(supplierJList.getSelectedValue().getPhonenumber(), 5);
-        JTextField supEmail = new JTextField(supplierJList.getSelectedValue().getEmail(), 5);
-        JTextField supAddress = new JTextField(supplierJList.getSelectedValue().getAddress(), 5);
-        JTextField supCity = new JTextField(supplierJList.getSelectedValue().getCity(), 5);
-        JTextField supCountry = new JTextField(supplierJList.getSelectedValue().getCountrty(), 5);
-        cmbWeekDays = new JComboBox(supController.getWeekDays());
-
-        JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(320, 133));
-        panel.setLayout(new GridLayout(7, 2, 2, 2));
-        panel.add(new JLabel("Leverantör: "));
-        panel.add(supName);
-        panel.add(new JLabel("Telefonnummer: "));
-        panel.add(supPhone);
-        panel.add(new JLabel("Emailadress: "));
-        panel.add(supEmail);
-        panel.add(new JLabel("Adress: "));
-        panel.add(supAddress);
-        panel.add(new JLabel("Stad: "));
-        panel.add(supCity);
-        panel.add(new JLabel("Land: "));
-        panel.add(supCountry);
-        panel.add(new JLabel("Leveransdag: "));
-        panel.add(cmbWeekDays);
-
-        int result = JOptionPane.showConfirmDialog(null, panel,
-                "Uppdatera leverantör", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            if ((supName.getText().isBlank()) || (supPhone.getText().isBlank()) || (supAddress.getText().isBlank()) || (supCity.getText().isBlank()) || (supCountry.getText().isBlank())) {
-                JOptionPane.showMessageDialog(null, "Info saknas");
-            } else {
-                try {
-                    String name = (supName.getText().toUpperCase());
-                    String phone = supPhone.getText();
-                    String email = supEmail.getText();
-                    String address = supAddress.getText();
-                    String city = supCity.getText();
-                    String country = supCountry.getText();
-                    //controller.updateCurrentSupplier(name,phone,email,address,city,country); // När det skall skickas till controller.
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-
-    /**
      * Add listeners to Swing componenets which needs it
      */
     private void addListeners() {
@@ -317,22 +284,6 @@ public class SupplierPanel extends JPanel {
         addSupplier.addActionListener(listener);
         removeSupplier.addActionListener(listener);
         updateSupplier.addActionListener(listener);
-    }
-
-    private void listValueChanged(ListSelectionEvent evt) {
-        if (!supplierJList.getValueIsAdjusting()) {
-            if (supplierJList.getSelectedIndex() >= 0) {
-                Supplier tempSup = supplierJList.getSelectedValue();
-                nameLabel.setText(tempSup.getName() + " kontaktuppgifter:");
-                phoneLabel.setText("Telefon: " + tempSup.getPhonenumber());
-                emailLabel.setText("Email: " + tempSup.getEmail());
-                addressLabel.setText("Adress: " + tempSup.getAddress());
-                cityLabel.setText("Stad: " + tempSup.getCity());
-                zipLabel.setText("Zip-kod: " + tempSup.getZip());
-                countryLabel.setText("Land: " + tempSup.getCountrty());
-                dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name());
-            }
-        }
     }
 
     /**
