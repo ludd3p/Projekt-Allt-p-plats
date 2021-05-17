@@ -152,7 +152,7 @@ public class SupplierPanel extends JPanel {
         panel.add(supAddress);
         panel.add(new JLabel("Stad: "));
         panel.add(supCity);
-        panel.add(new JLabel("Zip-kod: "));
+        panel.add(new JLabel("Postkod: "));
         panel.add(supZip);
         panel.add(new JLabel("Land: "));
         panel.add(supCountry);
