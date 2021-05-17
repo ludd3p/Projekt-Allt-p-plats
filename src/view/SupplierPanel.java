@@ -30,7 +30,7 @@ public class SupplierPanel extends JPanel {
     private JPanel supplierInfoArea;
     private JButton addSupplier, removeSupplier, updateSupplier;
     private JComboBox cmbWeekDays;
-    private JLabel nameLabel, phoneLabel, emailLabel, addressLabel, cityLabel, countryLabel, dodLabel;
+    private JLabel nameLabel, phoneLabel, emailLabel, addressLabel, cityLabel, zipLabel, countryLabel, dodLabel;
 
     /**
      * Constructor to create supplier panel GUI
@@ -85,11 +85,14 @@ public class SupplierPanel extends JPanel {
         cityLabel = new JLabel("");
         cityLabel.setBounds(20, 220, 300, 40);
         cityLabel.setFont(font);
+        zipLabel = new JLabel("");
+        zipLabel.setBounds(20, 270, 300,40);
+        zipLabel.setFont(font);
         countryLabel = new JLabel("");
-        countryLabel.setBounds(20, 270, 300, 40);
+        countryLabel.setBounds(20, 320, 300, 40);
         countryLabel.setFont(font);
         dodLabel = new JLabel("");
-        dodLabel.setBounds(20, 320, 300, 40);
+        dodLabel.setBounds(20, 370, 300, 40);
         dodLabel.setFont(font);
         supplierInfoArea.add(nameLabel);
         supplierInfoArea.add(phoneLabel);
@@ -148,7 +151,7 @@ public class SupplierPanel extends JPanel {
         panel.add(supAddress);
         panel.add(new JLabel("Stad: "));
         panel.add(supCity);
-        panel.add(new JLabel("Zip kod: "));
+        panel.add(new JLabel("Zip-kod: "));
         panel.add(supZip);
         panel.add(new JLabel("Land: "));
         panel.add(supCountry);
