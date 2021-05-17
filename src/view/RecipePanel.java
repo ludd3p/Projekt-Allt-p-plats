@@ -330,11 +330,13 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             westNorth.setBorder(new TitledBorder(""));
 
             ingredientsMenu = new JComboBox(ingredients.toArray());
+            ingredientsMenu.setPreferredSize(new Dimension(100, 25));
             ingredientsMenu.addActionListener(this::actionPerformed);
             westNorth.add(ingredientsMenu);
 
             amountModel = new SpinnerNumberModel(0, 0, 10000, 0.1);
             amount = new JSpinner(amountModel);
+            amount.setPreferredSize(new Dimension(50, 25));
             westNorth.add(amount);
 
             unit = new JLabel("G");

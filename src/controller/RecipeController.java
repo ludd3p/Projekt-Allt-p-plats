@@ -17,7 +17,7 @@ import java.util.Set;
  * Controller class for handling everything related to recipes
  *
  * @Author Ludvig Wedin Pettersson
- * @Version 1.1
+ * @Version 2.0
  */
 public class RecipeController {
     private DatabaseReference databaseReference;
