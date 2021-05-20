@@ -148,6 +148,7 @@ public class HomeController {
         notificationslist.add(notifications);// add to the list
         Controller.databaseReference.child("Notifications").child(notificationslist.size() + "").setValueAsync(notifications); //add to the database
         updateNotificationsViewer();
+
     }
 
     /**

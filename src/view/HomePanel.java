@@ -14,23 +14,18 @@ import model.home.Note;
 import model.home.Notifications;
 import org.jdesktop.swingx.JXDatePicker;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Date;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class HomePanel extends JPanel implements ActionListener {
     private JPanel leftPanel;
     private JPanel rightPanel;
     private JPanel centerPanel;
 
-    private JTextPane notifications;
     private JList<Note> notesJList;
     private JList<Holiday> holidaysJList;
     private JList<Notifications> notificationsJList;
@@ -42,6 +37,8 @@ public class HomePanel extends JPanel implements ActionListener {
     private JButton deleteHoliday;
     private JButton showSavedHolidays;
     private HomeController homeController;
+    private NewHolidayJFrame currentHJ;
+    private NewNoteJFrame currentNJ;
 
 
     public HomePanel(HomeController homeController) {
@@ -65,8 +62,40 @@ public class HomePanel extends JPanel implements ActionListener {
         leftPanel.setBorder(BorderFactory.createTitledBorder("Anteckningar"));
 
         notesJList = new JList<>(homeController.getNoteList().toArray(new Note[0]));
-        notesJList.setPreferredSize(new Dimension(300, 600));
+        notesJList.setPreferredSize(new Dimension(200, 600));
         notesJList.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        notesJList.addMouseListener(new MouseListener() {
+            int index = -1;
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (currentNJ != null)
+                    return;
+                if (notesJList.getSelectedIndex() == index) {
+                    new NewNoteJFrame(notesJList.getSelectedValue());
+                }
+                index = notesJList.getSelectedIndex();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
         listPane = new JScrollPane(notesJList);
         listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -82,6 +111,39 @@ public class HomePanel extends JPanel implements ActionListener {
         holidaysJList = new JList<>(homeController.getHolidayList().toArray(new Holiday[0]));
         holidaysJList.setPreferredSize(new Dimension(200, 600));
         holidaysJList.setFont(new Font("Times New Roman", Font.BOLD, 30));
+        holidaysJList.addMouseListener(new MouseListener() {
+            int index = -1;
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (currentHJ != null)
+                    return;
+                if (holidaysJList.getSelectedIndex() == index) {
+                    new NewHolidayJFrame(holidaysJList.getSelectedValue());
+                }
+                index = holidaysJList.getSelectedIndex();
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
         listPane = new JScrollPane(holidaysJList);
         listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -92,13 +154,12 @@ public class HomePanel extends JPanel implements ActionListener {
 
         //right panel
         rightPanel = new JPanel(new BorderLayout());
-        notifications = new JTextPane();
+        notificationsJList = new JList<>();
         rightPanel.setBorder(BorderFactory.createTitledBorder("Notifikationer"));
-        notifications.setPreferredSize(new Dimension(350, 500));
-        notifications.setFont(new Font("Courier New", Font.PLAIN, 12));
-        notifications.setEditable(false);
+        notificationsJList.setPreferredSize(new Dimension(200, 500));
+        notificationsJList.setFont(new Font("Courier New", Font.PLAIN, 12));
 
-        listPane = new JScrollPane(notifications);
+        listPane = new JScrollPane(notificationsJList);
         listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
@@ -113,14 +174,14 @@ public class HomePanel extends JPanel implements ActionListener {
         southPanel.add(submit);
         add(southPanel, BorderLayout.SOUTH);
 
-        showSavedNotes = new JButton("Visa/Ändra en anteckning");
-        showSavedNotes.addActionListener(this);
-        southPanel.add(showSavedNotes);
+//        showSavedNotes = new JButton("Visa/Ändra en anteckning");
+//        showSavedNotes.addActionListener(this);
+//        southPanel.add(showSavedNotes);
         add(southPanel, BorderLayout.SOUTH);
 
-        deleteNote = new JButton("Ta bort en anteckning");
-        deleteNote.addActionListener(this);
-        southPanel.add(deleteNote);
+//        deleteNote = new JButton("Ta bort en anteckning");
+//        deleteNote.addActionListener(this);
+//        southPanel.add(deleteNote);
         add(southPanel, BorderLayout.SOUTH);
 
         addNewHoliday = new JButton("Lägg till en högtid");
@@ -128,14 +189,14 @@ public class HomePanel extends JPanel implements ActionListener {
         southPanel.add(addNewHoliday);
         add(southPanel, BorderLayout.SOUTH);
 
-        deleteHoliday = new JButton("Ta bort en högtid");
-        deleteHoliday.addActionListener(this);
-        southPanel.add(deleteHoliday);
+//        deleteHoliday = new JButton("Ta bort en högtid");
+//        deleteHoliday.addActionListener(this);
+//        southPanel.add(deleteHoliday);
         add(southPanel, BorderLayout.SOUTH);
-
-        showSavedHolidays = new JButton("Visa/Ändra högtid");
-        showSavedHolidays.addActionListener(this);
-        southPanel.add(showSavedHolidays);
+//
+//        showSavedHolidays = new JButton("Visa/Ändra högtid");
+//        showSavedHolidays.addActionListener(this);
+//        southPanel.add(showSavedHolidays);
         add(southPanel, BorderLayout.SOUTH);
 
     }
@@ -197,6 +258,7 @@ public class HomePanel extends JPanel implements ActionListener {
 
     class NewNoteJFrame {
         public NewNoteJFrame() {
+            currentNJ = this;
             JFrame noteFrame = new JFrame();
             JPanel panel = new JPanel();
 
@@ -235,6 +297,7 @@ public class HomePanel extends JPanel implements ActionListener {
                 }
                 Note noteO = new Note(title.getText(), note.getText(), homeController.getNoteList().size() + 1);
                 homeController.addNote(noteO);
+                currentNJ = null;
                 noteFrame.setVisible(false);
             });
             controllArea.add(title);
@@ -248,6 +311,7 @@ public class HomePanel extends JPanel implements ActionListener {
         }
 
         public NewNoteJFrame(Note noteToShow) {
+            currentNJ = this;
             JFrame noteFrame = new JFrame();
             JPanel panel = new JPanel();
 
@@ -269,12 +333,13 @@ public class HomePanel extends JPanel implements ActionListener {
             controllArea.setBorder(new TitledBorder("Control panel"));
 
             JTextField title = new JTextField(noteToShow.getTitle());
-            title.setPreferredSize(new Dimension(340, 80));
+            title.setPreferredSize(new Dimension(210, 60));
             title.setFont(new Font("Arial", Font.BOLD, 20));
             title.setBorder(new TitledBorder("Titel"));
+            title.setBackground(null);
 
             JButton button = new JButton("Spara");
-            button.setPreferredSize(new Dimension(120, 80));
+            button.setPreferredSize(new Dimension(120, 60));
             button.addActionListener(e -> {
                 if (note.getText() == null || note.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Du måste skriva något i anteckningar!", "Error", JOptionPane.PLAIN_MESSAGE);
@@ -284,13 +349,29 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Du måste skriva en title till den anteckning !!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
+                currentNJ = null;
                 homeController.getNoteList().remove(noteToShow);
-                Note noteO = new Note(title.getText(), note.getText(), homeController.getNoteList().size() + 1);
-                homeController.addNote(noteO);
+                noteFrame.setVisible(false);
+            });
+            JButton remove = new JButton("Ta bort");
+            remove.setPreferredSize(new Dimension(120, 60));
+            remove.addActionListener(e -> {
+                if (note.getText() == null || note.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Du måste skriva något i anteckningar!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                if (title.getText() == null || title.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Du måste skriva en title till den anteckning !!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                currentNJ = null;
+                homeController.getNoteList().remove(noteToShow);
+                homeController.updateNoteViewer();
                 noteFrame.setVisible(false);
             });
             controllArea.add(title);
             controllArea.add(button);
+            controllArea.add(remove);
             panel.add(noteArea, BorderLayout.NORTH);
             panel.add(controllArea, BorderLayout.SOUTH);
 
@@ -303,6 +384,7 @@ public class HomePanel extends JPanel implements ActionListener {
 
     class NewHolidayJFrame {
         public NewHolidayJFrame() {
+            currentHJ = this;
             JFrame HolidayFrame = new JFrame();
             JPanel panel = new JPanel();
 
@@ -337,7 +419,7 @@ public class HomePanel extends JPanel implements ActionListener {
                     return;
                 }
                 Holiday title1 = new Holiday(title.getText(), picker.getDate(), homeController.getHolidayList().size() + 1);
-
+                currentHJ = null;
                 homeController.addHoliday(title1);
                 HolidayFrame.setVisible(false);
             });
@@ -353,20 +435,21 @@ public class HomePanel extends JPanel implements ActionListener {
 
 
         public NewHolidayJFrame(Holiday showHoliday) {
+            currentHJ = this;
             JFrame titleFrame = new JFrame();
             JPanel panel = new JPanel();
 
             titleFrame.setTitle("Ändra | Visa högtiden: " + showHoliday.getName());
 
-            titleFrame.setSize(new Dimension(300, 200));
+            titleFrame.setSize(new Dimension(400, 200));
             panel.setLayout(new BorderLayout(10, 10));
 
             JPanel titleArea = new JPanel();
             titleArea.setBorder(new TitledBorder("Högtider"));
             JTextArea title = new JTextArea(showHoliday.getName());
-            title.setPreferredSize(new Dimension(287, 65));
+            title.setPreferredSize(new Dimension(300, 30));
             title.setEditable(true);
-            title.setFont(new Font("Arial", Font.BOLD, 15));
+            title.setFont(new Font("Arial", Font.BOLD, 25));
 
             titleArea.add(title);
 
@@ -388,10 +471,24 @@ public class HomePanel extends JPanel implements ActionListener {
                 homeController.getHolidayList().remove(showHoliday);
                 Holiday title1 = new Holiday(title.getText(), datePicker.getDate(), homeController.getHolidayList().size() + 1);
                 homeController.addHoliday(title1);
+                currentHJ = null;
+                titleFrame.setVisible(false);
+            });
+            JButton remove = new JButton("Ta bort");
+            remove.setPreferredSize(new Dimension(90, 35));
+            remove.addActionListener(e -> {
+                if (title.getText() == null || title.getText().equals("") || datePicker.getDate() == null) {
+                    JOptionPane.showMessageDialog(null, "Högtiden måste ha ett namn!", "Error", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                homeController.getHolidayList().remove(showHoliday);
+                homeController.updateHolidayViewer();
+                currentHJ = null;
                 titleFrame.setVisible(false);
             });
             controllArea.add(datePicker);
             controllArea.add(button);
+            controllArea.add(remove);
             panel.add(titleArea, BorderLayout.NORTH);
             panel.add(controllArea, BorderLayout.SOUTH);
 
@@ -426,13 +523,6 @@ public class HomePanel extends JPanel implements ActionListener {
         this.centerPanel = centerPanel;
     }
 
-    public JTextPane getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(JTextPane notifications) {
-        this.notifications = notifications;
-    }
 
     public JList<Note> getNotesJList() {
         return notesJList;

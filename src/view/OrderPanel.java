@@ -97,7 +97,7 @@ public class OrderPanel extends JPanel {
         JPanel orderControlPanel = new JPanel(null);
         orderControlPanel.setBounds(25, 30, 350, 270);
 
-        orderControlPanel.setBorder(new TitledBorder("Order control"));
+        orderControlPanel.setBorder(new TitledBorder("Order kontroll panel"));
         orderControlPanel.setBackground(Color.white);
 
         this.showOrder = new JButton("Visa order");
@@ -126,7 +126,7 @@ public class OrderPanel extends JPanel {
         });
 
         this.remove = new JButton("Ta bort");
-        this.remove.setToolTipText("Removes an order from history");
+        this.remove.setToolTipText("Rensar en order helt.");
         this.remove.setBounds(25, 190, 300, 65);
         this.remove.addActionListener(l -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
@@ -143,7 +143,7 @@ public class OrderPanel extends JPanel {
 
         JPanel addItemToOrderPanel = new JPanel(null);
         addItemToOrderPanel.setBounds(25, 300, 350, 300);
-        addItemToOrderPanel.setBorder(new TitledBorder("Order Item Control"));
+        addItemToOrderPanel.setBorder(new TitledBorder("Ingredients kontrollpanel"));
         addItemToOrderPanel.setBackground(null);
 
         JLabel ingredientLabel = new JLabel("Ingredient");
@@ -153,7 +153,7 @@ public class OrderPanel extends JPanel {
         ingredientToAdd.setBounds(10, 40, 250, 30);
         ingredientToAdd.setBackground(null);
 
-        JLabel quantityLabel = new JLabel("Quantity");
+        JLabel quantityLabel = new JLabel("Kvantitet");
         quantityLabel.setBounds(290, 20, 250, 20);
         quantitySelector = new JSpinner();
         quantitySelector.setBounds(290, 40, 50, 30);
@@ -167,7 +167,7 @@ public class OrderPanel extends JPanel {
         addOrderItem.setBounds(10, 160, 150, 50);
         addOrderItem.addActionListener(e -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
-                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först.", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
             Ingredient ingredient = getIngredientFromString((String) ingredientToAdd.getSelectedItem());

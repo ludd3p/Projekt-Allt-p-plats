@@ -150,7 +150,6 @@ public class OrderController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    System.out.println(d);
                     SupplierOrder newOrder = d.getValue(SupplierOrder.class);
 
                     SupplierOrder supplierOrder = getSupplierOrder(newOrder.getSupplier().getName());

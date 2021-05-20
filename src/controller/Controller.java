@@ -43,8 +43,8 @@ public class Controller {
             }
         }.start();
         Thread.sleep(5000);
-        System.out.println("Data hämtad!");
         mainView = new MainView(this);
+
     }
 
 

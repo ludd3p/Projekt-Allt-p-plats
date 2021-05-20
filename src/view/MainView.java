@@ -1,6 +1,7 @@
 package view;
 
 import controller.Controller;
+import model.home.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +34,7 @@ public class MainView extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1000, 600));
         setResizable(false);
-        setBounds(400, 300, 500, 300);
+        setBounds(400, 300, 800, 500);
         recipePanel = new RecipePanel(controller.getRecipeController());
         storagePanel = new StoragePanel(controller.getStorageController());
         supplierPanel = new SupplierPanel(controller.getSupplierController());
@@ -41,13 +42,14 @@ public class MainView extends JFrame {
 
 
         tp = new JTabbedPane();
-        tp.add("Startsida", new HomePanel(controller.getHomeController()));
+        tp.add("Startsida", homePanel);
         tp.add("Recept", recipePanel);
         tp.add("Lager", storagePanel);
         tp.add("Order historik", new OrderPanel(controller.getOrderController()));
         tp.add("Leverantörer", supplierPanel);
 
         add(tp);
+
         pack();
         setVisible(true);
     }
