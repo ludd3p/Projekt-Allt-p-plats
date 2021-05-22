@@ -19,7 +19,6 @@ import java.util.List;
 public class HomeController {
     private Controller controller;
     private HomePanel homePanel;
-
     private List<Note> noteList = new ArrayList<>();
     private List<Holiday> holidayList = new ArrayList<>();
     private List<Notifications> notificationslist = new ArrayList<>();
