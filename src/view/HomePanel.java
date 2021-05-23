@@ -5,6 +5,7 @@ import model.home.Holiday;
 import model.home.Note;
 import model.home.Notifications;
 import org.jdesktop.swingx.JXDatePicker;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -274,8 +275,8 @@ public class HomePanel extends JPanel implements ActionListener {
 
             noteArea.add(note);
 
-            JPanel controllArea = new JPanel();
-            controllArea.setBorder(new TitledBorder("Control panel"));
+            JPanel controlArea = new JPanel();
+            controlArea.setBorder(new TitledBorder("Control panel"));
 
             JTextField title = new JTextField();
             title.setPreferredSize(new Dimension(340, 80));
@@ -298,10 +299,10 @@ public class HomePanel extends JPanel implements ActionListener {
                 currentNJ = null;
                 noteFrame.setVisible(false);
             });
-            controllArea.add(title);
-            controllArea.add(button);
+            controlArea.add(title);
+            controlArea.add(button);
             panel.add(noteArea, BorderLayout.NORTH);
-            panel.add(controllArea, BorderLayout.SOUTH);
+            panel.add(controlArea, BorderLayout.SOUTH);
 
             noteFrame.setContentPane(panel);
             noteFrame.setResizable(false);
@@ -327,8 +328,8 @@ public class HomePanel extends JPanel implements ActionListener {
 
             noteArea.add(note);
 
-            JPanel controllArea = new JPanel();
-            controllArea.setBorder(new TitledBorder("Control panel"));
+            JPanel controlArea = new JPanel();
+            controlArea.setBorder(new TitledBorder("Control panel"));
 
             JTextField title = new JTextField(noteToShow.getTitle());
             title.setPreferredSize(new Dimension(210, 60));
@@ -371,11 +372,11 @@ public class HomePanel extends JPanel implements ActionListener {
                 homeController.updateNoteViewer();
                 noteFrame.setVisible(false);
             });
-            controllArea.add(title);
-            controllArea.add(button);
-            controllArea.add(remove);
+            controlArea.add(title);
+            controlArea.add(button);
+            controlArea.add(remove);
             panel.add(noteArea, BorderLayout.NORTH);
-            panel.add(controllArea, BorderLayout.SOUTH);
+            panel.add(controlArea, BorderLayout.SOUTH);
 
             noteFrame.setContentPane(panel);
             noteFrame.setResizable(false);
@@ -390,7 +391,6 @@ public class HomePanel extends JPanel implements ActionListener {
             JPanel panel = new JPanel();
 
             HolidayFrame.setTitle("Ny högtid");
-
             HolidayFrame.setSize(new Dimension(300, 200));
             panel.setLayout(new BorderLayout(10, 10));
 
@@ -400,17 +400,14 @@ public class HomePanel extends JPanel implements ActionListener {
             title.setPreferredSize(new Dimension(287, 65));
             title.setEditable(true);
             title.setFont(new Font("Times New Roman", Font.BOLD, 20));
-
             HolidayArea.add(title);
-
-            JPanel controllArea = new JPanel();
-            controllArea.setBorder(new TitledBorder("Välj datum"));
+            JPanel controlArea = new JPanel();
+            controlArea.setBorder(new TitledBorder("Välj datum"));
 
             JXDatePicker picker = new JXDatePicker();
             picker.setDate(Calendar.getInstance().getTime());
             picker.setPreferredSize(new Dimension(120, 35));
             picker.setFormats(new SimpleDateFormat("dd.MM.yyyy"));
-
 
             JButton button = new JButton("Spara");
             button.setPreferredSize(new Dimension(90, 35));
@@ -424,16 +421,15 @@ public class HomePanel extends JPanel implements ActionListener {
                 homeController.addHoliday(title1);
                 HolidayFrame.setVisible(false);
             });
-            controllArea.add(picker);
-            controllArea.add(button);
+            controlArea.add(picker);
+            controlArea.add(button);
             panel.add(HolidayArea, BorderLayout.NORTH);
-            panel.add(controllArea, BorderLayout.SOUTH);
+            panel.add(controlArea, BorderLayout.SOUTH);
 
             HolidayFrame.setContentPane(panel);
             HolidayFrame.setResizable(false);
             HolidayFrame.setVisible(true);
         }
-
 
         public NewHolidayJFrame(Holiday showHoliday) {
             currentHJ = this;
@@ -454,8 +450,8 @@ public class HomePanel extends JPanel implements ActionListener {
 
             titleArea.add(title);
 
-            JPanel controllArea = new JPanel();
-            controllArea.setBorder(new TitledBorder("Control panel"));
+            JPanel controlArea = new JPanel();
+            controlArea.setBorder(new TitledBorder("Control panel"));
 
             JXDatePicker datePicker = new JXDatePicker(showHoliday.getDate());
             datePicker.setPreferredSize(new Dimension(165, 55));
@@ -492,11 +488,11 @@ public class HomePanel extends JPanel implements ActionListener {
                 currentHJ = null;
                 titleFrame.setVisible(false);
             });
-            controllArea.add(datePicker);
-            controllArea.add(button);
-            controllArea.add(remove);
+            controlArea.add(datePicker);
+            controlArea.add(button);
+            controlArea.add(remove);
             panel.add(titleArea, BorderLayout.NORTH);
-            panel.add(controllArea, BorderLayout.SOUTH);
+            panel.add(controlArea, BorderLayout.SOUTH);
 
             titleFrame.setContentPane(panel);
             titleFrame.setResizable(false);
