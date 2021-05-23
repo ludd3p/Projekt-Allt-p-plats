@@ -216,7 +216,7 @@ public class StoragePanel extends JPanel {
      * Inner-class used to create a window for inserting and changing products.
      */
     private class ProductWindow extends JFrame {
-        private JPanel pnlProductWindowMainPanel;
+        private JPanel pnlProductWindowMain;
         private JPanel pnlProductWindowCenter;
         private JPanel pnlProductWindowSouth;
 
@@ -282,14 +282,14 @@ public class StoragePanel extends JPanel {
          * Configures the frame and adds the main panel to it. Also calls methods to add components to the main panel.
          */
         private void setupProductWindow() {
-            pnlProductWindowMainPanel = new JPanel();
-            pnlProductWindowMainPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pnlProductWindowMainPanel.setLayout(new BorderLayout());
+            pnlProductWindowMain = new JPanel();
+            pnlProductWindowMain.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+            pnlProductWindowMain.setLayout(new BorderLayout());
 
             setupProductWindowCenterPanel();
             setupProductWindowSouthPanel();
 
-            setContentPane(pnlProductWindowMainPanel);
+            setContentPane(pnlProductWindowMain);
             setResizable(false);
             pack();
             setLocationRelativeTo(productList);
@@ -348,7 +348,7 @@ public class StoragePanel extends JPanel {
             cbxSupplier.setPreferredSize(new Dimension(100, txfProductName.getHeight()));
             pnlProductWindowCenter.add(cbxSupplier);
 
-            pnlProductWindowMainPanel.add(pnlProductWindowCenter, BorderLayout.CENTER);
+            pnlProductWindowMain.add(pnlProductWindowCenter, BorderLayout.CENTER);
         }
 
         /**
@@ -364,14 +364,13 @@ public class StoragePanel extends JPanel {
                     boolean proceed = inputErrorCheck();
                     if (proceed) {
                         if (addOrChange) {
-                            storageController.addIngredientToDatabase(
-                                    txfProductName.getText(),
-                                    Double.parseDouble(txfCost.getText()),
-                                    Double.parseDouble(txfCurrentAmount.getText()),
-                                    Double.parseDouble(txfMinAmount.getText()),
-                                    Double.parseDouble(txfMaxAmount.getText()),
-                                    (String) cbxUnit.getSelectedItem(),
-                                    (String) cbxSupplier.getSelectedItem());
+                            storageController.addIngredientToDatabase(  txfProductName.getText(),
+                                                                        Double.parseDouble(txfCost.getText()),
+                                                                        Double.parseDouble(txfCurrentAmount.getText()),
+                                                                        Double.parseDouble(txfMinAmount.getText()),
+                                                                        Double.parseDouble(txfMaxAmount.getText()),
+                                                                        (String) cbxUnit.getSelectedItem(),
+                                                                        (String) cbxSupplier.getSelectedItem());
                         } else {
                             String selected = productList.getSelectedValue().toString();
                             String oldName = selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1);
@@ -412,7 +411,7 @@ public class StoragePanel extends JPanel {
             btnCancel.addActionListener(listener);
             pnlProductWindowSouth.add(btnCancel);
 
-            pnlProductWindowMainPanel.add(pnlProductWindowSouth, BorderLayout.SOUTH);
+            pnlProductWindowMain.add(pnlProductWindowSouth, BorderLayout.SOUTH);
         }
 
         /**
@@ -426,12 +425,12 @@ public class StoragePanel extends JPanel {
                     txfProductName.getText().toLowerCase().contains("Nuvarande mängd:".toLowerCase()) ||
                     txfProductName.getText().toLowerCase().contains("Minsta mängd:".toLowerCase()) ||
                     txfProductName.getText().toLowerCase().contains("Rekommenderad mängd:".toLowerCase()) ||
-                    txfProductName.getText().toLowerCase().contains("<!---")) {
+                    txfProductName.getText().toLowerCase().contains("</html>")) {
                 JOptionPane.showMessageDialog(null, "Otillåtet produktnamn. \nVälj ett annat produktnamn", "Otillåtet produktnamn", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             if(txfProductName.getText().equals("")){
-                JOptionPane.showMessageDialog(null, "Produktnamn saknas. \nFyll i ett produktnamn till höger om \"Produkt:\"", "Produktnamn", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Produktnamn saknas. \nFyll i ett produktnamn till höger om \"Produktnamn:\"", "Produktnamn", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             else {
@@ -443,15 +442,15 @@ public class StoragePanel extends JPanel {
                 }
             }
             if(txfCost.getText().equals("")){
-                JOptionPane.showMessageDialog(null, "Kostnad saknas. \nFyll i produktens kostnad per enhet till höger om \"Kostnad:\".", "Kostnad saknas.", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Kostnad per enhet saknas. \nFyll i produktens kostnad per enhet till höger om \"Kostnad per enhet:\".", "Kostnad saknas.", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             else{
                 try{
                     Double.parseDouble(txfCost.getText());
                 }catch (NumberFormatException nfe){
-                    JOptionPane.showMessageDialog(null, "Kostnad kan endast vara ett numeriskt värde.",
-                            "Kostnad", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Kostnad per enhet kan endast vara ett numeriskt värde.",
+                            "Kostnad per enhet", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
@@ -495,6 +494,11 @@ public class StoragePanel extends JPanel {
                             "Rekommenderad mängd", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
+            }
+            if(cbxSupplier.getSelectedItem() == null){
+                JOptionPane.showMessageDialog(null, "Leverantör saknas. Produkten måste ha en leverantör.",
+                        "Leverantör", JOptionPane.ERROR_MESSAGE);
+                return false;
             }
             return true;
         }

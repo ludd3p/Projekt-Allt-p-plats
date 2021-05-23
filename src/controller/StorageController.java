@@ -14,8 +14,8 @@ import java.util.Set;
 public class StorageController {
     private Controller controller;
 
-    public  Set<Ingredient> allIngredients = new HashSet<>();
-    public StoragePanel panel;
+    private  Set<Ingredient> allIngredients = new HashSet<>();
+    private StoragePanel panel;
 
     public StorageController(Controller controller) {
         this.controller = controller;
@@ -111,12 +111,12 @@ public class StorageController {
      * Updates the current quantity of an ingredient in both the database and the ingredient list.
      *
      * @param ingredientToUpdate    to update the current quantity of.
-     * @param quantityToAdd
+     * @param quantityToChangeBy    value to change the current amount of the ingredient by.
      */
-    public void updateQuantityOfIngredient(Ingredient ingredientToUpdate, double quantityToAdd) {
+    public void updateQuantityOfIngredient(Ingredient ingredientToUpdate, double quantityToChangeBy) {
         for (Ingredient ingredient : allIngredients) {
             if (ingredient.getName().equals(ingredientToUpdate.getName())) {
-                ingredient.setCurrentAmount(ingredient.getCurrentAmount() + quantityToAdd);
+                ingredient.setCurrentAmount(ingredient.getCurrentAmount() + quantityToChangeBy);
                 Controller.getDatabaseReference().child("Ingredient").child(ingredientToUpdate.getName()).setValueAsync(ingredient);
                 break;
             }
@@ -167,8 +167,8 @@ public class StorageController {
         if (panel == null)
             return;
 
-        ((DefaultListModel<Ingredient>) getPanel().getProductList().getModel()).clear();
-        ((DefaultListModel<Ingredient>) getPanel().getProductList().getModel()).addAll(allIngredients);
+        ((DefaultListModel<Ingredient>) panel.getProductList().getModel()).clear();
+        ((DefaultListModel<Ingredient>) panel.getProductList().getModel()).addAll(allIngredients);
     }
 
     /**

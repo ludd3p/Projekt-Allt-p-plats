@@ -11,7 +11,6 @@ public enum Unit {
     MILLIGRAM("mg"),
     GRAM("g"),
     KILOGRAM("kg"),
-    WEIGHT("g"),
     AMOUNT("st");
 
     private String prefix;
