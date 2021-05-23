@@ -8,6 +8,8 @@ import model.order.SupplierOrder;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.List;
 
 /**
@@ -30,7 +32,7 @@ public class OrderPanel extends JPanel {
     private JButton hasArrived; // Klicka när en order har kommit in
     private JButton remove; // Avbryt en order
 
-    private JComboBox ingredientToAdd;
+    private JComboBox<String> ingredientToAdd;
     private JSpinner quantitySelector;
     private JButton addOrderItem;
     private JButton removeOrderItem;
@@ -79,7 +81,7 @@ public class OrderPanel extends JPanel {
      * Function to setup left side of the panel
      */
     public void setUpLeftPanel() {
-        supplierJList = new JList(supplierList.toArray(new SupplierOrder[0]));
+        supplierJList = new JList<>(supplierList.toArray(new SupplierOrder[0]));
         JScrollPane jScrollPane = new JScrollPane(supplierJList);
         jScrollPane.setPreferredSize(new Dimension(280, 500));
         jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -149,8 +151,18 @@ public class OrderPanel extends JPanel {
         JLabel ingredientLabel = new JLabel("Ingredienser");
         ingredientLabel.setBounds(10, 20, 250, 20);
 
-        ingredientToAdd = new JComboBox(ingredientList());
+        ingredientToAdd = new JComboBox<>(ingredientList());
         ingredientToAdd.setBounds(10, 40, 250, 30);
+        ingredientToAdd.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                ingredientToAdd.setModel(new DefaultComboBoxModel<>(ingredientList()));
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
         ingredientToAdd.setBackground(null);
 
         JLabel quantityLabel = new JLabel("Kvantitet");
@@ -197,6 +209,7 @@ public class OrderPanel extends JPanel {
         centerPanel.add(addItemToOrderPanel);
         this.add(centerPanel);
     }
+
     /**
      * Function to setup right side of the panel
      */
