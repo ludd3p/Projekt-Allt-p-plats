@@ -57,13 +57,13 @@ public class OrderPanel extends JPanel {
         leftPanel = new JPanel();
         leftPanel.setBackground(Color.white);
         leftPanel.setBounds(0, 0, 300, 600);
-        leftPanel.setBorder(new TitledBorder("Order Historik"));
+        leftPanel.setBorder(new TitledBorder("Ordrar"));
         setUpLeftPanel();
 
         centerPanel = new JPanel(null);
         centerPanel.setBackground(Color.white);
         centerPanel.setBounds(300, 0, 400, 600);
-        centerPanel.setBorder(new TitledBorder("Control Panel"));
+        centerPanel.setBorder(new TitledBorder(""));
         setUpCenterPanel();
 
         rightPanel = new JPanel();
@@ -97,7 +97,7 @@ public class OrderPanel extends JPanel {
         JPanel orderControlPanel = new JPanel(null);
         orderControlPanel.setBounds(25, 30, 350, 270);
 
-        orderControlPanel.setBorder(new TitledBorder("Order kontroll panel"));
+        orderControlPanel.setBorder(new TitledBorder("Order kontrollpanel"));
         orderControlPanel.setBackground(Color.white);
 
         this.showOrder = new JButton("Visa order");
@@ -105,7 +105,7 @@ public class OrderPanel extends JPanel {
         showOrder.setBounds(25, 30, 300, 65);
         showOrder.addActionListener(l -> {
             if (supplierJList.getSelectedValue() == null) {
-                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
             System.out.println(supplierJList.getSelectedValue().getOrderItems().size());
@@ -118,7 +118,7 @@ public class OrderPanel extends JPanel {
         this.hasArrived.addActionListener(a -> {
             SupplierOrder supplierOrder = this.getSupplierJList().getSelectedValue();
             if (supplierOrder == null) {
-                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
 
@@ -130,7 +130,7 @@ public class OrderPanel extends JPanel {
         this.remove.setBounds(25, 190, 300, 65);
         this.remove.addActionListener(l -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
-                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
             controller.removeOrder();
@@ -143,7 +143,7 @@ public class OrderPanel extends JPanel {
 
         JPanel addItemToOrderPanel = new JPanel(null);
         addItemToOrderPanel.setBounds(25, 300, 350, 300);
-        addItemToOrderPanel.setBorder(new TitledBorder("Ingredients kontrollpanel"));
+        addItemToOrderPanel.setBorder(new TitledBorder("Ingredienser kontrollpanel"));
         addItemToOrderPanel.setBackground(null);
 
         JLabel ingredientLabel = new JLabel("Ingredient");
@@ -167,7 +167,7 @@ public class OrderPanel extends JPanel {
         addOrderItem.setBounds(10, 160, 150, 50);
         addOrderItem.addActionListener(e -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
-                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först.", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
             Ingredient ingredient = getIngredientFromString((String) ingredientToAdd.getSelectedItem());
@@ -181,7 +181,7 @@ public class OrderPanel extends JPanel {
         removeOrderItem.setBounds(190, 160, 150, 50);
         removeOrderItem.addActionListener(p -> {
             if (controller.getCurrentSelectedSupplierOrder() == null || this.getCurrentSupplier().getSelectedValue() == null) {
-                JOptionPane.showConfirmDialog(null, "FEL!! \n Var snäll och välj en order först!", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
             controller.removeOrderItemFromCurrentOrder(this.getCurrentSupplier().getSelectedValue());
