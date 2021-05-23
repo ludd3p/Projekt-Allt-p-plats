@@ -146,7 +146,7 @@ public class OrderPanel extends JPanel {
         addItemToOrderPanel.setBorder(new TitledBorder("Ingredienser kontrollpanel"));
         addItemToOrderPanel.setBackground(null);
 
-        JLabel ingredientLabel = new JLabel("Ingredient");
+        JLabel ingredientLabel = new JLabel("Ingredienser");
         ingredientLabel.setBounds(10, 20, 250, 20);
 
         ingredientToAdd = new JComboBox(ingredientList());
