@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 /**
  * Panel for managing recipes
- *
  * @Author Ludvig Wedin Pettersson
  * @Version 1.2
  */
@@ -132,12 +131,11 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     /**
      * Listener for the buttons
-     *
      * @param e Source of method call
      */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == done) {
-            if (JOptionPane.showConfirmDialog(null, "Är du säker? Lagersaldo kommer att dras av", "Recept tillagat", JOptionPane.YES_NO_OPTION) == 0) {
+            if (JOptionPane.showConfirmDialog(null, "Är du säker? Lagersaldo kommer att dras av för: " + recipes.getItemAt(recipes.getSelectedIndex()) + ", " + spinner.getValue() + " satser", "Recept tillagat", JOptionPane.YES_NO_OPTION) == 0) {
                 recipeController.updateAmountsIngredient(recipes.getSelectedIndex(), (int)spinner.getValue());
             } else {
                 JOptionPane.showMessageDialog(null, "Inga varor dras av", "Meddelande", JOptionPane.PLAIN_MESSAGE);
@@ -194,7 +192,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     /**
      * Listens to changed states of registered components
-     *
      * @param e Source of call
      */
     public void stateChanged(ChangeEvent e) {
@@ -209,7 +206,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     /**
      * Handles PropertyChange.
-     *
      * @param evt incoming message with the changed property
      */
     @Override
@@ -373,7 +369,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             eastNorth = new JPanel();
             eastNorth.setBorder(new TitledBorder(""));
 
-            instructionInput = new JTextField("Lägg till beskrivning");
+            instructionInput = new JTextField("Lägg till instruktion");
             instructionInput.setPreferredSize(new Dimension(300, 25));
             eastNorth.add(instructionInput);
 

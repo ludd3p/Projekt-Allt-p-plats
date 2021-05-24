@@ -20,7 +20,6 @@ public class RecipeIngredient {
 
     /**
      * Constructor used when creating a new RecipeIngredient.
-     *
      * @param ingredient Ingredient object.
      * @param amount     double representing the amount of Ingredient used in Recipe.
      */
@@ -47,7 +46,6 @@ public class RecipeIngredient {
 
     /**
      * toString used when multiplier for recipe is used in GUI.
-     *
      * @param multi int incoming multiplier.
      * @return String with multiplied amount.
      */
@@ -58,7 +56,6 @@ public class RecipeIngredient {
 
     /**
      * toString returning the ingredients name, amount to be used, and which unit type.
-     *
      * @return String.
      */
     public String toString() {

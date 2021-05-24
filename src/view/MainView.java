@@ -8,7 +8,6 @@ import java.awt.*;
 
 /**
  * Main GUI component that holds each separate panel using JTabbedPane
- *
  * @Author Ludvig Wedin Pettersson
  * @Version 1.0
  */
@@ -25,7 +24,6 @@ public class MainView extends JFrame {
 
     /**
      * Constructor setting up the frame and its components.
-     *
      * @param controller Reference to the main controller.
      */
     public MainView(Controller controller) {
