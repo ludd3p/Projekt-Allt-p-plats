@@ -459,7 +459,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
                 if (!instructionList.isSelectionEmpty()){
                     int i = instructionList.getSelectedIndex();
                     String s = instructionsArray.get(i);
-                    String st = JOptionPane.showInputDialog(null, "Öndra instruktion", s);
+                    String st = JOptionPane.showInputDialog(null, "Ändra instruktion", s);
                     instructionsArray.set(i, st);
                     updateInstructions();
                 }
