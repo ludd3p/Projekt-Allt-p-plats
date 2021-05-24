@@ -284,8 +284,6 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
          */
         public NewRecipeWindow(String recName) {
             //Frame settings
-
-            //ingredientsArray = new ArrayList<>();
             editRecipe = true;
             this.recName = recName;
             setTitle("Ändra recept: " + recName);
