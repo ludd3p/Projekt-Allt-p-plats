@@ -148,16 +148,37 @@ public class HomePanel extends JPanel implements ActionListener {
         listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+
         centerPanel.add(listPane, BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
         //right panel
         rightPanel = new JPanel(new BorderLayout());
-        notificationsJList = new JList<>();
+        notificationsJList = new JList<>(homeController.getNotificationsList().toArray(new Notifications[0]));
         rightPanel.setBorder(BorderFactory.createTitledBorder("Notifikationer"));
         notificationsJList.setPreferredSize(new Dimension(200, 500));
-        notificationsJList.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        ((DefaultListCellRenderer) notificationsJList.getCellRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        notificationsJList.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+        notificationsJList.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
 
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (notificationsJList.getSelectedValue() == null)
+                    return;
+                if (e.getKeyCode() == 10 || e.getKeyCode() == 127)
+                    homeController.removeNotification(notificationsJList.getSelectedValue());
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
         listPane = new JScrollPane(notificationsJList);
         listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -239,9 +260,11 @@ public class HomePanel extends JPanel implements ActionListener {
                 return;
             }
             if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort den Högtiden?", "Bekräfta borttagningen",
-                    JOptionPane.YES_NO_OPTION) == 0)
+                    JOptionPane.YES_NO_OPTION) == 0) {
                 homeController.removeHoliday(holidaysJList.getSelectedValue());
-            else
+                System.out.println("HERE");
+
+            } else
                 JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
         }
 
@@ -260,6 +283,7 @@ public class HomePanel extends JPanel implements ActionListener {
             currentNJ = this;
             JFrame noteFrame = new JFrame();
             JPanel panel = new JPanel();
+            noteFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
             noteFrame.setTitle("Ny anteckning");
 
@@ -316,6 +340,9 @@ public class HomePanel extends JPanel implements ActionListener {
 
             noteFrame.setTitle("Ändra | Visa anteckningen: " + noteToShow.getTitle());
 
+            noteFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+
             noteFrame.setSize(new Dimension(500, 500));
             panel.setLayout(new BorderLayout(10, 10));
 
@@ -349,7 +376,10 @@ public class HomePanel extends JPanel implements ActionListener {
                     return;
                 }
                 currentNJ = null;
-                homeController.getNoteList().remove(noteToShow);
+                Note n = new Note(title.getText(), note.getText(), noteToShow.getId());
+                homeController.removeNote(noteToShow);
+                homeController.addNote(n);
+                homeController.updateNoteViewer();
                 noteFrame.setVisible(false);
             });
             JButton remove = new JButton("Ta bort");
@@ -369,6 +399,7 @@ public class HomePanel extends JPanel implements ActionListener {
                     homeController.getNoteList().remove(noteToShow);
                 else
                     JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
+                homeController.removeNote(noteToShow);
                 homeController.updateNoteViewer();
                 noteFrame.setVisible(false);
             });
@@ -386,9 +417,13 @@ public class HomePanel extends JPanel implements ActionListener {
 
     class NewHolidayJFrame {
         public NewHolidayJFrame() {
+
             currentHJ = this;
             JFrame HolidayFrame = new JFrame();
             JPanel panel = new JPanel();
+
+
+            HolidayFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
             HolidayFrame.setTitle("Ny högtid");
             HolidayFrame.setSize(new Dimension(300, 200));
@@ -434,7 +469,9 @@ public class HomePanel extends JPanel implements ActionListener {
         public NewHolidayJFrame(Holiday showHoliday) {
             currentHJ = this;
             JFrame titleFrame = new JFrame();
+            titleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             JPanel panel = new JPanel();
+
 
             titleFrame.setTitle("Ändra | Visa högtiden: " + showHoliday.getName());
 
@@ -465,9 +502,10 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Högtiden måste ha ett namn!", "Error", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                homeController.getHolidayList().remove(showHoliday);
-                Holiday title1 = new Holiday(title.getText(), datePicker.getDate(), homeController.getHolidayList().size() + 1);
+                homeController.removeHoliday(showHoliday);
+                Holiday title1 = new Holiday(title.getText(), datePicker.getDate(), showHoliday.getId());
                 homeController.addHoliday(title1);
+                homeController.updateHolidayViewer();
                 currentHJ = null;
                 titleFrame.setVisible(false);
             });
@@ -483,7 +521,7 @@ public class HomePanel extends JPanel implements ActionListener {
                     homeController.getHolidayList().remove(showHoliday);
                 else
                     JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
-
+                homeController.removeHoliday(showHoliday);
                 homeController.updateHolidayViewer();
                 currentHJ = null;
                 titleFrame.setVisible(false);

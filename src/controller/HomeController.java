@@ -7,12 +7,14 @@ import model.home.Holiday;
 import model.home.Note;
 import model.home.Notifications;
 import view.HomePanel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Controller class for handling everything about the home page like
  * (creating notes, creating holidays or showing all notifications of the system)
+ *
  * @Author Qassem Aburas
  * @Version 1.2
  */
@@ -26,6 +28,7 @@ public class HomeController {
     /**
      * constructor the takes a controller object as a parameter and
      * gets the data from the database whenever the tab opens or the system starts.
+     *
      * @param controller
      */
     public HomeController(Controller controller) {
@@ -83,8 +86,13 @@ public class HomeController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    System.out.println(d.getValue());
                     Notifications notifications = d.getValue(Notifications.class);
+                    System.out.println("HERE2");
+
                     getNotificationsList().add(notifications);
+                    if (homePanel != null)
+                        updateHolidayViewer();
                 }
             }
 
@@ -113,7 +121,7 @@ public class HomeController {
      * Updates the notes in the database and UI
      */
     public void updateNoteViewer() {
-        homePanel.getNotesJList().setListData( noteList.toArray(new Note[0]));
+        homePanel.getNotesJList().setListData(noteList.toArray(new Note[0]));
     }
 
     /**
@@ -145,7 +153,8 @@ public class HomeController {
         if (notifications == null)
             return;
         notificationslist.add(notifications);// add to the list
-        Controller.databaseReference.child("Notifications").child(notificationslist.size() + "").setValueAsync(notifications); //add to the database
+        Controller.databaseReference.child("Notifications").child(notifications.getId() + "").setValueAsync(notifications); //add to the database
+        getHomePanel().getNotificationsJList().setListData(notificationslist.toArray(new Notifications[0]));
         updateNotificationsViewer();
 
     }

@@ -4,6 +4,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import model.home.Notifications;
 import model.ingredient.Ingredient;
 import model.recipe.Recipe;
 import model.recipe.RecipeIngredient;
@@ -122,6 +123,7 @@ public class RecipeController {
 
                     if (i.getCurrentAmount() < i.getCriticalAmount()) {
                         controller.getOrderController().addOrderItemToSupplierOrder(i, (int) i.getRecommendedAmount());
+                        controller.getHomeController().addNotification(new Notifications("Order", "Ingredient: " + i.getName() + " dropped below limit! Added to order list!"));
                     }
                     break;
                 }

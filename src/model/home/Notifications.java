@@ -1,5 +1,7 @@
 package model.home;
 
+import java.util.UUID;
+
 /**
  * This class handle the notifications that should be shown in the home page of the system.
  *
@@ -9,21 +11,17 @@ package model.home;
 
 public class Notifications {
 
-    private int id;
+    private UUID id;
     private String title;
     private String description;
 
     public Notifications() {
     }
 
-    public Notifications(int id, String title, String description) {
-        this.id = id;
+    public Notifications(String title, String description) {
+        this.id = UUID.randomUUID();
         this.title = title;
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getTitle() {
@@ -38,17 +36,20 @@ public class Notifications {
         this.description = description;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getId() {
+        return id.toString();
+    }
+
+    public void setId(String id) {
+        this.id = UUID.fromString(id);
+    }
 
     @Override
     public String toString() {
-        return "Notifications: " + title;
+        return "<html><div style='text-align: center;'>" + title + "<br/>" + description + "</div></html>";
     }
 }
