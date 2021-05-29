@@ -134,7 +134,7 @@ public class SupplierPanel extends JPanel {
             supAddress.setText(supplier.getAddress());
             supCity.setText(supplier.getCity());
             supZip.setText(supplier.getZip());
-            supCountry.setText(supplier.getCountrty());
+            supCountry.setText(supplier.getCountry());
             cmbWeekDays.setSelectedItem(supplier.getDayOfDelivery());
         }
 
@@ -195,7 +195,7 @@ public class SupplierPanel extends JPanel {
                 addressLabel.setText("Adress: " + tempSup.getAddress());
                 cityLabel.setText("Stad: " + tempSup.getCity());
                 zipLabel.setText("Zip-kod: " + tempSup.getZip());
-                countryLabel.setText("Land: " + tempSup.getCountrty());
+                countryLabel.setText("Land: " + tempSup.getCountry());
                 dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name());
             }
 

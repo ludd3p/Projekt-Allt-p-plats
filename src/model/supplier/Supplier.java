@@ -13,7 +13,7 @@ public class Supplier {
     private String address;
     private String city;
     private String zip;
-    private String countrty;
+    private String country;
     private String email;
     private String phonenumber;
     private WeekDay dayOfDelivery;
@@ -41,7 +41,7 @@ public class Supplier {
         this.address = address;
         this.city = city;
         this.zip = zip;
-        this.countrty = country;
+        this.country = country;
         this.email = email;
         this.phonenumber = phonenumber;
         this.dayOfDelivery = day;
@@ -95,12 +95,12 @@ public class Supplier {
         this.zip = zip;
     }
 
-    public String getCountrty() {
-        return countrty;
+    public String getCountry() {
+        return country;
     }
 
-    public void setCountrty(String countrty) {
-        this.countrty = countrty;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
 
