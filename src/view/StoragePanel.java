@@ -8,7 +8,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 
 /**
  * Panel used to keep track of products in storage.
@@ -82,7 +81,7 @@ public class StoragePanel extends JPanel {
     }
 
     /**
-     * Method to filter productList based on user input in txfFilter.
+     * Filters productList based on user input in txfFilter.
      *
      * @param model
      * @param filter text in txfFilter
