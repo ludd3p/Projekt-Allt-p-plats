@@ -15,7 +15,7 @@ import java.io.IOException;
  * Controller class for handling everything about the home page like
  * (creating notes, creating holidays or showing all notifications of the system)
  *
- * @Author Qassem Aburas / Hazem Elkhalil / Alex Bergenholtz  / Jonathan Engström / Ludvig Pettersson
+ * @Author Qassem Aburas / Hazem Elkhalil / Alex Bergenholtz  / Jonathan Engström / Ludvig Wedin Pettersson
  * @Version 3
  */
 
