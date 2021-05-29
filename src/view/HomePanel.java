@@ -144,12 +144,9 @@ public class HomePanel extends JPanel implements ActionListener {
 
             }
         });
-
         listPane = new JScrollPane(holidaysJList);
         listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-
         centerPanel.add(listPane, BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
@@ -190,7 +187,7 @@ public class HomePanel extends JPanel implements ActionListener {
         // south panel
         JPanel southPanel = new JPanel();
 
-        addNewNote =new JButton("Skapa en ny anteckning");
+        addNewNote = new JButton("Skapa en ny anteckning");
         addNewNote.addActionListener(this);
         southPanel.add(addNewNote);
         add(southPanel, BorderLayout.SOUTH);
@@ -219,7 +216,6 @@ public class HomePanel extends JPanel implements ActionListener {
      * @param e Source
      */
     public void actionPerformed(ActionEvent e) {
-
         if (e.getSource() == addNewNote)
             new NewNoteJFrame();
 
@@ -240,7 +236,7 @@ public class HomePanel extends JPanel implements ActionListener {
                     JOptionPane.YES_NO_OPTION) == 0)
                 homeController.removeNote(notesJList.getSelectedValue());
             else
-                JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Borttagningen genomfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
         }
 
         if (e.getSource() == addNewHoliday)
@@ -248,7 +244,7 @@ public class HomePanel extends JPanel implements ActionListener {
 
         if (e.getSource() == deleteHoliday) {
             if (holidaysJList.getSelectedValue() == null) {
-                JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!!", "Error", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Du måste först välja en högtid!", "Error", JOptionPane.PLAIN_MESSAGE);
                 return;
             }
             if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort den Högtiden?", "Bekräfta borttagningen",
@@ -257,7 +253,7 @@ public class HomePanel extends JPanel implements ActionListener {
                 System.out.println("HERE");
 
             } else
-                JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Borttagningen genomfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
         }
 
 
@@ -483,7 +479,7 @@ public class HomePanel extends JPanel implements ActionListener {
             JPanel controlArea = new JPanel();
             controlArea.setBorder(new TitledBorder("Control panel"));
 
-            JXDatePicker datePicker = new JXDatePicker(Locale.forLanguageTag(showHoliday.getDate()));
+            JXDatePicker datePicker = new JXDatePicker(showHoliday.realDate());
             datePicker.setPreferredSize(new Dimension(165, 55));
             datePicker.setFont(new Font("Times New Roman", Font.BOLD, 16));
             datePicker.setBorder(new TitledBorder("Datum"));
