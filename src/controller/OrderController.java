@@ -101,6 +101,7 @@ public class OrderController {
 
     /**
      * Add item to the selected order
+     *
      * @param item The item to add
      */
     public void addOrderItemToSelectedOrder(OrderItem item) {
@@ -116,10 +117,12 @@ public class OrderController {
         previewSupplierOrder(currentSelectedSupplierOrder);
         saveOrderToFirebase(currentSelectedSupplierOrder);
     }
+
     /**
      * Add item to the selected order
+     *
      * @param ingredient The ingredient to add
-     * @param quantity The quanittiy to add
+     * @param quantity   The quanittiy to add
      */
     public void addOrderItemToSupplierOrder(Ingredient ingredient, int quantity) {
         if (quantity <= 0)
@@ -131,6 +134,7 @@ public class OrderController {
 
     /**
      * Removes item from the selected order
+     *
      * @param item the item to remove
      */
     public void removeOrderItemFromCurrentOrder(OrderItem item) {
@@ -233,4 +237,16 @@ public class OrderController {
         this.supplierOrderList = supplierOrderList;
     }
 
+    public void removeSupplierOrder(Supplier supplier) {
+        SupplierOrder supord = this.getSupplierOrder(supplier.getName());
+        if (supord == null)
+            return;
+
+        DatabaseReference ref = Controller.getDatabaseReference().child("orders");
+
+        ref.child(supord.getSupplier().getName()).setValueAsync(null);
+
+        supplierOrderList.remove(supord);
+        updateSupplierList();
+    }
 }

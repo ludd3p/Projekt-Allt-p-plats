@@ -4,9 +4,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import model.order.SupplierOrder;
 import model.supplier.Supplier;
 import model.supplier.WeekDay;
 import view.SupplierPanel;
+
 import java.util.ArrayList;
 
 /**
@@ -24,7 +26,8 @@ public class SupplierController {
 
     /**
      * Class constructor
-     * @param controller main controller object
+     *
+     * @param controller        main controller object
      * @param databaseReference reference to Firebase database
      */
     public SupplierController(Controller controller, DatabaseReference databaseReference) {
@@ -36,29 +39,34 @@ public class SupplierController {
 
     /**
      * Remove supplier from Firebase database
+     *
      * @param supplier The supplier chosen to remove
      */
     public void removeSupplier(Supplier supplier) {
         databaseReference.child("Suppliers").child(supplier.getName()).setValueAsync(null);
         supplierList.remove(supplier);
+        controller.getOrderController().removeSupplierOrder(supplier);
         updateSupplierList();
     }
 
     /**
      * Create new supplier
-     * @param name of the supplier
-     * @param address of the supplier
-     * @param city of the supplier
-     * @param zip of the supplier
-     * @param country of the supplier
-     * @param email of the supplier
+     *
+     * @param name        of the supplier
+     * @param address     of the supplier
+     * @param city        of the supplier
+     * @param zip         of the supplier
+     * @param country     of the supplier
+     * @param email       of the supplier
      * @param phonenumber of the supplier
-     * @param day of delivery from the supplier
+     * @param day         of delivery from the supplier
      */
     public void createNewSupplier(String name, String address, String city, String zip, String country, String email, String phonenumber, WeekDay day) {
         Supplier newSupplier = new Supplier(name, address, city, zip, country, email, phonenumber, day);
         supplierList.add(newSupplier);
         databaseReference.child("Suppliers").child(name).setValueAsync(newSupplier);
+        controller.getOrderController().addSupplierToList(new SupplierOrder(newSupplier));
+        controller.getOrderController().updateSupplierList();
         updateSupplierList();
     }
 

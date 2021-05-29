@@ -123,7 +123,7 @@ public class RecipeController {
 
                     if (i.getCurrentAmount() < i.getCriticalAmount()) {
                         controller.getOrderController().addOrderItemToSupplierOrder(i, (int) i.getRecommendedAmount());
-                        controller.getHomeController().addNotification(new Notifications("Order", "Ingredient: " + i.getName() + " dropped below limit! Added to order list!"));
+                        controller.getHomeController().addNotification(new Notifications("Order", "Ingredient: " + i.getName() + " Har lagts till i order listan!"));
                     }
                     break;
                 }

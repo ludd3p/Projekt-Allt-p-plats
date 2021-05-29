@@ -53,7 +53,7 @@ public class HomeController {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                System.out.println(databaseError.toString());
+                //System.out.println(databaseError.toString());
             }
         });
     }
@@ -86,9 +86,7 @@ public class HomeController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    System.out.println(d.getValue());
                     Notifications notifications = d.getValue(Notifications.class);
-                    System.out.println("HERE2");
 
                     getNotificationsList().add(notifications);
                     if (homePanel != null)
