@@ -395,6 +395,7 @@ public class HomePanel extends JPanel implements ActionListener {
                 homeController.updateNoteViewer();
                 noteFrame.setVisible(false);
             });
+            System.out.println("gggt");
             controlArea.add(title);
             controlArea.add(button);
             controlArea.add(remove);
