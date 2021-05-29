@@ -6,11 +6,18 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import model.daily.DailyEvent;
 import view.MainView;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+
+/**
+ * Controller class for handling everything about the home page like
+ * (creating notes, creating holidays or showing all notifications of the system)
+ *
+ * @Author Qassem Aburas / Hazem Elkhalil / Alex Bergenholtz  / Jonathan Engström / Ludvig Pettersson
+ * @Version 3
+ */
 
 public class Controller {
     public static DatabaseReference databaseReference;
@@ -20,7 +27,6 @@ public class Controller {
     private StorageController storageController;
     private RecipeController recipeController;
     private SupplierController supplierController;
-    private DailyEvent dailyEvent;
     private HomeController homeController;
 
 
@@ -29,7 +35,6 @@ public class Controller {
         System.out.println("Kopplar till firebase!");
         connectToFirebase();
         System.out.println("Kopplat till firebase!");
-        dailyEvent = new DailyEvent();
         System.out.println("Hämtar data från firebase!");
         new Thread() {
             @Override
@@ -113,15 +118,6 @@ public class Controller {
     public void setSupplierController(SupplierController supplierController) {
         this.supplierController = supplierController;
     }
-
-    public DailyEvent getDailyEvent() {
-        return dailyEvent;
-    }
-
-    public void setDailyEvent(DailyEvent dailyEvent) {
-        this.dailyEvent = dailyEvent;
-    }
-
 
     public void setStorageController(StorageController storageController) {
         this.storageController = storageController;

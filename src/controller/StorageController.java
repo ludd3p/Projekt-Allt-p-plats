@@ -3,18 +3,25 @@ package controller;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import model.Unit;
 import model.ingredient.Ingredient;
+import model.ingredient.Unit;
 import view.StoragePanel;
 
 import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
+
+/**
+ * Controller class for handling everything related to recipes
+ *
+ * @Author Jonathan Engström
+ * @Version 3.0
+ */
 public class StorageController {
     private Controller controller;
 
-    private  Set<Ingredient> allIngredients = new HashSet<>();
+    private Set<Ingredient> allIngredients = new HashSet<>();
     private StoragePanel panel;
 
     public StorageController(Controller controller) {
@@ -24,6 +31,7 @@ public class StorageController {
 
     /**
      * Set-up for the storage-tab main panel.
+     *
      * @param panel storage-tab main panel.
      */
     public void setUp(StoragePanel panel) {
@@ -33,6 +41,7 @@ public class StorageController {
 
     /**
      * Gets and array of units.
+     *
      * @return array of units.
      */
     public String[] getUnitsPrefixArray() {
@@ -52,20 +61,20 @@ public class StorageController {
      */
     public void addIngredientToDatabase(String name, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
         Controller.getDatabaseReference().child("Ingredient").child(name).
-                setValueAsync(new Ingredient(   name,
-                                                cost,
-                                                currentAmount,
-                                                criticalAmount,
-                                                recommendedAmount,
-                                                Unit.getUnitBasedOnPrefix(unitPrefix),
-                                                controller.getSupplierController().getSupplierFromName(supplierName)));
+                setValueAsync(new Ingredient(name,
+                        cost,
+                        currentAmount,
+                        criticalAmount,
+                        recommendedAmount,
+                        Unit.getUnitBasedOnPrefix(unitPrefix),
+                        controller.getSupplierController().getSupplierFromName(supplierName)));
     }
 
     /**
      * Updates an ingredient with new values.
      *
      * @param oldName           name of the product to update.
-     * @param newName              to update the ingredient with.
+     * @param newName           to update the ingredient with.
      * @param cost              to update the ingredient with.
      * @param currentAmount     to update the ingredient with.
      * @param criticalAmount    to update the ingredient with.
@@ -74,22 +83,22 @@ public class StorageController {
      */
     public void updateIngredient(String oldName, String newName, double cost, double currentAmount, double criticalAmount, double recommendedAmount, String unitPrefix, String supplierName) {
         Controller.getDatabaseReference().child("Ingredient").child(newName).setValueAsync(
-                updateIngredient(oldName, new Ingredient(   newName,
-                                                            cost,
-                                                            currentAmount,
-                                                            criticalAmount,
-                                                            recommendedAmount,
-                                                            Unit.getUnitBasedOnPrefix(unitPrefix),
-                                                            controller.getSupplierController().getSupplierFromName(supplierName))));
+                updateIngredient(oldName, new Ingredient(newName,
+                        cost,
+                        currentAmount,
+                        criticalAmount,
+                        recommendedAmount,
+                        Unit.getUnitBasedOnPrefix(unitPrefix),
+                        controller.getSupplierController().getSupplierFromName(supplierName))));
 
-        if(!oldName.equals(newName))
+        if (!oldName.equals(newName))
             Controller.getDatabaseReference().child("Ingredient").child(oldName).removeValueAsync();
     }
 
     /**
      * Updates an ingredient in the ingredientList with new values.
      *
-     * @param name of the product
+     * @param name                of the product
      * @param ingredientNewValues Ingredient-object with values to be used to update old object.
      * @return the updated Ingredient-object.
      */
@@ -110,8 +119,8 @@ public class StorageController {
     /**
      * Updates the current quantity of an ingredient in both the database and the ingredient list.
      *
-     * @param ingredientToUpdate    to update the current quantity of.
-     * @param quantityToChangeBy    value to change the current amount of the ingredient by.
+     * @param ingredientToUpdate to update the current quantity of.
+     * @param quantityToChangeBy value to change the current amount of the ingredient by.
      */
     public void updateQuantityOfIngredient(Ingredient ingredientToUpdate, double quantityToChangeBy) {
         for (Ingredient ingredient : allIngredients) {
@@ -200,11 +209,11 @@ public class StorageController {
         this.controller = controller;
     }
 
-    public  Set<Ingredient> getAllIngredients() {
+    public Set<Ingredient> getAllIngredients() {
         return allIngredients;
     }
 
-    public  void setAllIngredients(Set<Ingredient> allIngredients) {
+    public void setAllIngredients(Set<Ingredient> allIngredients) {
         this.allIngredients = allIngredients;
     }
 

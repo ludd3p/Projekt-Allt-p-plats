@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Controller class for the Supplier
  *
  * @Author Alex Bergenholtz
- * @Version 1.4
+ * @Version 3
  */
 
 public class SupplierController {

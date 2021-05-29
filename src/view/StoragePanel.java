@@ -13,7 +13,7 @@ import java.awt.event.*;
  * Panel used to keep track of products in storage.
  *
  * @Author Jonathan Engström
- * @Version 1.0
+ * @Version 3.0
  */
 
 public class StoragePanel extends JPanel {

@@ -16,7 +16,7 @@ import java.util.List;
  * (creating notes, creating holidays or showing all notifications of the system)
  *
  * @Author Qassem Aburas
- * @Version 1.2
+ * @Version 3.0
  */
 public class HomeController {
     private Controller controller;

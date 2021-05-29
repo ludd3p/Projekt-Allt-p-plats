@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
  * Class for the supplier panel
  *
  * @Author Alex Bergenholtz
- * @Version 1.4
+ * @Version 3.0
  */
 
 
@@ -86,7 +86,7 @@ public class SupplierPanel extends JPanel {
         cityLabel.setBounds(20, 220, 300, 40);
         cityLabel.setFont(font);
         zipLabel = new JLabel("");
-        zipLabel.setBounds(20, 270, 300,40);
+        zipLabel.setBounds(20, 270, 300, 40);
         zipLabel.setFont(font);
         countryLabel = new JLabel("");
         countryLabel.setBounds(20, 320, 300, 40);
@@ -167,18 +167,14 @@ public class SupplierPanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Info saknas");
                 return 3;
             } else {
-                try {
-                    String name = (supName.getText().toUpperCase());
-                    String phone = supPhone.getText();
-                    String email = supEmail.getText();
-                    String address = supAddress.getText();
-                    String city = supCity.getText();
-                    String zip = supZip.getText();
-                    String country = supCountry.getText();
-                    supController.createNewSupplier(name, address, city, zip, country, email, phone, (WeekDay) getCmbWeekDays().getSelectedItem()); // När det skall skickas till controller.
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
+                String name = (supName.getText().toUpperCase());
+                String phone = supPhone.getText();
+                String email = supEmail.getText();
+                String address = supAddress.getText();
+                String city = supCity.getText();
+                String zip = supZip.getText();
+                String country = supCountry.getText();
+                supController.createNewSupplier(name, address, city, zip, country, email, phone, (WeekDay) getCmbWeekDays().getSelectedItem()); // När det skall skickas till controller.
             }
         }
         return result;
@@ -186,10 +182,11 @@ public class SupplierPanel extends JPanel {
 
     /**
      * Update shown supplier info
+     *
      * @param evt
      */
     private void listValueChanged(ListSelectionEvent evt) {
-        if (!supplierJList.getValueIsAdjusting()) {
+        if (!supplierJList.getValueIsAdjusting())
             if (supplierJList.getSelectedIndex() >= 0) {
                 Supplier tempSup = supplierJList.getSelectedValue();
                 nameLabel.setText(tempSup.getName() + " kontaktuppgifter:");
@@ -201,8 +198,49 @@ public class SupplierPanel extends JPanel {
                 countryLabel.setText("Land: " + tempSup.getCountrty());
                 dodLabel.setText("Leveransdag: " + tempSup.getDayOfDelivery().name());
             }
+
+    }
+
+    /**
+     * Add listeners to Swing componenets which needs it
+     */
+    private void addListeners() {
+        ActionListener listener = new ButtonActionListeners();
+        addSupplier.addActionListener(listener);
+        removeSupplier.addActionListener(listener);
+        updateSupplier.addActionListener(listener);
+    }
+
+    /**
+     * Actionlistener for buttons.
+     */
+    class ButtonActionListeners implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addSupplier)
+                addSupplier(null);
+
+            if (e.getSource() == removeSupplier) {
+                if (supplierJList.getSelectedValue() != null) {
+                    int confirmation = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort denna leverantör?", "Varning", JOptionPane.OK_CANCEL_OPTION);
+                    if (confirmation == JOptionPane.OK_OPTION) {
+                        supController.removeSupplier(supplierJList.getSelectedValue());
+                    }
+                } else JOptionPane.showMessageDialog(null, "Vänligen välj en leverantör från listan");
+            }
+            if (e.getSource() == updateSupplier) {
+                if (supplierJList.getSelectedValue() != null) {
+                    Supplier s = supplierJList.getSelectedValue();
+                    int updateSuccess = addSupplier(s);
+                    if (updateSuccess == 0) {
+                        supController.removeSupplier(s);
+                    }
+                } else JOptionPane.showMessageDialog(null, "Vänligen välj en leverantör från listan");
+
+            }
         }
     }
+
 
     public SupplierController getSupController() {
         return supController;
@@ -276,48 +314,80 @@ public class SupplierPanel extends JPanel {
         this.cmbWeekDays = cmbWeekDays;
     }
 
-    /**
-     * Add listeners to Swing componenets which needs it
-     */
-    private void addListeners() {
-        ActionListener listener = new ButtonActionListeners();
-        addSupplier.addActionListener(listener);
-        removeSupplier.addActionListener(listener);
-        updateSupplier.addActionListener(listener);
+
+    public void setSupplierJList(JList<Supplier> supplierJList) {
+        this.supplierJList = supplierJList;
     }
 
-    /**
-     * Actionlistener for buttons.
-     */
-    class ButtonActionListeners implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == addSupplier) {
-                addSupplier(null);
-            }
-            if (e.getSource() == removeSupplier) {
-                if (supplierJList.getSelectedValue() != null) {
-                    int confirmation = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort denna leverantör?", "Varning", JOptionPane.OK_CANCEL_OPTION);
-                    if (confirmation == JOptionPane.OK_OPTION) {
-                        supController.removeSupplier(supplierJList.getSelectedValue());
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Vänligen välj en leverantör från listan");
-                }
-            }
-            if (e.getSource() == updateSupplier) {
-                if (supplierJList.getSelectedValue() != null) {
-                        Supplier s = supplierJList.getSelectedValue();
-                        int updateSuccess = addSupplier(s);
-                        if (updateSuccess == 0) {
-                            supController.removeSupplier(s);
-                        }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Vänligen välj en leverantör från listan");
-                }
-            }
-        }
+    public JPanel getSupplierInfoArea() {
+        return supplierInfoArea;
     }
 
+    public void setSupplierInfoArea(JPanel supplierInfoArea) {
+        this.supplierInfoArea = supplierInfoArea;
+    }
 
+    public JLabel getNameLabel() {
+        return nameLabel;
+    }
+
+    public void setNameLabel(JLabel nameLabel) {
+        this.nameLabel = nameLabel;
+    }
+
+    public JLabel getPhoneLabel() {
+        return phoneLabel;
+    }
+
+    public void setPhoneLabel(JLabel phoneLabel) {
+        this.phoneLabel = phoneLabel;
+    }
+
+    public JLabel getEmailLabel() {
+        return emailLabel;
+    }
+
+    public void setEmailLabel(JLabel emailLabel) {
+        this.emailLabel = emailLabel;
+    }
+
+    public JLabel getAddressLabel() {
+        return addressLabel;
+    }
+
+    public void setAddressLabel(JLabel addressLabel) {
+        this.addressLabel = addressLabel;
+    }
+
+    public JLabel getCityLabel() {
+        return cityLabel;
+    }
+
+    public void setCityLabel(JLabel cityLabel) {
+        this.cityLabel = cityLabel;
+    }
+
+    public JLabel getZipLabel() {
+        return zipLabel;
+    }
+
+    public void setZipLabel(JLabel zipLabel) {
+        this.zipLabel = zipLabel;
+    }
+
+    public JLabel getCountryLabel() {
+        return countryLabel;
+    }
+
+    public void setCountryLabel(JLabel countryLabel) {
+        this.countryLabel = countryLabel;
+    }
+
+    public JLabel getDodLabel() {
+        return dodLabel;
+    }
+
+    public void setDodLabel(JLabel dodLabel) {
+        this.dodLabel = dodLabel;
+    }
 }

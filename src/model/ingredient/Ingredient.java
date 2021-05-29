@@ -2,12 +2,13 @@ package model.ingredient;
 
 // Använd klassen när vi lägger till ingridienser i recepten.
 
-import controller.StorageController;
-import model.Unit;
 import model.supplier.Supplier;
-
-import java.util.ArrayList;
-
+/**
+ * Controller class for handling everything related to recipes
+ *
+ * @Author Jonathan Engström
+ * @Version 3.0
+ */
 
 public class Ingredient {
     private String name;
@@ -49,9 +50,10 @@ public class Ingredient {
 
     /**
      * Updates the values of the object with new values.
+     *
      * @param ingredientNewValues
      */
-    public void updateValues(Ingredient ingredientNewValues){
+    public void updateValues(Ingredient ingredientNewValues) {
         name = ingredientNewValues.getName();
         cost = ingredientNewValues.getCost();
         currentAmount = ingredientNewValues.getCurrentAmount();

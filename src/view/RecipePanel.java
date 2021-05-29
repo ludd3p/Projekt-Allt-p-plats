@@ -14,8 +14,9 @@ import java.util.ArrayList;
 
 /**
  * Panel for managing recipes
+ *
  * @Author Ludvig Wedin Pettersson
- * @Version 1.2
+ * @Version 3.0
  */
 
 public class RecipePanel extends JPanel implements PropertyChangeListener {
@@ -121,25 +122,26 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
     /**
      * Used initially when panel is constructed, fetches all recipe names.
      */
-    public void fetchRecipeNames(){
+    public void fetchRecipeNames() {
         ArrayList<String> recNames = recipeController.getAllRecipeNames();
-        for (String s : recNames) {
+        for (String s : recNames)
             recipes.addItem(s);
-        }
+
     }
 
 
     /**
      * Listener for the buttons
+     *
      * @param e Source of method call
      */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == done) {
-            if (JOptionPane.showConfirmDialog(null, "Är du säker? Lagersaldo kommer att dras av för: " + recipes.getItemAt(recipes.getSelectedIndex()) + ", " + spinner.getValue() + " satser", "Recept tillagat", JOptionPane.YES_NO_OPTION) == 0) {
-                recipeController.updateAmountsIngredient(recipes.getSelectedIndex(), (int)spinner.getValue());
-            } else {
+            if (JOptionPane.showConfirmDialog(null, "Är du säker? Lagersaldo kommer att dras av för: " + recipes.getItemAt(recipes.getSelectedIndex()) + ", " + spinner.getValue() + " satser", "Recept tillagat", JOptionPane.YES_NO_OPTION) == 0)
+                recipeController.updateAmountsIngredient(recipes.getSelectedIndex(), (int) spinner.getValue());
+            else
                 JOptionPane.showMessageDialog(null, "Inga varor dras av", "Meddelande", JOptionPane.PLAIN_MESSAGE);
-            }
+
         }
 
         if (e.getSource() == recipes) {
@@ -147,9 +149,9 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             instructionsModel.clear();
             ArrayList<String> recIngredients = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), (int) spinner.getValue());
             ArrayList<String> recInstructions = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
-            for (String s : recIngredients) {
+            for (String s : recIngredients)
                 ingredientsModel.addElement(s);
-            }
+
             if (recInstructions != null) {
                 int i = 1;
                 String formatted;
@@ -163,25 +165,25 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         }
 
         if (e.getSource() == addRecipe) {
-            if (newRecipeWindow != null) {
+            if (newRecipeWindow != null)
                 newRecipeWindow.dispose();
-            }
+
             newRecipeWindow = new NewRecipeWindow();
         }
 
         if (e.getSource() == removeRecipe) {
-            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ta bort recept", JOptionPane.YES_NO_OPTION) == 0) {
+            if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ta bort recept", JOptionPane.YES_NO_OPTION) == 0)
                 recipeController.removeRecipeFromDatabase(recipes.getItemAt(recipes.getSelectedIndex()));
-            } else {
+            else
                 JOptionPane.showMessageDialog(null, "Receptet tas inte bort", "Meddelande", JOptionPane.PLAIN_MESSAGE);
-            }
+
         }
 
         if (e.getSource() == modifyRecipe) {
             if (recipes.getItemAt(recipes.getSelectedIndex()) != null && JOptionPane.showConfirmDialog(null, "Vill du ändra i " + recipes.getItemAt(recipes.getSelectedIndex()) + "?", "Ändra recept", JOptionPane.YES_NO_OPTION) == 0) {
-                if (newRecipeWindow != null) {
+                if (newRecipeWindow != null)
                     newRecipeWindow.dispose();
-                }
+
 
                 newRecipeWindow = new NewRecipeWindow(recipes.getItemAt(recipes.getSelectedIndex()));
             } else
@@ -192,20 +194,22 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
     /**
      * Listens to changed states of registered components
+     *
      * @param e Source of call
      */
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spinner) {
             ingredientsModel.clear();
             ArrayList<String> recIngredients = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), (int) spinner.getValue());
-            for (String s : recIngredients) {
+            for (String s : recIngredients)
                 ingredientsModel.addElement(s);
-            }
+
         }
     }
 
     /**
      * Handles PropertyChange.
+     *
      * @param evt incoming message with the changed property
      */
     @Override
@@ -215,13 +219,13 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
             try {   //Needed try/catch because for some reason removeAllElements produces IndexOutOfBoundsException
                 recipes.removeAllItems();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            for (String s : recNames) {
+            for (String s : recNames)
                 recipes.addItem(s);
-            }
+
 
         }
     }
@@ -295,21 +299,18 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             ingredientsArray = recipeController.populateRecipeIngredients(recipes.getSelectedIndex(), 1);
             recipeController.registerPropertyChangeListener(this);
 
-            if (recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex()) != null) {
+            if (recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex()) != null)
                 instructionsArray = recipeController.getSelectedRecipeInstructions(recipes.getSelectedIndex());
-            } else {
+            else
                 instructionsArray = new ArrayList<>();
-            }
 
-            for (String s : ingredientsArray) {
+
+            for (String s : ingredientsArray)
                 ingredientsListModel.addElement(s);
-            }
-            if (instructionsArray != null) {
-                for (String s : instructionsArray) {
-                    instructionListModel.addElement(s);
-                }
-            }
 
+            if (instructionsArray != null)
+                for (String s : instructionsArray)
+                    instructionListModel.addElement(s);
         }
 
         /**
@@ -409,6 +410,7 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
 
         /**
          * Listener for buttons
+         *
          * @param e source of call
          */
         public void actionPerformed(ActionEvent e) {
@@ -443,32 +445,33 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
             }
 
             if (e.getSource() == saveRecipe) {
-                if (editRecipe) {
+                if (editRecipe)
                     saveEditedRecipe();
-                } else
+                else
                     saveNewRecipe();
             }
 
-            if (e.getSource() == ingredientsMenu) {
+            if (e.getSource() == ingredientsMenu)
                 unit.setText(recipeController.getIngredientPrefix((String) ingredientsMenu.getSelectedItem()));
-            }
 
-            if (e.getSource() == editInstruction){
-                if (!instructionList.isSelectionEmpty()){
+
+            if (e.getSource() == editInstruction)
+                if (!instructionList.isSelectionEmpty()) {
                     int i = instructionList.getSelectedIndex();
                     String s = instructionsArray.get(i);
                     String st = JOptionPane.showInputDialog(null, "Ändra instruktion", s);
                     instructionsArray.set(i, st);
                     updateInstructions();
                 }
-            }
+
         }
 
         /**
          * Checks if recipe has name and ingredient
+         *
          * @return true if has name and ingredient.
          */
-        public boolean hasNameInstruction(){
+        public boolean hasNameInstruction() {
             String s = recipeName.getText();
             return !ingredientsListModel.isEmpty() && s.length() >= 1;
         }
@@ -477,45 +480,46 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         /**
          * Used when saving a fresh recipe
          */
-        public void saveNewRecipe(){
+        public void saveNewRecipe() {
             if (hasNameInstruction() &&
                     JOptionPane.showConfirmDialog(null, "Vill du spara receptet " + recipeName.getText() + "?", "Spara", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 if (!recipeController.checkDuplicateRecipe(recipeName.getText())) {
                     recipeController.addRecipeToDatabase(recipeName.getText(), instructionsArray);
                     JOptionPane.showMessageDialog(null, "Receptet är sparat", "Sparat", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
-                } else {
+                } else
                     JOptionPane.showMessageDialog(null, "Recept med samma namn existerar, testa annat namn", "Fel", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
+
+            } else
                 JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser och namn tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
-            }
+
 
         }
 
         /**
          * Used when saving edited recipe
          */
-        public void saveEditedRecipe(){
+        public void saveEditedRecipe() {
             if (hasNameInstruction() &&
                     JOptionPane.showConfirmDialog(null, "Vill du spara receptet " + recipeName.getText() + "?", "Spara", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 if (!recipeController.checkDuplicateRecipe(recipeName.getText())) {
                     recipeController.updateRecipeDatabase(recipeName.getText(), instructionsArray, recName);
                     JOptionPane.showMessageDialog(null, "Receptet är sparat", "Sparat", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
-                } else if (JOptionPane.showConfirmDialog(null, "Recept med samma namn existerar, vill du skriva över?", "Fel", JOptionPane.YES_NO_OPTION) == 0){
+                } else if (JOptionPane.showConfirmDialog(null, "Recept med samma namn existerar, vill du skriva över?", "Fel", JOptionPane.YES_NO_OPTION) == 0) {
                     recipeController.updateRecipeDatabase(recipeName.getText(), instructionsArray, recName);
                     JOptionPane.showMessageDialog(null, "Receptet är sparat", "Sparat", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
                 }
-            } else {
+            } else
                 JOptionPane.showMessageDialog(null, "Det måste finnas ingredienser och namn tillagda för att spara receptet", "Fel", JOptionPane.ERROR_MESSAGE);
-            }
+
 
         }
 
         /**
          * Handles PropertyChangeListener
+         *
          * @param evt Incoming message with new object
          */
         @Override
@@ -550,12 +554,10 @@ public class RecipePanel extends JPanel implements PropertyChangeListener {
         public void updateIngredients() {
             ingredientsListModel.clear();
             ArrayList<String> ingredientStrings = recipeController.populateNewRecipeIngredients();
-            for (String s : ingredientStrings) {
+            for (String s : ingredientStrings)
                 ingredientsListModel.addElement(s);
-            }
+
         }
-
-
 
 
     }

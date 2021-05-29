@@ -17,7 +17,7 @@ import java.util.Calendar;
  * Panel to handle and manage the notes and notifications in the homepage
  *
  * @author Qassem Aburas
- * @version 1.3
+ * @version 3.0
  */
 
 public class HomePanel extends JPanel implements ActionListener {
@@ -68,9 +68,9 @@ public class HomePanel extends JPanel implements ActionListener {
             public void mouseClicked(MouseEvent e) {
                 if (currentNJ != null)
                     return;
-                if (notesJList.getSelectedIndex() == index) {
+                if (notesJList.getSelectedIndex() == index)
                     new NewNoteJFrame(notesJList.getSelectedValue());
-                }
+
                 index = notesJList.getSelectedIndex();
             }
 
@@ -116,9 +116,9 @@ public class HomePanel extends JPanel implements ActionListener {
             public void mouseClicked(MouseEvent e) {
                 if (currentHJ != null)
                     return;
-                if (holidaysJList.getSelectedIndex() == index) {
+                if (holidaysJList.getSelectedIndex() == index)
                     new NewHolidayJFrame(holidaysJList.getSelectedValue());
-                }
+
                 index = holidaysJList.getSelectedIndex();
             }
 

@@ -3,7 +3,7 @@ package model.home;
 /**
  * This class handle the notes that the user write in the system
  * @author Qassem Aburas
- * @version 1.0
+ * @Version 3.0
  */
 public class Note {
     private int id;

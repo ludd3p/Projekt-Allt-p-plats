@@ -1,8 +1,11 @@
-package model;
+package model.ingredient;
 
-// Ifall man räknar order i gram eller styck
-// Exemepl en order på mjöl läggs följade: 500 gram mjöl meddans
-// en order på mjölk räknas i 5 st mjölk packet.
+/**
+ * Controller class for handling everything related to recipes
+ *
+ * @Author Jonathan Engström
+ * @Version 3.0
+ */
 public enum Unit {
     Milliliter("ml"),
     Deciliter("dl"),

@@ -1,9 +1,10 @@
 package model.order;
 
 /**
- * An object that represents an item in a order list.
+ * Panel used to keep track of order history and current orders.
  *
  * @Author Hazem Elkhalil
+ * @Version 3.0
  */
 
 import model.ingredient.Ingredient;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Represents a full recipe with lists of ingredients and instructions.
  * @Author Ludvig Wedin Pettersson
- * @Version 1.0
+ * @Version 3.0
  */
 public class Recipe {
     private String name;

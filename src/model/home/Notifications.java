@@ -6,7 +6,7 @@ import java.util.UUID;
  * This class handle the notifications that should be shown in the home page of the system.
  *
  * @author Qassem Aburas
- * @version 1.2
+ * @Version 3.0
  */
 
 public class Notifications {

@@ -11,7 +11,7 @@ import java.util.Date;
  * This class handles the holidays so the user can add the holiday with the specific date.
  *
  * @author Qassem Aburas
- * @version 1.0
+ * @Version 3.0
  */
 
 public class Holiday {
@@ -71,7 +71,6 @@ public class Holiday {
     public void setId(int id) {
         this.id = id;
     }
-
 
     @Override
     public String toString() {

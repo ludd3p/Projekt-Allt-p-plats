@@ -17,6 +17,7 @@ import java.util.List;
  * Panel used to keep track of order history and current orders.
  *
  * @Author Hazem Elkhalil
+ * @Version 3.0
  */
 
 public class OrderController {
@@ -32,8 +33,6 @@ public class OrderController {
     public OrderController(Controller controller) {
         this.controller = controller;
         this.supplierOrderList = new ArrayList<>();
-
-
     }
 
     public void setup(OrderPanel panel) {
@@ -53,7 +52,7 @@ public class OrderController {
      * @param supplierOrder which order to add
      */
     public void addSupplierToList(SupplierOrder supplierOrder) {
-        this.panel.getOrderHistoryList().add(supplierOrder);
+        this.panel.getController().getOrderHistoryList().add(supplierOrder);
         updateSupplierList();
     }
 

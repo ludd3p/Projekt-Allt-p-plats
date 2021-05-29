@@ -1,15 +1,15 @@
 package view;
 
 import controller.Controller;
-import model.home.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * Main GUI component that holds each separate panel using JTabbedPane
+ *
  * @Author Ludvig Wedin Pettersson
- * @Version 1.0
+ * @Version 3.0
  */
 
 public class MainView extends JFrame {
@@ -19,15 +19,14 @@ public class MainView extends JFrame {
     private OrderPanel orderPanel;
     private SupplierPanel supplierPanel;
     private HomePanel homePanel;
-    private Controller controller;
 
 
     /**
      * Constructor setting up the frame and its components.
+     *
      * @param controller Reference to the main controller.
      */
     public MainView(Controller controller) {
-        this.controller = controller;
         setTitle("Allt på plats");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1000, 600));

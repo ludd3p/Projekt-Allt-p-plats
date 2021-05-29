@@ -16,6 +16,7 @@ import java.util.List;
  * Panel used to keep track of order history and current orders.
  *
  * @Author Hazem Elkhalil
+ * @Version 3.0
  */
 
 public class OrderPanel extends JPanel {
@@ -47,7 +48,7 @@ public class OrderPanel extends JPanel {
     public OrderPanel(OrderController controller) {
         this.controller = controller;
         setLayout(null);
-        supplierList = controller.getOrderHistoryList();
+        this.supplierList = controller.getOrderHistoryList();
         controller.setup(this);
         setupPanels();
     }
@@ -89,7 +90,7 @@ public class OrderPanel extends JPanel {
         jScrollPane.setBorder(null);
         leftPanel.add(jScrollPane);
 
-        this.add(leftPanel);
+        add(leftPanel);
     }
 
     /**
@@ -102,23 +103,22 @@ public class OrderPanel extends JPanel {
         orderControlPanel.setBorder(new TitledBorder("Order kontrollpanel"));
         orderControlPanel.setBackground(Color.white);
 
-        this.showOrder = new JButton("Visa order");
-        this.showOrder.setToolTipText("Visar varor i ordern");
+        showOrder = new JButton("Visa order");
+        showOrder.setToolTipText("Visar varor i ordern");
         showOrder.setBounds(25, 30, 300, 65);
         showOrder.addActionListener(l -> {
             if (supplierJList.getSelectedValue() == null) {
                 JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
-            System.out.println(supplierJList.getSelectedValue().getOrderItems().size());
             controller.previewSupplierOrder(supplierJList.getSelectedValue());
         });
 
-        this.hasArrived = new JButton("Har kommit");
-        this.hasArrived.setToolTipText("Markera en order som kommit");
-        this.hasArrived.setBounds(25, 110, 300, 65);
-        this.hasArrived.addActionListener(a -> {
-            SupplierOrder supplierOrder = this.getSupplierJList().getSelectedValue();
+        hasArrived = new JButton("Har kommit");
+        hasArrived.setToolTipText("Markera en order som kommit");
+        hasArrived.setBounds(25, 110, 300, 65);
+        hasArrived.addActionListener(a -> {
+            SupplierOrder supplierOrder = getSupplierJList().getSelectedValue();
             if (supplierOrder == null) {
                 JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
@@ -127,10 +127,10 @@ public class OrderPanel extends JPanel {
             controller.orderHasArrived(supplierOrder);
         });
 
-        this.remove = new JButton("Ta bort");
-        this.remove.setToolTipText("Rensar en order helt.");
-        this.remove.setBounds(25, 190, 300, 65);
-        this.remove.addActionListener(l -> {
+        remove = new JButton("Ta bort");
+        remove.setToolTipText("Rensar en order helt.");
+        remove.setBounds(25, 190, 300, 65);
+        remove.addActionListener(l -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
                 JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
@@ -192,11 +192,11 @@ public class OrderPanel extends JPanel {
         removeOrderItem = new JButton("Ta bort ingredient");
         removeOrderItem.setBounds(190, 160, 150, 50);
         removeOrderItem.addActionListener(p -> {
-            if (controller.getCurrentSelectedSupplierOrder() == null || this.getCurrentSupplier().getSelectedValue() == null) {
+            if (controller.getCurrentSelectedSupplierOrder() == null || getCurrentSupplier().getSelectedValue() == null) {
                 JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
-            controller.removeOrderItemFromCurrentOrder(this.getCurrentSupplier().getSelectedValue());
+            controller.removeOrderItemFromCurrentOrder(getCurrentSupplier().getSelectedValue());
         });
 
         addItemToOrderPanel.add(ingredientLabel);
@@ -207,7 +207,7 @@ public class OrderPanel extends JPanel {
         addItemToOrderPanel.add(removeOrderItem);
 
         centerPanel.add(addItemToOrderPanel);
-        this.add(centerPanel);
+        add(centerPanel);
     }
 
     /**
@@ -221,7 +221,7 @@ public class OrderPanel extends JPanel {
         jScrollPane.setBorder(null);
         rightPanel.add(jScrollPane);
 
-        this.add(rightPanel);
+        add(rightPanel);
     }
 
     public Ingredient getIngredientFromString(String name) {
@@ -248,7 +248,7 @@ public class OrderPanel extends JPanel {
 
 
     public void setLeftPanel(JPanel leftPanel) {
-        this.leftPanel = leftPanel;
+        leftPanel = leftPanel;
     }
 
     public JPanel getRightPanel() {
@@ -257,7 +257,7 @@ public class OrderPanel extends JPanel {
 
 
     public void setRightPanel(JPanel rightPanel) {
-        this.rightPanel = rightPanel;
+        rightPanel = rightPanel;
     }
 
 
@@ -267,15 +267,92 @@ public class OrderPanel extends JPanel {
 
 
     public void setSupplierJList(JList<SupplierOrder> supplierJList) {
-        this.supplierJList = supplierJList;
+        supplierJList = supplierJList;
     }
 
-    public List<SupplierOrder> getOrderHistoryList() {
+    public JPanel getCenterPanel() {
+        return centerPanel;
+    }
+
+    public void setCenterPanel(JPanel centerPanel) {
+        this.centerPanel = centerPanel;
+    }
+
+    public List<SupplierOrder> getSupplierList() {
         return supplierList;
     }
 
+    public void setSupplierList(List<SupplierOrder> supplierList) {
+        this.supplierList = supplierList;
+    }
+
+    public JButton getShowOrder() {
+        return showOrder;
+    }
+
+    public void setShowOrder(JButton showOrder) {
+        this.showOrder = showOrder;
+    }
+
+    public JButton getHasArrived() {
+        return hasArrived;
+    }
+
+    public void setHasArrived(JButton hasArrived) {
+        this.hasArrived = hasArrived;
+    }
+
+    public JButton getRemove() {
+        return remove;
+    }
+
+    public void setRemove(JButton remove) {
+        this.remove = remove;
+    }
+
+    public JComboBox<String> getIngredientToAdd() {
+        return ingredientToAdd;
+    }
+
+    public void setIngredientToAdd(JComboBox<String> ingredientToAdd) {
+        this.ingredientToAdd = ingredientToAdd;
+    }
+
+    public JSpinner getQuantitySelector() {
+        return quantitySelector;
+    }
+
+    public void setQuantitySelector(JSpinner quantitySelector) {
+        this.quantitySelector = quantitySelector;
+    }
+
+    public JButton getAddOrderItem() {
+        return addOrderItem;
+    }
+
+    public void setAddOrderItem(JButton addOrderItem) {
+        this.addOrderItem = addOrderItem;
+    }
+
+    public JButton getRemoveOrderItem() {
+        return removeOrderItem;
+    }
+
+    public void setRemoveOrderItem(JButton removeOrderItem) {
+        this.removeOrderItem = removeOrderItem;
+    }
+
+    public OrderController getController() {
+        return controller;
+    }
+
+    public void setController(OrderController controller) {
+        this.controller = controller;
+    }
+
+
     public void setOrderHistoryList(List<SupplierOrder> supplierOrderHistoryList) {
-        this.supplierList = supplierOrderHistoryList;
+        supplierList = supplierOrderHistoryList;
     }
 
 
@@ -284,6 +361,6 @@ public class OrderPanel extends JPanel {
     }
 
     public void setCurrentSupplier(JList<OrderItem> currentSupplier) {
-        this.currentSupplier = currentSupplier;
+        currentSupplier = currentSupplier;
     }
 }

@@ -5,7 +5,7 @@ import model.ingredient.Ingredient;
 /**
  * Class used in Recipe to hold the ingredient and amount to be used.
  * @Author Ludvig Wedin Pettersson
- * @Version 1.0
+ * @Version 3.0
  */
 public class RecipeIngredient {
     private Ingredient ingredient;

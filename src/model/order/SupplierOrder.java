@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An object representing an order.
+ * Panel used to keep track of order history and current orders.
  *
  * @Author Hazem Elkhalil
+ * @Version 3.0
  */
-
 
 public class SupplierOrder {
     private List<OrderItem> orderItems;

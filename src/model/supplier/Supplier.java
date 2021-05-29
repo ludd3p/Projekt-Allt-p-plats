@@ -4,7 +4,7 @@ package model.supplier;
  * Class for the supplier
  *
  * @Author Alex Bergenholtz
- * @Version 1.3
+ * @Version 3.0
  */
 
 public class Supplier {
@@ -21,18 +21,20 @@ public class Supplier {
     /**
      * Default constructor
      */
-    public Supplier(){}
+    public Supplier() {
+    }
 
     /**
      * Constructor with all info to create a complete supplier
-     * @param name of supplier
-     * @param address of supplier
-     * @param city of supplier
-     * @param zip of supplier
-     * @param country of supplier
-     * @param email of supplier
+     *
+     * @param name        of supplier
+     * @param address     of supplier
+     * @param city        of supplier
+     * @param zip         of supplier
+     * @param country     of supplier
+     * @param email       of supplier
      * @param phonenumber of supplier
-     * @param day of delivery from supplier
+     * @param day         of delivery from supplier
      */
     public Supplier(String name, String address, String city, String zip, String country, String email, String phonenumber, WeekDay day) {
         this.name = name;
