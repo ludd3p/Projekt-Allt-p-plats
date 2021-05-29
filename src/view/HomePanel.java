@@ -334,7 +334,7 @@ public class HomePanel extends JPanel implements ActionListener {
                 currentNJ = null;
                 if (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort den?", "Bekräfta borttagningen",
                         JOptionPane.YES_NO_OPTION) == 0)
-                    homeController.getNoteList().remove(noteToShow);
+                    homeController.removeNote(noteToShow);
                 else
                     JOptionPane.showMessageDialog(null, "Borttagningen genömfördes inte", "Meddelande", JOptionPane.PLAIN_MESSAGE);
                 homeController.updateNoteViewer();
