@@ -89,11 +89,9 @@ public class StoragePanel extends JPanel {
     private void filterModel(DefaultListModel<Ingredient> model, String filter) {
         model.clear();
 
-        for(Ingredient ingredient : storageController.getAllIngredients()) {
+        for(Ingredient ingredient : storageController.getAllIngredients())
             if(ingredient.getName().toLowerCase().startsWith(filter.toLowerCase()))
                 model.addElement(ingredient);
-        }
-
     }
 
     /**
@@ -101,12 +99,13 @@ public class StoragePanel extends JPanel {
      */
     private void addComponentsNorthPanel() {
         ActionListener actionListener = e -> {
-            if (e.getSource() == btnAddProduct) {
-                JFrame productWindow = new ProductWindow();
-            } else if (e.getSource() == btnChangeProduct) {
+            if (e.getSource() == btnAddProduct)
+                new ProductWindow();
+
+            else if (e.getSource() == btnChangeProduct) {
                 if (productList.getSelectedValue() != null) {
                     String selected = productList.getSelectedValue().toString();
-                    JFrame productWindow = new ProductWindow(
+                    new ProductWindow(
                             selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1),
                             selected.substring(selected.indexOf("Kostnad: ") + "Kostnad: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Leverantör:") - 2)),
                             selected.substring(selected.indexOf("<br>Nuvarande mängd: ") + "<br>Nuvarande mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("Minsta mängd:") - 2)),
@@ -114,26 +113,20 @@ public class StoragePanel extends JPanel {
                             selected.substring(selected.indexOf("Rekommenderad mängd: ") + "Rekommenderad mängd: ".length(), selected.lastIndexOf(" ", selected.indexOf("</html>") - 2)),
                             selected.substring(selected.indexOf("sek/") + "sek/".length(), selected.indexOf("<br>Leverantör") - 1),
                             selected.substring(selected.indexOf("<br>Leverantör: ") + "<br>Leverantör: ".length(), selected.indexOf("<br>Nuvarande mängd:") - 1));
-                } else {
+                } else
                     JOptionPane.showMessageDialog(null, "Välj en produkt att ändra.");
-                }
+
             } else if (e.getSource() == btnRemoveProduct) {
-                int answer = -1;
-
-                if (productList.getSelectedValue() != null) {
-                    answer = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort produkten?", "Ta bort produkt", JOptionPane.YES_NO_OPTION);
-                } else {
+                if (productList.getSelectedValue() != null && JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort produkten?", "Ta bort produkt", JOptionPane.YES_NO_OPTION) == 0) {
+                        String selected = productList.getSelectedValue().toString();
+                        model.removeElement(productList.getSelectedIndex());
+                        storageController.removeIngredient(selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1));
+                }
+                else if(productList.getSelectedValue() == null)
                     JOptionPane.showMessageDialog(null, "Välj en produkt att ta bort först.");
-                }
 
-                if (answer == 0) {
-                    String selected = productList.getSelectedValue().toString();
-                    model.removeElement(productList.getSelectedIndex());
-                    storageController.removeIngredient(selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1));
-                }
-            } else if (e.getSource() == btnUpdateList) {
+            } else if (e.getSource() == btnUpdateList)
                 storageController.getIngredientsFromDatabase();
-            }
         };
 
         KeyListener keyListener = new KeyListener() {
@@ -190,21 +183,16 @@ public class StoragePanel extends JPanel {
     private class CellRenderer extends DefaultListCellRenderer {
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             setText(value.toString());
+            setBorder(new LineBorder(new Color(0, 0, 0, 0)));
 
-            if (index % 2 == 0) {
+            if (index % 2 == 0)
                 setBackground(Color.WHITE);
-                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
-            } else {
+            else
                 setBackground(new Color(220, 220, 220));
-                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
-            }
 
             if (isSelected) {
                 setBackground(productList.getSelectionBackground());
-                setForeground(productList.getForeground());
                 setBorder(new LineBorder(Color.BLUE));
-            } else {
-                setBorder(new LineBorder(new Color(0, 0, 0, 0)));
             }
 
             return this;
@@ -244,7 +232,7 @@ public class StoragePanel extends JPanel {
         private JButton btnCancel;
 
         //true = add, false = change
-        private boolean addOrChange;
+        private final boolean addOrChange;
 
         /**
          * Constructor used when adding a new product.
@@ -259,9 +247,13 @@ public class StoragePanel extends JPanel {
         /**
          * Constructor used when changing values for a product.
          *
-         * @param productName
-         * @param minAmount
-         * @param maxAmount
+         * @param productName name of the product.
+         * @param cost of the product per unit.
+         * @param currentAmount of the product in storage.
+         * @param minAmount of the product that should be in storage before warning.
+         * @param maxAmount of the product that should be in storage when full.
+         * @param unit associated with the product.
+         * @param supplier associated with the product.
          */
         public ProductWindow(String productName, String cost, String currentAmount, String minAmount, String maxAmount, String unit, String supplier) {
             addOrChange = false;
@@ -361,8 +353,9 @@ public class StoragePanel extends JPanel {
             ActionListener listener = e -> {
                 if (e.getSource() == btnOk) {
                     boolean proceed = inputErrorCheck();
+
                     if (proceed) {
-                        if (addOrChange) {
+                        if (addOrChange)
                             storageController.addIngredientToDatabase(  txfProductName.getText(),
                                                                         Double.parseDouble(txfCost.getText()),
                                                                         Double.parseDouble(txfCurrentAmount.getText()),
@@ -370,7 +363,7 @@ public class StoragePanel extends JPanel {
                                                                         Double.parseDouble(txfMaxAmount.getText()),
                                                                         (String) cbxUnit.getSelectedItem(),
                                                                         (String) cbxSupplier.getSelectedItem());
-                        } else {
+                        else {
                             String selected = productList.getSelectedValue().toString();
                             String oldName = selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1);
                             storageController.updateIngredient( oldName,
@@ -382,12 +375,12 @@ public class StoragePanel extends JPanel {
                                                                 (String) cbxUnit.getSelectedItem(),
                                                                 (String) cbxSupplier.getSelectedItem());
                         }
+
                         storageController.getIngredientsFromDatabase();
                         dispose();
                     }
-                } else if (e.getSource() == btnCancel) {
+                } else if (e.getSource() == btnCancel)
                     dispose();
-                }
             };
 
             btnOk = new JButton();
@@ -395,18 +388,19 @@ public class StoragePanel extends JPanel {
             if (addOrChange) {
                 btnOk.setText("Lägg till");
                 btnOk.setToolTipText("Lägg till produkten i lagret.");
-            } else if (!addOrChange) {
+            } else {
                 btnOk.setText("Spara");
                 btnOk.setToolTipText("Slutför ändringarna för den valda produkten.");
             }
             pnlProductWindowSouth.add(btnOk);
 
             btnCancel = new JButton("Avbryt");
-            if (addOrChange) {
+
+            if (addOrChange)
                 btnCancel.setToolTipText("Avbryt tilläget av produkten i lagret.");
-            } else if (!addOrChange) {
+            else
                 btnCancel.setToolTipText("Avbryt ändringarna för den valda produkten..");
-            }
+
             btnCancel.addActionListener(listener);
             pnlProductWindowSouth.add(btnCancel);
 
@@ -431,20 +425,17 @@ public class StoragePanel extends JPanel {
             if(txfProductName.getText().equals("")){
                 JOptionPane.showMessageDialog(null, "Produktnamn saknas. \nFyll i ett produktnamn till höger om \"Produktnamn:\"", "Produktnamn", JOptionPane.ERROR_MESSAGE);
                 return false;
-            }
-            else {
-                for (Ingredient ingredient : storageController.getAllIngredients()) {
+            } else{
+                for (Ingredient ingredient : storageController.getAllIngredients())
                     if (addOrChange && ingredient.getName().toLowerCase().equals(txfProductName.getText().toLowerCase())) {
                         JOptionPane.showMessageDialog(null, "Denna produkt finns redan.", "Produkten finns redan", JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
-                }
             }
             if(txfCost.getText().equals("")){
                 JOptionPane.showMessageDialog(null, "Kostnad per enhet saknas. \nFyll i produktens kostnad per enhet till höger om \"Kostnad per enhet:\".", "Kostnad saknas.", JOptionPane.ERROR_MESSAGE);
                 return false;
-            }
-            else{
+            } else{
                 try{
                     Double.parseDouble(txfCost.getText());
                 }catch (NumberFormatException nfe){
@@ -457,9 +448,8 @@ public class StoragePanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Nuvarande mängd saknas. \nFyll i den mängd av produkten som finns i lagret till höger om \"Nuvarande mängd:\".",
                         "Nuvarande mängd", JOptionPane.ERROR_MESSAGE);
                 return false;
-            }
-            else{
-                try{
+            } else{
+                try {
                     Double.parseDouble(txfCurrentAmount.getText());
                 }catch (NumberFormatException nfe){
                     JOptionPane.showMessageDialog(null, "Nuvarande mängd kan endast vara ett numeriskt värde.",
@@ -471,8 +461,7 @@ public class StoragePanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Minsta mängd saknas. \nFyll i den minsta mängden av produkten som ska finnas i lagret till höger om \"Minsta mängd:\".",
                         "Minsta mängd saknas", JOptionPane.ERROR_MESSAGE);
                 return false;
-            }
-            else{
+            } else{
                 try{
                     Double.parseDouble(txfMinAmount.getText());
                 }catch (NumberFormatException nfe){
@@ -484,8 +473,7 @@ public class StoragePanel extends JPanel {
             if(txfMaxAmount.getText().equals("")){
                 JOptionPane.showMessageDialog(null, "Rekommenderad mängd saknas. \nFyll i den rekommenderade mängden av produkten som ska finnas i lagret till höger om \"Rekommenderad mängd:\".", "Rekommenderad mängd saknas.", JOptionPane.ERROR_MESSAGE);
                 return false;
-            }
-            else{
+            } else{
                 try{
                     Double.parseDouble(txfMaxAmount.getText());
                 }catch (NumberFormatException nfe){
