@@ -4,6 +4,10 @@ Allt på plats är en enkel applikation för serveringsställen som hjälper anv
 varor som finns i lager, och recept som använder sig av varorna.  
 Den tillhörande webapplikationen ger användaren information om lager- och orderstatus var hen än är.
 
+## Om projektet
+Allt på plats är skapat som ett projekt inom kursen Systemutveckling och projekt - VT21 på Malmö universitet.
+Hela projektet är skapat av Projektgrupp 31 från grunden, idé till slutlig produkt.
+
 ## Beskrivning
 Applikationen har ett antal funktioner för recepthantering, inventering och beställningar.
 ###Lager 
