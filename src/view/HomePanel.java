@@ -187,6 +187,7 @@ public class HomePanel extends JPanel implements ActionListener {
         JPanel southPanel = new JPanel();
 
         addNewNote = new JButton("Skapa en ny anteckning");
+        addNewNote.setToolTipText("Dubbelklicka på en anteckning för att radigera eller radera den!");
         addNewNote.addActionListener(this);
         southPanel.add(addNewNote);
 
@@ -195,6 +196,8 @@ public class HomePanel extends JPanel implements ActionListener {
         add(southPanel, BorderLayout.SOUTH);
 
         addNewHoliday = new JButton("Lägg till en högtid");
+        addNewHoliday.setToolTipText("Dubbelklicka på en högtid för att radigera eller radera den!");
+
         addNewHoliday.addActionListener(this);
         southPanel.add(addNewHoliday);
 
