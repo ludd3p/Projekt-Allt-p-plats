@@ -14,7 +14,7 @@ import java.util.Set;
 
 
 /**
- * Controller class for handling everything related to recipes
+ * Controller class for handling everything related to storage
  *
  * @Author Jonathan Engström
  * @Version 3.0

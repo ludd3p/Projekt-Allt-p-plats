@@ -1,7 +1,7 @@
 package model.ingredient;
 
 /**
- * Controller class for handling everything related to recipes
+ * Enum containing units used for ingredients.
  *
  * @Author Jonathan Engström
  * @Version 3.0
