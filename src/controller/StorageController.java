@@ -8,12 +8,13 @@ import model.ingredient.Unit;
 import view.StoragePanel;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 
 /**
- * Controller class for handling everything related to recipes
+ * Controller class for handling everything related to storage
  *
  * @Author Jonathan Engström
  * @Version 3.0
@@ -105,13 +106,12 @@ public class StorageController {
     public Ingredient updateIngredient(String name, Ingredient ingredientNewValues) {
         Ingredient updatedIngredient = null;
 
-        for (Ingredient ingredient : allIngredients) {
+        for (Ingredient ingredient : allIngredients)
             if (ingredient.getName().equals(name)) {
                 ingredient.updateValues(ingredientNewValues);
                 updatedIngredient = ingredient;
                 break;
             }
-        }
 
         return updatedIngredient;
     }
@@ -123,13 +123,12 @@ public class StorageController {
      * @param quantityToChangeBy value to change the current amount of the ingredient by.
      */
     public void updateQuantityOfIngredient(Ingredient ingredientToUpdate, double quantityToChangeBy) {
-        for (Ingredient ingredient : allIngredients) {
+        for (Ingredient ingredient : allIngredients)
             if (ingredient.getName().equals(ingredientToUpdate.getName())) {
                 ingredient.setCurrentAmount(ingredient.getCurrentAmount() + quantityToChangeBy);
                 Controller.getDatabaseReference().child("Ingredient").child(ingredientToUpdate.getName()).setValueAsync(ingredient);
                 break;
             }
-        }
 
         updatePanel();
     }
@@ -176,23 +175,35 @@ public class StorageController {
         if (panel == null)
             return;
 
-        ((DefaultListModel<Ingredient>) panel.getProductList().getModel()).clear();
-        ((DefaultListModel<Ingredient>) panel.getProductList().getModel()).addAll(allIngredients);
+        ((DefaultListModel<String>) panel.getProductList().getModel()).clear();
+        ((DefaultListModel<String>) panel.getProductList().getModel()).addAll(getAllIngredientsStrings());
     }
 
     /**
      * Checks if an ingredient already exists in the list.
      *
-     * @param name
-     * @return
+     * @param name of the product
+     * @return true if product exists, false otherwise.
      */
     public boolean checkIfIngredientExists(String name) {
-        for (Ingredient ingredient : allIngredients) {
-            if (ingredient.getName().equals(name)) {
+        for (Ingredient ingredient : allIngredients)
+            if (ingredient.getName().equals(name))
                 return true;
-            }
-        }
+
         return false;
+    }
+
+    /**
+     * Returns strings with info for all objects in allIngredients
+     * @return strings
+     */
+    public ArrayList<String> getAllIngredientsStrings(){
+        ArrayList<String> allIngredientsStrings = new ArrayList<>();
+
+        for(Ingredient ingredient : allIngredients)
+            allIngredientsStrings.add(ingredient.toString());
+
+        return allIngredientsStrings;
     }
 
     //<editor-fold desc = "Setters and getters">

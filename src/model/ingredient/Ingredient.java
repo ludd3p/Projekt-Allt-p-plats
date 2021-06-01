@@ -4,7 +4,7 @@ package model.ingredient;
 
 import model.supplier.Supplier;
 /**
- * Controller class for handling everything related to recipes
+ * Class for  ingredients.
  *
  * @Author Jonathan Engström
  * @Version 3.0

@@ -1,7 +1,7 @@
 package view;
 
 import controller.StorageController;
-import model.ingredient.Ingredient;
+
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -22,8 +22,8 @@ public class StoragePanel extends JPanel {
     private JPanel pnlNorth;
     private JPanel pnlCenter;
 
-    private JList<Ingredient> productList;
-    private DefaultListModel<Ingredient> model;
+    private JList<String> productList;
+    private DefaultListModel<String> model;
     private JScrollPane scrollPane;
 
     private JLabel lblFilter;
@@ -86,11 +86,11 @@ public class StoragePanel extends JPanel {
      * @param model
      * @param filter text in txfFilter
      */
-    private void filterModel(DefaultListModel<Ingredient> model, String filter) {
+    private void filterModel(DefaultListModel<String> model, String filter) {
         model.clear();
 
-        for(Ingredient ingredient : storageController.getAllIngredients())
-            if(ingredient.getName().toLowerCase().startsWith(filter.toLowerCase()))
+        for(String ingredient : storageController.getAllIngredientsStrings())
+            if(ingredient.substring(ingredient.indexOf("Produkt: ") + "Produkt: ".length(), ingredient.indexOf("<br>Kostnad") - 1).toLowerCase().startsWith(filter.toLowerCase()))
                 model.addElement(ingredient);
     }
 
@@ -104,7 +104,7 @@ public class StoragePanel extends JPanel {
 
             else if (e.getSource() == btnChangeProduct) {
                 if (productList.getSelectedValue() != null) {
-                    String selected = productList.getSelectedValue().toString();
+                    String selected = productList.getSelectedValue();
                     new ProductWindow(
                             selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1),
                             selected.substring(selected.indexOf("Kostnad: ") + "Kostnad: ".length(), selected.lastIndexOf(" ", selected.indexOf("<br>Leverantör:") - 2)),
@@ -118,7 +118,7 @@ public class StoragePanel extends JPanel {
 
             } else if (e.getSource() == btnRemoveProduct) {
                 if (productList.getSelectedValue() != null && JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort produkten?", "Ta bort produkt", JOptionPane.YES_NO_OPTION) == 0) {
-                        String selected = productList.getSelectedValue().toString();
+                        String selected = productList.getSelectedValue();
                         model.removeElement(productList.getSelectedIndex());
                         storageController.removeIngredient(selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1));
                 }
@@ -364,7 +364,7 @@ public class StoragePanel extends JPanel {
                                                                         (String) cbxUnit.getSelectedItem(),
                                                                         (String) cbxSupplier.getSelectedItem());
                         else {
-                            String selected = productList.getSelectedValue().toString();
+                            String selected = productList.getSelectedValue();
                             String oldName = selected.substring(selected.indexOf("Produkt: ") + "Produkt: ".length(), selected.indexOf("<br>Kostnad") - 1);
                             storageController.updateIngredient( oldName,
                                                                 txfProductName.getText(),
@@ -426,8 +426,8 @@ public class StoragePanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Produktnamn saknas. \nFyll i ett produktnamn till höger om \"Produktnamn:\"", "Produktnamn", JOptionPane.ERROR_MESSAGE);
                 return false;
             } else{
-                for (Ingredient ingredient : storageController.getAllIngredients())
-                    if (addOrChange && ingredient.getName().toLowerCase().equals(txfProductName.getText().toLowerCase())) {
+                for (String ingredient : storageController.getAllIngredientsStrings())
+                    if (addOrChange && ingredient.substring(ingredient.indexOf("Produkt: ") + "Produkt: ".length(), ingredient.indexOf("<br>Kostnad") - 1).toLowerCase().equals(txfProductName.getText().toLowerCase())) {
                         JOptionPane.showMessageDialog(null, "Denna produkt finns redan.", "Produkten finns redan", JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
@@ -517,11 +517,11 @@ public class StoragePanel extends JPanel {
         this.pnlCenter = pnlCenter;
     }
 
-    public JList<Ingredient> getProductList() {
+    public JList<String> getProductList() {
         return productList;
     }
 
-    public void setProductList(JList<Ingredient> productList) {
+    public void setProductList(JList<String> productList) {
         this.productList = productList;
     }
 
