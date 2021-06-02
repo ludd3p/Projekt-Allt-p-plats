@@ -71,7 +71,8 @@ public class OrderPanel extends JPanel {
 
         rightPanel = new JPanel();
         rightPanel.setBackground(Color.white);
-        rightPanel.setBorder(new TitledBorder("Order Info"));
+        rightPanel.setBorder(new TitledBorder("Order Information"));
+        rightPanel.setToolTipText("Order information");
         rightPanel.setBounds(700, 0, 300, 600);
         rightPanel.setLayout(new BorderLayout(5, 0));
         setUpRightPanel();
@@ -88,6 +89,10 @@ public class OrderPanel extends JPanel {
         jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setBorder(null);
+        supplierJList.addListSelectionListener(l -> {
+            controller.previewSupplierOrder(supplierJList.getSelectedValue());
+
+        });
         leftPanel.add(jScrollPane);
 
         add(leftPanel);
@@ -98,25 +103,26 @@ public class OrderPanel extends JPanel {
      */
     public void setUpCenterPanel() {
         JPanel orderControlPanel = new JPanel(null);
-        orderControlPanel.setBounds(25, 30, 350, 270);
+        orderControlPanel.setBounds(25, 30, 350, 205);
 
         orderControlPanel.setBorder(new TitledBorder("Order kontrollpanel"));
+        orderControlPanel.setToolTipText("Klicka en order för att förhandsgranska den!");
         orderControlPanel.setBackground(Color.white);
 
-        showOrder = new JButton("Visa order");
-        showOrder.setToolTipText("Visar varor i ordern");
-        showOrder.setBounds(25, 30, 300, 65);
-        showOrder.addActionListener(l -> {
-            if (supplierJList.getSelectedValue() == null) {
-                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
-                return;
-            }
-            controller.previewSupplierOrder(supplierJList.getSelectedValue());
-        });
+//        showOrder = new JButton("Visa order");
+//        showOrder.setToolTipText("Visar varor i ordern");
+//        showOrder.setBounds(25, 30, 300, 65);
+//        showOrder.addActionListener(l -> {
+//            if (supplierJList.getSelectedValue() == null) {
+//                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+//                return;
+//            }
+//            controller.previewSupplierOrder(supplierJList.getSelectedValue());
+//        });
 
         hasArrived = new JButton("Har kommit");
         hasArrived.setToolTipText("Markera en order som kommit");
-        hasArrived.setBounds(25, 110, 300, 65);
+        hasArrived.setBounds(25, 30, 300, 65);
         hasArrived.addActionListener(a -> {
             SupplierOrder supplierOrder = getSupplierJList().getSelectedValue();
             if (supplierOrder == null) {
@@ -129,7 +135,7 @@ public class OrderPanel extends JPanel {
 
         remove = new JButton("Ta bort");
         remove.setToolTipText("Rensar en order helt.");
-        remove.setBounds(25, 190, 300, 65);
+        remove.setBounds(25, 110, 300, 65);
         remove.addActionListener(l -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
                 JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
@@ -138,7 +144,7 @@ public class OrderPanel extends JPanel {
             controller.removeOrder();
         });
 
-        orderControlPanel.add(showOrder);
+        //orderControlPanel.add(showOrder);
         orderControlPanel.add(hasArrived);
         orderControlPanel.add(remove);
         centerPanel.add(orderControlPanel);
@@ -167,6 +173,7 @@ public class OrderPanel extends JPanel {
 
         JLabel quantityLabel = new JLabel("Kvantitet");
         quantityLabel.setBounds(290, 20, 250, 20);
+        quantityLabel.setToolTipText("Mängden av ingridenten du vill lägga till");
         quantitySelector = new JSpinner();
         quantitySelector.setBounds(290, 40, 50, 30);
         SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel();
@@ -176,6 +183,7 @@ public class OrderPanel extends JPanel {
         quantitySelector.setModel(spinnerNumberModel);
 
         addOrderItem = new JButton("Lägg till ingredient");
+        addOrderItem.setToolTipText("Lägg till ingredient manuellt till en order");
         addOrderItem.setBounds(10, 160, 150, 50);
         addOrderItem.addActionListener(e -> {
             if (controller.getCurrentSelectedSupplierOrder() == null) {
@@ -191,9 +199,11 @@ public class OrderPanel extends JPanel {
 
         removeOrderItem = new JButton("Ta bort ingredient");
         removeOrderItem.setBounds(190, 160, 150, 50);
+        addOrderItem.setToolTipText("Tar bort ingredient manuellt från en order");
+
         removeOrderItem.addActionListener(p -> {
             if (controller.getCurrentSelectedSupplierOrder() == null || getCurrentSupplier().getSelectedValue() == null) {
-                JOptionPane.showConfirmDialog(null, "Vänligen välj en order först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showConfirmDialog(null, "Vänligen välj en ingredient först", "ERROR", JOptionPane.OK_CANCEL_OPTION);
                 return;
             }
             controller.removeOrderItemFromCurrentOrder(getCurrentSupplier().getSelectedValue());

@@ -35,12 +35,23 @@ public class OrderController {
         this.supplierOrderList = new ArrayList<>();
     }
 
+
+    /**
+     * Sets up the order panel.
+     *
+     * @param panel
+     */
     public void setup(OrderPanel panel) {
         this.panel = panel;
         getSupplierOrders();
     }
 
 
+    /**
+     * Saves an order to firebase
+     *
+     * @param supplierOrder
+     */
     public void saveOrderToFirebase(SupplierOrder supplierOrder) {
         DatabaseReference ref = Controller.getDatabaseReference().child("orders");
         ref.child(supplierOrder.getSupplier().getName()).setValueAsync(supplierOrder);
@@ -159,7 +170,6 @@ public class OrderController {
                     if (supplierOrder != null)
                         supplierOrder.setOrderItems(newOrder.getOrderItems());
                 }
-                //updateSupplierList();
             }
 
 
@@ -168,8 +178,6 @@ public class OrderController {
                 System.out.println(databaseError.toString());
             }
         });
-        //updateSupplierList();
-
     }
 
     /**
@@ -185,6 +193,23 @@ public class OrderController {
         return null;
     }
 
+    /**
+     * Removes a supplier order
+     *
+     * @param supplier the supplier order to remove by getting the supplier
+     */
+    public void removeSupplierOrder(Supplier supplier) {
+        SupplierOrder supord = this.getSupplierOrder(supplier.getName());
+        if (supord == null)
+            return;
+
+        DatabaseReference ref = Controller.getDatabaseReference().child("orders");
+
+        ref.child(supord.getSupplier().getName()).setValueAsync(null);
+
+        supplierOrderList.remove(supord);
+        updateSupplierList();
+    }
 
     public Controller getController() {
         return controller;
@@ -236,16 +261,5 @@ public class OrderController {
         this.supplierOrderList = supplierOrderList;
     }
 
-    public void removeSupplierOrder(Supplier supplier) {
-        SupplierOrder supord = this.getSupplierOrder(supplier.getName());
-        if (supord == null)
-            return;
 
-        DatabaseReference ref = Controller.getDatabaseReference().child("orders");
-
-        ref.child(supord.getSupplier().getName()).setValueAsync(null);
-
-        supplierOrderList.remove(supord);
-        updateSupplierList();
-    }
 }
