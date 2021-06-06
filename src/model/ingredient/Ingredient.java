@@ -3,6 +3,7 @@ package model.ingredient;
 // Använd klassen när vi lägger till ingridienser i recepten.
 
 import model.supplier.Supplier;
+
 /**
  * Class for  ingredients.
  *

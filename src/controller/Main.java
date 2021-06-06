@@ -1,5 +1,7 @@
 package controller;
 
+import model.ingredient.Ingredient;
+
 import java.io.IOException;
 
 /**

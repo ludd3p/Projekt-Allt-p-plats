@@ -16,6 +16,7 @@ import java.util.Set;
 
 /**
  * Controller class for handling everything related to recipes
+ *
  * @Author Ludvig Wedin Pettersson
  * @Version 3.0
  */
@@ -31,6 +32,7 @@ public class RecipeController {
 
     /**
      * Constructor for the class
+     *
      * @param controller        Reference to main controller
      * @param databaseReference Reference to use database
      */
@@ -44,6 +46,7 @@ public class RecipeController {
 
     /**
      * Used by other classes to register listeners
+     *
      * @param listener reference to the class that registers
      */
     public void registerPropertyChangeListener(PropertyChangeListener listener) {
@@ -110,6 +113,7 @@ public class RecipeController {
     /**
      * Used when user is finished with a recipe and will deduct the correct amounts of each ingredient from the storage automatically.
      * Goes through all the ingredients in the specified recipe.
+     *
      * @param selectedItem Specifies which recipe was used.
      * @param batches      Specifies how many batches the user has made of the selected recipe and will multiply the amounts from the recipe.
      */
@@ -141,6 +145,7 @@ public class RecipeController {
 
     /**
      * Creates a new RecipeIngredient object and saves it in a list.
+     *
      * @param ingredient The chosen ingredient
      * @param amount     The selected amount that should be used in recipe
      */
@@ -155,6 +160,7 @@ public class RecipeController {
 
     /**
      * Removes a specific RecipeIngredient from list.
+     *
      * @param i index of RecipeIngredient
      */
     public void removeRecipeIngredient(int i) {
@@ -163,6 +169,7 @@ public class RecipeController {
 
     /**
      * Gets a list of all registered ingredients names.
+     *
      * @return
      */
     public ArrayList<String> getIngredientNames() {
@@ -171,6 +178,7 @@ public class RecipeController {
 
     /**
      * Sets list with ingredient names.
+     *
      * @param ingredientNames
      */
     public void setIngredientNames(ArrayList<String> ingredientNames) {
@@ -179,6 +187,7 @@ public class RecipeController {
 
     /**
      * Gets the unit type of a specific ingredient.
+     *
      * @param name Name of the ingredient.
      * @return Returns the unit.
      */
@@ -196,6 +205,7 @@ public class RecipeController {
 
     /**
      * Creates a new Recipe and saves it in the database
+     *
      * @param name         Name of the recipe
      * @param instructions List of instructions for recipe.
      */
@@ -211,6 +221,7 @@ public class RecipeController {
      * Used when trying to save an edited recipe.
      * Removes old recipe from database using old recipe name
      * Adds the edited recipe to the database.
+     *
      * @param name         Name of recipe.
      * @param instructions List of instructions for recipe.
      * @param recName      Old recipe name
@@ -223,6 +234,7 @@ public class RecipeController {
 
     /**
      * Removes a specified recipe from the database
+     *
      * @param name Name of the recipe.
      */
     public void removeRecipeFromDatabase(String name) {
@@ -231,6 +243,7 @@ public class RecipeController {
 
     /**
      * Called by GUI when a new RecipeIngredient is created, creates a list of String containing ingredient names, and amounts.
+     *
      * @return String list.
      */
     public ArrayList<String> populateNewRecipeIngredients() {
@@ -243,6 +256,7 @@ public class RecipeController {
 
     /**
      * Called by GUI when user selects a recipe to view.
+     *
      * @param i     Index of selected recipe.
      * @param multi Int used to multiply ingredients amount when making bigger batches.
      * @return String list with ingredients and their amounts.
@@ -260,6 +274,7 @@ public class RecipeController {
 
     /**
      * Gets the instructions for a specified recipe.
+     *
      * @param i Index of selected recipe.
      * @return String list of instructions.
      */
@@ -269,6 +284,7 @@ public class RecipeController {
 
     /**
      * Used when trying to save a recipe, checks if recipe already exists.
+     *
      * @param recName Name of recipe that should be checked.
      * @return Boolean, true if duplicate.
      */

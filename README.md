@@ -31,6 +31,7 @@ Användaren kan manuellt lägga till en vara på inköpslista.
 ### Notifikationer
 ```
 Applikationen har ett inbyggt system för notifikationer som varnar användaren när vissa händelser inträffar, till exempel när en varas volym är låg, när en högtid närmar sig eller när det är beställningsdag för en leverantör.
+För att radera notifikationer klickar du antigen på ENTER eller DELETE knappen på tangentbordet. 
 ```
 
 
